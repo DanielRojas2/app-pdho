@@ -1,0 +1,350 @@
+/* Layout Principal: 50% / 50% Split */
+.login-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  background-color: #ffffff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* -------------------------------------------------------------
+   PANEL IZQUIERDO: Identidad Oruro
+   ------------------------------------------------------------- */
+.branding-panel {
+  flex: 1;
+  min-height: 100vh;
+  background-color: #4a0613;
+  background: radial-gradient(circle at center, #560817 0%, #400510 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
+  user-select: none;
+}
+
+/* Sello circular central */
+.emblem-card {
+  position: relative;
+  width: clamp(340px, 40vw, 530px);
+  height: clamp(340px, 40vw, 530px);
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.08),
+    0 16px 48px rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Fondo con el logo de culturas oscurecido (sin animación hover) */
+.emblem-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: #4a0613;
+  background-image: 
+    linear-gradient(rgba(68, 7, 18, 0.72), rgba(68, 7, 18, 0.72)),
+    url('/images/logo_culturas.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Contenido superpuesto */
+.emblem-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  z-index: 2;
+}
+
+.emblem-header {
+  transform: translateY(-24px);
+}
+
+.emblem-title {
+  margin: 0;
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.75);
+}
+
+.emblem-subtitle {
+  margin: 6px 0 0 0;
+  font-size: clamp(0.95rem, 1.35vw, 1.2rem);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* -------------------------------------------------------------
+   PANEL DERECHO: Formulario de Login
+   ------------------------------------------------------------- */
+.form-panel {
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px;
+  background-color: #ffffff;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-header {
+  margin-bottom: 28px;
+}
+
+.form-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.form-subtitle {
+  margin: 8px 0 0 0;
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+
+/* Formulario */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.input-wrapper:hover {
+  border-color: #cbd5e1;
+}
+
+.input-wrapper:focus-within {
+  border-color: #700c1e;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(112, 12, 30, 0.12);
+}
+
+.input-wrapper.has-error {
+  border-color: #ef4444;
+  background-color: #fffaf0;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  width: 20px;
+  height: 20px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.input-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.form-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px 0 44px;
+  border: none;
+  background: transparent;
+  font-size: 0.95rem;
+  color: #0f172a;
+  outline: none;
+  font-family: inherit;
+}
+
+.form-input::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.input-with-toggle {
+  padding-right: 44px;
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 6px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.toggle-password-btn:hover {
+  color: #475569;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.toggle-password-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.field-error {
+  font-size: 0.8rem;
+  color: #dc2626;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+/* Botón de Envío */
+.submit-button {
+  width: 100%;
+  height: 48px;
+  background-color: #700c1e;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 14px rgba(112, 12, 30, 0.35);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 10px;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #580918;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(112, 12, 30, 0.45);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(0);
+  background-color: #400511;
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Footer con logo_gador.png en la parte baja */
+.form-footer {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gador-logo-bottom {
+  max-width: 260px;
+  max-height: 110px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  opacity: 0.95;
+  transition: opacity 0.2s ease;
+}
+
+.gador-logo-bottom:hover {
+  opacity: 1;
+}
+
+/* Animaciones */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive / Dispositivos Móviles */
+@media (max-width: 900px) {
+  .login-wrapper {
+    flex-direction: column;
+  }
+
+  .branding-panel {
+    min-height: auto;
+    padding: 36px 20px;
+  }
+
+  .emblem-card {
+    width: 290px;
+    height: 290px;
+  }
+
+  .form-panel {
+    min-height: auto;
+    padding: 32px 20px 48px;
+  }
+
+  .form-card {
+    max-width: 100%;
+  }
+}

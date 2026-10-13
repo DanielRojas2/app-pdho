@@ -1,0 +1,87 @@
+<div class="page-container">
+  <header class="section-header">
+    <div>
+      <h2 class="section-title">Reporte de Cumplimiento de Formularios</h2>
+      <p class="section-sub">Seguimiento de la presentación de declaraciones obligatorias del período activo.</p>
+    </div>
+
+    <div class="summary-chips">
+      <span class="chip chip-total">Total: <strong>{{ resumen().total }}</strong></span>
+      <span class="chip chip-declarado">Declarados: <strong>{{ resumen().declarados }}</strong></span>
+      <span class="chip chip-pendiente">Pendientes: <strong>{{ resumen().pendientes }}</strong></span>
+      <span class="chip chip-observado">Observados: <strong>{{ resumen().observados }}</strong></span>
+    </div>
+  </header>
+
+  <!-- Filtros y Búsqueda -->
+  <div class="toolbar">
+    <div class="filter-tabs">
+      <button type="button" class="tab-btn" [class.active]="filtroEstado() === 'TODOS'" (click)="setFiltro('TODOS')">
+        Todos ({{ resumen().total }})
+      </button>
+      <button type="button" class="tab-btn" [class.active]="filtroEstado() === 'DECLARADO'" (click)="setFiltro('DECLARADO')">
+        Declarados ({{ resumen().declarados }})
+      </button>
+      <button type="button" class="tab-btn" [class.active]="filtroEstado() === 'PENDIENTE'" (click)="setFiltro('PENDIENTE')">
+        Pendientes ({{ resumen().pendientes }})
+      </button>
+      <button type="button" class="tab-btn" [class.active]="filtroEstado() === 'OBSERVADO'" (click)="setFiltro('OBSERVADO')">
+        Observados ({{ resumen().observados }})
+      </button>
+    </div>
+
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input type="text" placeholder="Buscar hotel o categoría..." (input)="onBuscar($event)" class="search-input" />
+    </div>
+  </div>
+
+  <!-- Tabla de Cumplimiento -->
+  <div class="table-card">
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Establecimiento</th>
+            <th>Categoría</th>
+            <th>Operador Responsable</th>
+            <th>Teléfono</th>
+            <th>Estado Declaración</th>
+            <th>Fecha Presentación</th>
+            <th>Nro. Formulario</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (h of hotelesFiltrados(); track h.id) {
+            <tr>
+              <td class="font-bold">{{ h.nombre }}</td>
+              <td><span class="badge-cat">{{ h.categoria }}</span></td>
+              <td>{{ h.operador }}</td>
+              <td>{{ h.telefono }}</td>
+              <td>
+                <span class="status-pill status-{{ h.estado.toLowerCase() }}">
+                  {{ h.estado }}
+                </span>
+              </td>
+              <td>{{ h.fecha || '—' }}</td>
+              <td>
+                @if (h.nroFormulario) {
+                  <span class="form-tag">#{{ h.nroFormulario }}</span>
+                } @else {
+                  <span class="text-muted">Pendiente</span>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty-state">No se encontraron establecimientos con el filtro seleccionado.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

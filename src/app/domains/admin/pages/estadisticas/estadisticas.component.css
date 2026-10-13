@@ -1,0 +1,161 @@
+.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section-header {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.section-sub {
+  margin: 4px 0 0 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.filter-badge {
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+.stat-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.card-sub {
+  margin: 4px 0 20px 0;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.comparison-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.comparison-bar {
+  height: 24px;
+  background-color: #f1f5f9;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+}
+
+.bar-segment {
+  height: 100%;
+  transition: width 0.6s ease;
+}
+
+.bar-nac { background-color: #059669; }
+.bar-ext { background-color: #2563eb; }
+
+.comparison-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.dot-nac { background-color: #059669; }
+.dot-ext { background-color: #2563eb; }
+
+.legend-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.legend-val {
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ranking-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ranking-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.ranking-name {
+  color: #1e293b;
+}
+
+.ranking-stat {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.progress-track {
+  height: 8px;
+  background-color: #f1f5f9;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #840d23;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}

@@ -1,0 +1,63 @@
+<div class="page-container">
+  <header class="section-header">
+    <div>
+      <h2 class="section-title">Dashboard Estadístico de Afluencia Hotelera</h2>
+      <p class="section-sub">Consolidación mensual de llegadas, pernoctaciones y procedencia de huéspedes en Oruro.</p>
+    </div>
+    <div class="filter-badge">
+      <span>Período: <strong>{{ mesSeleccionado() }} / {{ gestionSeleccionada() }}</strong></span>
+    </div>
+  </header>
+
+  <!-- Gráficos y Distribución -->
+  <div class="stats-grid">
+    <!-- Card: Nacionales vs Extranjeros -->
+    <div class="stat-card">
+      <h3 class="card-title">Distribución Nacionales vs. Extranjeros</h3>
+      <p class="card-sub">Proporción total de huéspedes registrados en el mes</p>
+      
+      <div class="comparison-bar-wrap">
+        <div class="comparison-bar">
+          <div class="bar-segment bar-nac" [style.width.%]="distribucionHuespedes().nacionales.porcentaje"></div>
+          <div class="bar-segment bar-ext" [style.width.%]="distribucionHuespedes().extranjeros.porcentaje"></div>
+        </div>
+        <div class="comparison-legend">
+          <div class="legend-item">
+            <span class="dot dot-nac"></span>
+            <div>
+              <span class="legend-label">Nacionales (Bolivia)</span>
+              <strong class="legend-val">{{ distribucionHuespedes().nacionales.cantidad | number }} ({{ distribucionHuespedes().nacionales.porcentaje }}%)</strong>
+            </div>
+          </div>
+          <div class="legend-item">
+            <span class="dot dot-ext"></span>
+            <div>
+              <span class="legend-label">Extranjeros</span>
+              <strong class="legend-val">{{ distribucionHuespedes().extranjeros.cantidad | number }} ({{ distribucionHuespedes().extranjeros.porcentaje }}%)</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card: Top Países Emisores -->
+    <div class="stat-card">
+      <h3 class="card-title">Top 5 Países con Mayor Afluencia Extranjera</h3>
+      <p class="card-sub">Llegadas y pernoctaciones declaradas</p>
+
+      <div class="ranking-list">
+        @for (item of topPaises(); track item.pais; let i = $index) {
+          <div class="ranking-item">
+            <div class="ranking-header">
+              <span class="ranking-name"><strong>#{{ i + 1 }}</strong> {{ item.pais }}</span>
+              <span class="ranking-stat">{{ item.llegadas }} llegadas ({{ item.noches }} noches)</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" [style.width.%]="item.porcentaje * 2.5"></div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

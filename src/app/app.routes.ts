@@ -12,8 +12,13 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'operador',
+    loadChildren: () => import('./domains/operador/operador.routes').then((m) => m.OPERADOR_ROUTES),
+    canActivate: [authGuard]
+  },
+  {
     path: 'dashboard',
-    redirectTo: 'admin/inicio',
+    redirectTo: 'operador/mi-informacion',
     pathMatch: 'full'
   },
   {

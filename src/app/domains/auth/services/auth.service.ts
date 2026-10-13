@@ -24,6 +24,7 @@ export class AuthService {
   readonly userRole = computed<RolUsuario | null>(() => this.currentUser()?.rol ?? null);
   readonly isAdmin = computed(() => this.userRole() === 'ADMIN_DEPARTAMENTAL');
   readonly isOperador = computed(() => this.userRole() === 'OPERADOR_HOSPEDAJE');
+  readonly isDependiente = computed(() => this.userRole() === 'DEPENDIENTE_HOSPEDAJE');
 
   login(credentials: LoginRequest): Observable<TokenResponse> {
     return this.http.post<TokenResponse>(`${environment.apiUrl}/usuarios/login`, credentials).pipe(

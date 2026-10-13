@@ -55,7 +55,12 @@ export class LoginComponent {
     this.authService.login({ email, password }).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        this.router.navigate(['/admin/inicio']);
+        const user = this.authService.currentUser();
+        if (user?.rol === 'OPERADOR_HOSPEDAJE' || user?.rol === 'DEPENDIENTE_HOSPEDAJE') {
+          this.router.navigate(['/operador/mi-informacion']);
+        } else {
+          this.router.navigate(['/admin/inicio']);
+        }
       },
       error: () => {
         this.isSubmitting.set(false);

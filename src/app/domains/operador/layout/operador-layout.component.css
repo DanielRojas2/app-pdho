@@ -1,0 +1,239 @@
+.operador-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8fafc;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ==========================================================================
+   ENCABEZADO PRINCIPAL (Rojo Carmesí Oficial)
+   ========================================================================== */
+.operador-header {
+  height: 68px;
+  background-color: #840d23;
+  background: linear-gradient(135deg, #840d23 0%, #6d0a1c 100%);
+  color: #ffffff;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 100;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-icon-badge {
+  width: 42px;
+  height: 42px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.brand-icon-badge svg {
+  width: 22px;
+  height: 22px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.platform-title {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.platform-subtitle {
+  margin: 2px 0 0 0;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.2;
+}
+
+.header-user-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.user-pill {
+  background-color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+}
+
+.user-email {
+  font-family: inherit;
+}
+
+.user-role-badge {
+  color: #840d23;
+  font-weight: 800;
+}
+
+.logout-btn {
+  background-color: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 14px;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logout-btn:hover {
+  background-color: #ffffff;
+  color: #840d23;
+  border-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.logout-icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* ==========================================================================
+   CINTA DE OPCIONES (Menú de Navegación)
+   ========================================================================== */
+.options-ribbon {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  position: relative;
+  z-index: 90;
+  overflow-x: auto;
+}
+
+.ribbon-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ribbon-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.ribbon-item:hover {
+  color: #840d23;
+  background-color: rgba(132, 13, 35, 0.03);
+}
+
+.ribbon-item.active {
+  color: #840d23;
+  border-bottom-color: #840d23;
+  font-weight: 700;
+  background-color: rgba(132, 13, 35, 0.04);
+}
+
+.ribbon-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.period-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #64748b;
+  white-space: nowrap;
+  padding-left: 20px;
+}
+
+.period-label {
+  font-weight: 500;
+}
+
+.period-value {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+/* ==========================================================================
+   ÁREA DE CONTENIDO
+   ========================================================================== */
+.operador-content-viewport {
+  flex: 1;
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .operador-header {
+    height: auto;
+    padding: 14px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header-user-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .options-ribbon {
+    padding: 0 16px;
+  }
+
+  .period-indicator {
+    display: none;
+  }
+
+  .operador-content-viewport {
+    padding: 20px 16px;
+  }
+}

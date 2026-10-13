@@ -16,7 +16,7 @@
 
   /* Surfaces & Containers */
   --color-surface: #FAF8FF;
-  --color-canvas: #F8FAFC;
+  --color-canvas: #f8fafc;
   --color-card-bg: #FFFFFF;
   --color-surface-muted: #F1F5F9;
 
@@ -60,6 +60,9 @@ body {
   background-color: var(--color-canvas);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #A51C30 #f1f1f1;
 }
 
 h1,

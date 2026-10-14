@@ -86,3 +86,53 @@ textarea {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1, "cv05" 1;
 }
+
+/* ==========================================================================
+   REGLAS GLOBALES DE IMPRESIÓN Y EXPORTACIÓN A PDF OFICIAL
+   ========================================================================== */
+@media print {
+  /* Ocultar elementos estructurales de la aplicación fuera del componente */
+  header.admin-header,
+  nav.options-ribbon,
+  .admin-header,
+  .options-ribbon,
+  app-toast-container,
+  .toast-container,
+  .toast-item,
+  .toast-wrapper,
+  .modal-backdrop,
+  .chart-floating-tooltip {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    width: 100% !important;
+    height: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .admin-shell,
+  .admin-content-viewport,
+  app-estadisticas {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+}

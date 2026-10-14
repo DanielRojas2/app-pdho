@@ -1,0 +1,604 @@
+<div class="formulario-operador-container">
+  @if (cargando()) {
+  <div class="loading-full-state">
+    <div class="spinner-large" aria-hidden="true"></div>
+    <p>Cargando información del establecimiento y catálogo oficial...</p>
+  </div>
+  } @else {
+  <div class="two-column-workspace">
+    <!-- ============================================== -->
+    <!-- COLUMNA IZQUIERDA: CONTROLES Y CARGA RÁPIDA -->
+    <!-- ============================================== -->
+    <aside class="controls-column">
+      <!-- CARD 1: ESTABLECIMIENTO EMISOR -->
+      <section class="card emisor-card">
+        <div class="card-header-simple">
+          <span class="card-tag-label">ESTABLECIMIENTO EMISOR</span>
+          @if (establecimiento(); as est) {
+          <span class="badge-cat-pill">{{ formatCategoria(est.categoria) }}</span>
+          }
+        </div>
+
+        <div class="card-body-tight">
+          @if (establecimiento(); as est) {
+          <!-- Nombre comercial directo (sin 'Hospedaje Acreditado') -->
+          <h2 class="emisor-nombre">{{ est.nombre_establecimiento }}</h2>
+          <p class="emisor-direccion">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>Dirección: {{ est.direccion }}, Oruro, Bolivia</span>
+          </p>
+          }
+
+          <div class="periodo-selectors-grid">
+            <div class="control-group">
+              <label for="select_mes" class="control-label">MES DE DECLARACIÓN</label>
+              <div class="select-wrapper">
+                <select id="select_mes" class="form-select" [ngModel]="mesSeleccionado()"
+                  (ngModelChange)="cambiarMes($event)" [disabled]="mesesDisponiblesParaDeclarar().length === 0">
+                  @for (m of mesesDisponiblesParaDeclarar(); track m) {
+                  <option [value]="m">{{ m }}</option>
+                  }
+                  @if (mesesDisponiblesParaDeclarar().length === 0) {
+                  <option value="" disabled>Sin meses pendientes de declarar</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label for="select_gestion" class="control-label">GESTIÓN OFICIAL</label>
+              <div class="select-wrapper">
+                <select id="select_gestion" class="form-select" [ngModel]="gestionSeleccionada()"
+                  (ngModelChange)="cambiarGestion($event)">
+                  @for (g of listaGestiones; track g) {
+                  <option [value]="g">{{ g }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CARD 2: CALENDARIO MENSUAL DINÁMICO -->
+      <section class="card calendario-card">
+        <div class="calendario-header">
+          <div>
+            <h3 class="calendario-title">
+              <span class="cal-dot"></span>
+              <span>CALENDARIO MENSUAL • {{ mesSeleccionado() | uppercase }}</span>
+            </h3>
+          </div>
+          <span class="cal-hint">Seleccione un día</span>
+        </div>
+
+        <div class="calendario-body">
+          <!-- Días de la semana -->
+          <div class="cal-weekdays">
+            <span>Lun</span>
+            <span>Mar</span>
+            <span>Mié</span>
+            <span>Jue</span>
+            <span>Vie</span>
+            <span>Sáb</span>
+            <span>Dom</span>
+          </div>
+
+          <!-- Grilla de días -->
+          <div class="cal-days-grid">
+            @for (celda of celdasCalendario(); track $index) {
+            @if (celda.esMesActual) {
+            <button type="button" class="cal-day-btn" [class.selected]="diaSeleccionado() === celda.numero"
+              [class.has-ingresos]="tieneIngresosEnDia(celda.numero)"
+              [class.has-permanencias]="tienePermanenciasEnDia(celda.numero)" (click)="seleccionarDia(celda.numero)">
+              <span class="day-num">{{ celda.numero }}</span>
+              @if (tieneIngresosEnDia(celda.numero) || tienePermanenciasEnDia(celda.numero)) {
+              <span class="day-dots">
+                @if (tieneIngresosEnDia(celda.numero)) {
+                <span class="dot-i" title="Ingresos registrados"></span>
+                }
+                @if (tienePermanenciasEnDia(celda.numero)) {
+                <span class="dot-p" title="Permanencias registradas"></span>
+                }
+              </span>
+              }
+            </button>
+            } @else {
+            <div class="cal-day-disabled">
+              <span class="day-num-dim">{{ celda.numero }}</span>
+            </div>
+            }
+            }
+          </div>
+
+          <!-- Leyenda de colores -->
+          <div class="cal-legend">
+            <span class="legend-item">
+              <span class="dot-i"></span>
+              <span>Ingreso (I)</span>
+            </span>
+            <span class="legend-item">
+              <span class="dot-p"></span>
+              <span>Permanencia (P)</span>
+            </span>
+            <span class="legend-item">
+              <span class="dot-none"></span>
+              <span>Sin registro</span>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CARD 3: CARGA RÁPIDA DIARIA (Sin tipo habitación ni plazas/camas) -->
+      <section class="card carga-rapida-card">
+        <div class="card-header-split">
+          <h3 class="carga-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span>CARGA RÁPIDA DIARIA</span>
+          </h3>
+          <span class="badge-dia-activo">Día: {{ diaSeleccionado() }} de {{ mesSeleccionado() }}</span>
+        </div>
+
+        <div class="carga-body">
+          <!-- PAÍS / NACIONALIDAD (COMBOBOX TODO EN UNO) -->
+          <div class="form-group combobox-container-rapida">
+            <label for="input_combobox_rapida" class="control-label">PAÍS / NACIONALIDAD DEL TURISTA *</label>
+            <div class="combobox-unified-box">
+              <input #inputCargaRapida id="input_combobox_rapida" type="text" class="combobox-main-input"
+                [value]="dropdownCargaRapidaAbierto() && busquedaCargaRapidaActiva() ? busquedaCargaRapida() : paisSeleccionadoTexto()"
+                (focus)="onFocusCargaRapidaPais($event)" (input)="onInputCargaRapidaPais($event)"
+                (keydown.escape)="cerrarDropdownCargaRapida()" placeholder="Escribir o seleccionar país..."
+                autocomplete="off" />
+              <button type="button" class="combobox-chevron-btn" (click)="toggleDropdownCargaRapida($event)"
+                tabindex="-1" title="Desplegar catálogo de países">
+                <svg class="combobox-chevron-icon" [class.rotated]="dropdownCargaRapidaAbierto()" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+
+              @if (dropdownCargaRapidaAbierto()) {
+              <div class="combobox-floating-menu" role="listbox">
+                <div class="combobox-scroll-list">
+                  @for (nac of paisesCargaRapidaFiltrados(); track nac.id) {
+                  <button type="button" class="combobox-item-row"
+                    [class.selected]="nac.id === nacionalidadSeleccionadaId()"
+                    (mousedown)="seleccionarPaisCargaRapida(nac)" role="option"
+                    [attr.aria-selected]="nac.id === nacionalidadSeleccionadaId()">
+                    <span class="c-item-name">{{ nac.pais }}</span>
+                    <span class="c-item-badge">{{ nac.cod_pais }}</span>
+                    @if (nac.id === nacionalidadSeleccionadaId()) {
+                    <span class="c-item-check">✓</span>
+                    }
+                  </button>
+                  }
+                  @if (paisesCargaRapidaFiltrados().length === 0) {
+                  <div class="combobox-empty-hint">
+                    <span>No se encontraron países para "{{ busquedaCargaRapida() }}"</span>
+                  </div>
+                  }
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+
+          <!-- INGRESOS Y PERMANENCIAS -->
+          <div class="inputs-row-2">
+            <div class="form-group">
+              <label for="input_ingresos" class="control-label">INGRESOS (I) *</label>
+              <input id="input_ingresos" type="text" inputmode="numeric" maxlength="2"
+                class="form-input text-center tabular-nums font-bold" [value]="inputIngresos()"
+                (keypress)="validarSoloDigitos($event)" (input)="onInputCargaRapidaIngresos($event)" placeholder="0"
+                title="Ingresos del huésped (0 a 50)" />
+            </div>
+
+            <div class="form-group">
+              <label for="input_permanencias" class="control-label">PERMANENTES (P)</label>
+              <input id="input_permanencias" type="text" inputmode="numeric" maxlength="2"
+                class="form-input text-center tabular-nums font-bold" [value]="inputPermanencias()"
+                (keypress)="validarSoloDigitos($event)" (input)="onInputCargaRapidaPermanencias($event)" placeholder="0"
+                title="Permanencias del huésped (0 a 50)" />
+            </div>
+          </div>
+
+          <button type="button" class="btn-agregar-registro" (click)="agregarRegistroDiario()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Agregar Registro a Planilla Oficial</span>
+          </button>
+
+          <!-- Resumen Rápido Acumulado -->
+          <div class="resumen-rapido-grid">
+            <div class="resumen-rapido-box">
+              <span class="rr-title">HUÉSPEDES NACIONALES</span>
+              <strong class="rr-val tabular-nums">{{ resumen().total_nals }}</strong>
+              <span class="rr-sub tabular-nums">{{ resumen().r_ingreso_nals }} Ing / {{ resumen().r_permanencia_nals }}
+                Pern</span>
+            </div>
+
+            <div class="resumen-rapido-box">
+              <span class="rr-title">HUÉSPEDES EXTRANJEROS</span>
+              <strong class="rr-val tabular-nums">{{ resumen().total_extr }}</strong>
+              <span class="rr-sub tabular-nums">{{ resumen().r_ingreso_extr }} Ing / {{ resumen().r_permanencia_extr }}
+                Pern</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+    <!-- ============================================== -->
+    <!-- COLUMNA DERECHA: PLANILLA OFICIAL (PRE-RENDER) -->
+    <!-- ============================================== -->
+    <main class="sheet-column">
+      <div class="planilla-sheet-container">
+        <!-- CABECERA OFICIAL: Correlativo editable -->
+        <div class="sheet-main-header">
+          <div class="sheet-title-wrapper">
+            <h1 class="sheet-main-title">ESTADÍSTICAS HOTELERAS</h1>
+          </div>
+
+          <div class="sheet-correlativo-box" title="Haga clic para editar el número correlativo oficial">
+            <label for="numero_formulario_input" class="corr-label">N°</label>
+            <input id="numero_formulario_input" type="text" class="corr-input" [ngModel]="numeroFormulario()"
+              (ngModelChange)="numeroFormulario.set($event)" placeholder="000360" maxlength="15" />
+            <span class="corr-badge-edit">✎ EDITABLE</span>
+          </div>
+        </div>
+
+        <!-- BLOQUES DE METADATOS (A, B, C) -->
+        <div class="sheet-meta-grid">
+          <!-- BLOQUE A: DATOS DEL ESTABLECIMIENTO -->
+          <section class="meta-card-block">
+            <header class="meta-block-header">
+              <span class="meta-tag-letter">A</span>
+              <h4 class="meta-block-title">DATOS DEL ESTABLECIMIENTO</h4>
+            </header>
+            <div class="meta-block-content">
+              <div class="meta-row">
+                <span class="meta-lbl">Mes:</span>
+                <strong class="meta-txt">{{ mesSeleccionado() }}</strong>
+                <span class="meta-lbl ml-3">Año:</span>
+                <strong class="meta-txt">{{ gestionSeleccionada() }}</strong>
+              </div>
+              <div class="meta-row">
+                <span class="meta-lbl">Ciudad:</span>
+                <span class="meta-txt">Oruro</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-lbl">Nombre:</span>
+                <strong class="meta-txt">{{ establecimiento()?.nombre_establecimiento || 'Hotel Bernal' }}</strong>
+              </div>
+              <div class="meta-row">
+                <span class="meta-lbl">Dirección:</span>
+                <span class="meta-txt truncate">{{ establecimiento()?.direccion || 'Av. Brasil esquina Aroma "B"' }},
+                  Oruro</span>
+              </div>
+              <div class="meta-row items-center">
+                <span class="meta-lbl">Categoría:</span>
+                <span class="meta-badge">{{ formatCategoria(establecimiento()?.categoria) }}</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- BLOQUE B: PERSONAL OCUPADO -->
+          <section class="meta-card-block">
+            <header class="meta-block-header">
+              <span class="meta-tag-letter">B</span>
+              <h4 class="meta-block-title">PERSONAL OCUPADO</h4>
+            </header>
+            <div class="meta-block-content">
+              <div class="meta-row-input">
+                <label for="emp_perma" class="meta-lbl">Empleados Permanentes:</label>
+                <input id="emp_perma" type="number" min="0" class="meta-input-num tabular-nums"
+                  [ngModel]="cantEmpPerma()" (ngModelChange)="cantEmpPerma.set($event)" />
+              </div>
+              <div class="meta-row-input">
+                <label for="emp_event" class="meta-lbl">Empleados Eventuales:</label>
+                <input id="emp_event" type="number" min="0" class="meta-input-num tabular-nums"
+                  [ngModel]="cantEmpEvent()" (ngModelChange)="cantEmpEvent.set($event)" />
+              </div>
+              <div class="meta-row-total">
+                <span class="meta-total-lbl">TOTAL N° EMPLEADOS:</span>
+                <strong class="meta-total-val tabular-nums">{{ totalEmpleados() }}</strong>
+              </div>
+            </div>
+          </section>
+
+          <!-- BLOQUE C: NÚMERO DE HABITACIONES (AMPLIO, SIN SCROLL) -->
+          <section class="meta-card-block block-c-spacious">
+            <header class="meta-block-header">
+              <span class="meta-tag-letter">C</span>
+              <h4 class="meta-block-title">NÚMERO DE HABITACIONES</h4>
+            </header>
+            <div class="meta-block-content">
+              <div class="habitaciones-grid">
+                @for (hab of establecimiento()?.habitaciones; track hab.id_tipo_habitacion) {
+                <div class="hab-item-line">
+                  <span class="hab-name">{{ formatCategoria(hab.tipo_habitacion) }}:</span>
+                  <strong class="hab-cant tabular-nums">{{ hab.cant_habitaciones }}</strong>
+                </div>
+                }
+              </div>
+              <div class="hab-totals-bar">
+                <span>Total Habitaciones: <strong class="tabular-nums">{{ establecimiento()?.total_habitaciones || 0
+                    }}</strong></span>
+                <span class="ml-2">Total Plazas: <strong class="tabular-nums">{{ establecimiento()?.total_plazas || 0
+                    }}</strong></span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- MATRIZ DE PLANILLA DINÁMICA (PRE-RENDER PROGRESIVO Y EDITABLE) -->
+        <div class="sheet-table-outer">
+          <!-- Barra de control del pre-render -->
+          <div class="sheet-table-toolbar">
+            <div class="toolbar-left">
+              <span class="toolbar-mode-badge">
+                <span class="badge-dot-live"></span>
+                <span>{{ mostrarTodosLosDias() ? 'Mes Completo (' + diasEnMes() + ' días)' : 'Modo Progresivo (' +
+                  diasVisiblesPlanilla().length + ' día' + (diasVisiblesPlanilla().length > 1 ? 's' : '') + ' visible' +
+                  (diasVisiblesPlanilla().length > 1 ? 's' : '') + ')' }}</span>
+              </span>
+              <button type="button" class="btn-toggle-dias" (click)="toggleModoVisualizacionDias()">
+                {{ mostrarTodosLosDias() ? 'Ver solo días seleccionados/cargados' : 'Ver todos los días (' + diasEnMes()
+                + ')' }}
+              </button>
+            </div>
+
+            <div class="toolbar-right combobox-container-toolbar">
+              <label for="input_toolbar_pais" class="add-pais-lbl">+ Añadir país a planilla:</label>
+              <div class="combobox-unified-box toolbar-box-layout">
+                <input #inputToolbar id="input_toolbar_pais" type="text"
+                  class="combobox-main-input toolbar-input-compact" [value]="busquedaPaisToolbar()"
+                  (focus)="onFocusToolbarPais($event)" (input)="onInputToolbarPais($event)"
+                  (keydown.escape)="cerrarDropdownToolbar()" placeholder="Escribir o seleccionar país..."
+                  autocomplete="off" />
+                <button type="button" class="combobox-chevron-btn" (click)="toggleDropdownToolbar($event)" tabindex="-1"
+                  title="Desplegar países disponibles">
+                  <svg class="combobox-chevron-icon" [class.rotated]="dropdownToolbarAbierto()" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+
+                @if (dropdownToolbarAbierto()) {
+                <div class="combobox-floating-menu toolbar-menu-pos" role="listbox">
+                  <div class="combobox-scroll-list">
+                    @for (p of paisesToolbarFiltrados(); track p.id) {
+                    <button type="button" class="combobox-item-row" (mousedown)="seleccionarPaisToolbar(p)"
+                      role="option">
+                      <span class="c-item-name">{{ p.pais }}</span>
+                      <span class="c-item-badge">{{ p.cod_pais }}</span>
+                    </button>
+                    }
+                    @if (paisesToolbarFiltrados().length === 0) {
+                    <div class="combobox-empty-hint">
+                      @if (paisesParaAgregar().length === 0) {
+                      <span>Todos los países ya están en la planilla</span>
+                      } @else {
+                      <span>No se encontró "{{ busquedaPaisToolbar() }}"</span>
+                      }
+                    </div>
+                    }
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla de Planilla con celdas de tamaño uniforme y editables -->
+          <div class="sheet-table-scrollable">
+            <table class="planilla-table">
+              <thead>
+                <tr class="thead-main-row">
+                  <th scope="col" rowspan="2" class="col-nacionalidad-header">
+                    NACIONALIDAD
+                  </th>
+                  @for (col of nacionalidadesColumnas(); track col.id) {
+                  <th scope="col" colspan="2" class="col-pais-header">
+                    <div class="pais-header-box">
+                      <span class="pais-name-span">{{ col.pais }}</span>
+                      @if (col.cod_pais.toUpperCase() !== 'BO') {
+                      <button type="button" class="btn-del-col" (click)="removerNacionalidadDePlanilla(col.id)"
+                        title="Quitar columna {{ col.pais }}">✕</button>
+                      }
+                    </div>
+                  </th>
+                  }
+                </tr>
+                <tr class="thead-sub-row">
+                  @for (col of nacionalidadesColumnas(); track col.id) {
+                  <th scope="col" class="subcol-header subcol-i" title="Ingresos (I)">I</th>
+                  <th scope="col" class="subcol-header subcol-p" title="Permanencias (P)">P</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (dia of diasVisiblesPlanilla(); track dia) {
+                <tr class="body-day-row" [class.row-selected]="dia === diaSeleccionado()">
+                  <th scope="row" class="row-day-header tabular-nums" (click)="seleccionarDia(dia)"
+                    title="Día {{ dia }}">
+                    <strong class="day-num-highlight">{{ dia }}</strong>
+                    <span class="day-dow-sub">({{ getNombreDiaAbreviado(dia) }})</span>
+                  </th>
+
+                  @for (col of nacionalidadesColumnas(); track col.id) {
+                  @let celda = getCelda(dia, col.id);
+                  <td class="cell-subcol cell-i-td" [class.has-val]="celda.cant_ingresos > 0">
+                    <input type="text" inputmode="numeric" maxlength="2"
+                      class="cell-direct-input cell-i-input tabular-nums"
+                      [value]="celda.cant_ingresos > 0 ? celda.cant_ingresos : ''"
+                      (keypress)="validarSoloDigitos($event)" (input)="actualizarIngresoCelda(dia, col.id, $event)"
+                      (blur)="onBlurCelda($event)" (focus)="seleccionarDia(dia)" placeholder="-"
+                      title="Día {{ dia }} - {{ col.pais }}: Ingreso (I) [1 al 50]" />
+                  </td>
+                  <td class="cell-subcol cell-p-td" [class.has-val]="celda.cant_permanencias > 0">
+                    <input type="text" inputmode="numeric" maxlength="2"
+                      class="cell-direct-input cell-p-input tabular-nums"
+                      [value]="celda.cant_permanencias > 0 ? celda.cant_permanencias : ''"
+                      (keypress)="validarSoloDigitos($event)" (input)="actualizarPermanenciaCelda(dia, col.id, $event)"
+                      (blur)="onBlurCelda($event)" (focus)="seleccionarDia(dia)" placeholder="-"
+                      title="Día {{ dia }} - {{ col.pais }}: Permanencia (P) [1 al 50]" />
+                  </td>
+                  }
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- PIE DE PLANILLA: REFERENCIAS -->
+          <div class="sheet-table-footer-ref">
+            <div class="ref-texts">
+              <strong>REFERENCIAS:</strong>
+              <span>I = INGRESO (ENTRADA)</span>
+              <span class="ref-sep">•</span>
+              <span>P = PERMANENTES (PERNOCTACIÓN)</span>
+            </div>
+            <div class="ref-deadline">
+              ENTREGA OBLIGATORIA HASTA EL DÍA 6 DEL MES SIGUIENTE
+            </div>
+          </div>
+        </div>
+
+        <!-- PARTE INFERIOR: RESUMEN COMPACTO Y ADJUNCIÓN DE RESPALDO -->
+        <div class="sheet-bottom-section">
+          <!-- TABLA DE RESUMEN COMPACTA (Idéntica a la boleta física) -->
+          <div class="resumen-table-compact">
+            <table class="resumen-table">
+              <thead>
+                <tr>
+                  <th scope="col" class="res-col-title">RESUMEN</th>
+                  <th scope="col" class="res-col-num">NALS.</th>
+                  <th scope="col" class="res-col-num">EXTR.</th>
+                  <th scope="col" class="res-col-num">TOTAL</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row" class="res-row-header">INGRESO</th>
+                  <td class="res-val tabular-nums">{{ resumen().r_ingreso_nals }}</td>
+                  <td class="res-val tabular-nums">{{ resumen().r_ingreso_extr }}</td>
+                  <td class="res-val tabular-nums font-bold">{{ resumen().total_ing }}</td>
+                </tr>
+                <tr>
+                  <th scope="row" class="res-row-header">PERMANENCIA</th>
+                  <td class="res-val tabular-nums">{{ resumen().r_permanencia_nals }}</td>
+                  <td class="res-val tabular-nums">{{ resumen().r_permanencia_extr }}</td>
+                  <td class="res-val tabular-nums font-bold">{{ resumen().total_perm }}</td>
+                </tr>
+                <tr class="res-row-total-final">
+                  <th scope="row" class="res-row-header font-black">TOTAL</th>
+                  <td class="res-val tabular-nums font-black">{{ resumen().total_nals }}</td>
+                  <td class="res-val tabular-nums font-black">{{ resumen().total_extr }}</td>
+                  <td class="res-val tabular-nums font-black res-grand-total">{{ resumen().total }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- PANEL DE ADJUNCIÓN DE RESPALDO FÍSICO Y ENVÍO -->
+          <div class="actions-attachment-card">
+            <div class="attachment-header">
+              <div class="att-title-group">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="att-icon">
+                  <path
+                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
+                  </path>
+                </svg>
+                <div>
+                  <h4 class="att-title">Respaldo Digital del Formulario Físico</h4>
+                  <p class="att-desc">
+                    Suba una fotografía nítida o escaneo del documento físico oficial firmado.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Input de archivo oculto -->
+              <input #fileInput type="file" accept="image/jpeg,image/png,image/webp,application/pdf" class="sr-only"
+                (change)="onArchivoSeleccionado($event)" />
+
+              <button type="button" class="btn-adjuntar-formulario" (click)="fileInput.click()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>{{ archivoRespaldo() ? 'Cambiar Imagen' : 'Adjuntar Formulario' }}</span>
+              </button>
+            </div>
+
+            <!-- Previsualización del archivo adjunto -->
+            @if (archivoRespaldo(); as arch) {
+            <div class="attachment-preview-box">
+              <div class="preview-info">
+                @if (archivoPreviewUrl(); as preview) {
+                <img [src]="preview" alt="Previsualización de formulario físico" class="preview-thumb" />
+                } @else {
+                <div class="pdf-icon-badge">PDF</div>
+                }
+                <div class="file-meta">
+                  <strong class="file-name truncate">{{ arch.name }}</strong>
+                  <span class="file-size tabular-nums">{{ (arch.size / 1024).toFixed(1) }} KB</span>
+                </div>
+              </div>
+
+              <div class="preview-actions">
+                <span class="chip-ready">✓ Respaldo Cargado</span>
+                <button type="button" class="btn-remove-file" (click)="eliminarArchivoRespaldo()"
+                  title="Quitar archivo">
+                  ✕
+                </button>
+              </div>
+            </div>
+            } @else {
+            <div class="attachment-empty-warning">
+              <span class="warning-dot">!</span>
+              <span>
+                El botón <strong>Enviar Formulario</strong> requiere obligatoriamente adjuntar la fotografía del
+                formulario físico.
+              </span>
+            </div>
+            }
+
+            <!-- BOTONES DE ACCIÓN: GUARDAR BORRADOR Y ENVIAR INFORMACIÓN -->
+            <div class="submit-action-row">
+              <button type="button" class="btn-borrador-flat" (click)="guardarBorrador()" [disabled]="enviando()">
+                Guardar Borrador
+              </button>
+
+              <div class="submit-btn-wrapper"
+                [title]="!archivoRespaldo() ? 'Debe adjuntar la imagen del formulario físico para habilitar el envío' : ''">
+                <button type="button" class="btn-enviar-oficial" (click)="enviarFormulario()"
+                  [disabled]="!archivoRespaldo() || enviando()">
+                  @if (enviando()) {
+                  <span class="btn-spinner" aria-hidden="true"></span>
+                  <span>Enviando Formulario Oficial...</span>
+                  } @else {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                  <span>Enviar Formulario a Secretaría de Turismo</span>
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  }
+</div>

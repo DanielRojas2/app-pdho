@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './domains/auth/guards/auth.guard';
+import { authGuard, roleGuard, rootGuard } from './domains/auth/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -9,12 +9,12 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./domains/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
-    canActivate: [authGuard]
+    canActivate: [authGuard, roleGuard(['ADMIN_DEPARTAMENTAL'])]
   },
   {
     path: 'operador',
     loadChildren: () => import('./domains/operador/operador.routes').then((m) => m.OPERADOR_ROUTES),
-    canActivate: [authGuard]
+    canActivate: [authGuard, roleGuard(['OPERADOR_HOSPEDAJE', 'DEPENDIENTE_HOSPEDAJE'])]
   },
   {
     path: 'dashboard',
@@ -24,7 +24,8 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'login'
+    canActivate: [rootGuard],
+    children: []
   },
   {
     path: '**',

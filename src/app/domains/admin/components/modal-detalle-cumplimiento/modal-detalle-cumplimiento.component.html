@@ -1,0 +1,235 @@
+<div class="modal-backdrop" (click)="onBackdropClick($event)">
+  <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalDetalleTitle">
+    
+    <!-- Encabezado del Modal -->
+    <header class="modal-header">
+      <div class="header-info">
+        <div class="header-pretitle">
+          <span class="institution-tag">PDHO • GOBIERNO AUTÓNOMO DEPARTAMENTAL DE ORURO</span>
+          <span class="period-badge">{{ periodoLabel() }}</span>
+        </div>
+        <div class="header-title-row">
+          <h3 id="modalDetalleTitle" class="modal-title">{{ hotel().nombre }}</h3>
+          <span class="badge-cat">{{ hotel().categoria }}</span>
+          <span class="status-pill status-{{ hotel().estado.toLowerCase() }}">
+            {{ hotel().estado }}
+          </span>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onCerrar()"
+        aria-label="Cerrar modal"
+        title="Cerrar (Esc)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Cuerpo del Modal -->
+    <div class="modal-body">
+      
+      <!-- Ficha Informativa del Establecimiento y Cumplimiento -->
+      <section class="overview-card">
+        <div class="overview-grid">
+          <div class="overview-item">
+            <span class="overview-label">Operador Responsable:</span>
+            <span class="overview-value font-bold">{{ hotel().operador }}</span>
+          </div>
+          <div class="overview-item">
+            <span class="overview-label">Teléfono de Contacto:</span>
+            <span class="overview-value font-tabular">{{ hotel().telefono }}</span>
+          </div>
+          <div class="overview-item">
+            <span class="overview-label">Período / Rango Consultado:</span>
+            <span class="overview-value">{{ periodoLabel() }}</span>
+          </div>
+          <div class="overview-item">
+            <span class="overview-label">Condición Global:</span>
+            <span class="overview-value font-bold text-{{ hotel().estado.toLowerCase() }}">
+              {{ hotel().estado }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Barra de Progreso de Cumplimiento Mensual -->
+        <div class="progress-section">
+          <div class="progress-header">
+            <span class="progress-title">Cumplimiento en el Período Evaluado</span>
+            <span class="progress-ratio font-tabular font-bold">
+              {{ hotel().totalMesesPresentados }} de {{ hotel().totalMesesEsperados }} meses presentados ({{ porcentajeCumplimiento() }}%)
+            </span>
+          </div>
+          <div class="progress-bar-bg">
+            <div
+              class="progress-bar-fill"
+              [style.width.%]="porcentajeCumplimiento()"
+              [class.fill-complete]="porcentajeCumplimiento() === 100"
+              [class.fill-partial]="porcentajeCumplimiento() > 0 && porcentajeCumplimiento() < 100"
+              [class.fill-empty]="porcentajeCumplimiento() === 0">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Subfiltros de Meses (Todos / Presentados / Pendientes) -->
+      <div class="subfilter-toolbar">
+        <div class="subfilter-tabs">
+          <button
+            type="button"
+            class="subtab-btn"
+            [class.active]="subfiltroMeses() === 'TODOS'"
+            (click)="subfiltroMeses.set('TODOS')">
+            Todos los Meses ({{ hotel().todosLosMeses.length || (hotel().mesesPresentados.length + hotel().mesesPendientes.length) }})
+          </button>
+          <button
+            type="button"
+            class="subtab-btn subtab-presentados"
+            [class.active]="subfiltroMeses() === 'PRESENTADOS'"
+            (click)="subfiltroMeses.set('PRESENTADOS')">
+            Presentados ({{ hotel().mesesPresentados.length }})
+          </button>
+          <button
+            type="button"
+            class="subtab-btn subtab-pendientes"
+            [class.active]="subfiltroMeses() === 'PENDIENTES'"
+            (click)="subfiltroMeses.set('PENDIENTES')">
+            Incompletos ({{ hotel().mesesPendientes.length }})
+          </button>
+        </div>
+
+        <div class="subfilter-hint">
+          <span>Haga clic en "Auditar" para revisar el formulario oficial de cualquier mes declarado.</span>
+        </div>
+      </div>
+
+      <!-- Tabla de Desglose Mensual -->
+      <div class="table-card">
+        <div class="table-responsive">
+          <table class="months-table">
+            <thead>
+              <tr>
+                <th>Mes / Gestión</th>
+                <th>Condición</th>
+                <th>Estado Declaración</th>
+                <th>Fecha Presentación</th>
+                <th>Nro. Formulario</th>
+                <th class="text-right">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (m of mesesFiltrados(); track (m.mes + '-' + m.gestion)) {
+                <tr class="month-row" [class.row-pending]="!m.presentado" [class.row-presented]="m.presentado">
+                  <td class="font-bold month-name">
+                    <div class="month-icon-wrapper">
+                      @if (m.presentado) {
+                        <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      } @else {
+                        <svg class="icon-pending" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="12" y1="8" x2="12" y2="12"></line>
+                          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                      }
+                      <span>{{ m.mes }} / {{ m.gestion }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    @if (m.presentado) {
+                      <span class="tag-condition tag-presentado">PRESENTADO</span>
+                    } @else {
+                      <span class="tag-condition tag-incompleto">INCOMPLETO</span>
+                    }
+                  </td>
+                  <td>
+                    <span class="status-pill status-{{ m.estado.toLowerCase() }}">
+                      {{ m.estado }}
+                    </span>
+                  </td>
+                  <td class="font-tabular">{{ m.fechaPresentacion || '—' }}</td>
+                  <td class="font-tabular">
+                    @if (m.nroFormulario) {
+                      <span class="form-tag font-bold">#{{ m.nroFormulario }}</span>
+                    } @else {
+                      <span class="text-muted">—</span>
+                    }
+                  </td>
+                  <td class="text-right">
+                    @if (m.idEstadistica) {
+                      <button
+                        type="button"
+                        class="btn-audit"
+                        (click)="onAuditar(m.idEstadistica, m.nroFormulario)"
+                        title="Auditar formulario y dictaminar recepción">
+                        <span>Auditar</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                      </button>
+                    } @else {
+                      <span class="text-muted text-sm">Sin envío</span>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6" class="empty-months">
+                    <p>No hay meses en esta categoría para el filtro seleccionado.</p>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Pie del Modal con Exportación Excel/PDF y Cerrar -->
+    <footer class="modal-footer">
+      <div class="footer-left">
+        <button
+          type="button"
+          class="btn-action btn-excel"
+          (click)="exportarExcel()"
+          title="Descargar detalle individual en formato Excel (.xlsx)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="8" y1="13" x2="16" y2="13"></line>
+            <line x1="8" y1="17" x2="16" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span>Exportar Detalle Excel</span>
+        </button>
+
+        <button
+          type="button"
+          class="btn-action btn-pdf"
+          (click)="exportarPdf()"
+          title="Descargar detalle individual en formato PDF (.pdf)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span>Exportar Detalle PDF</span>
+        </button>
+      </div>
+
+      <div class="footer-right">
+        <button type="button" class="btn-close-action" (click)="onCerrar()">
+          Cerrar
+        </button>
+      </div>
+    </footer>
+
+  </div>
+</div>

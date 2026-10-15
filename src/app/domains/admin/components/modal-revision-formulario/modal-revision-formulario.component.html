@@ -1,0 +1,228 @@
+<div class="modal-backdrop" (click)="onCerrar()" (keydown.escape)="onCerrar()" tabindex="0">
+  <div class="modal-dialog" (click)="$event.stopPropagation()">
+    <!-- Encabezado del Modal -->
+    <header class="modal-header">
+      <div class="modal-title-wrap">
+        <div class="modal-badge-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+        <div>
+          <div class="header-badges">
+            <span class="type-pill">Estadística Hotelera Mensual</span>
+            @if (formulario(); as f) {
+              <span class="status-pill status-{{ f.estado.toLowerCase() }}">
+                {{ f.estado }}
+              </span>
+            }
+          </div>
+          <h2 class="modal-title">
+            Declaración Oficial #{{ formulario()?.numero_formulario || numeroFormularioInicial() || '---' }}
+          </h2>
+          <p class="modal-subtitle">
+            {{ formulario()?.mes }} / {{ formulario()?.gestion }} — {{ formulario()?.seccion_a?.nombre_establecimiento || 'Establecimiento Hotelero' }}
+          </p>
+        </div>
+      </div>
+
+      <button type="button" class="btn-close" (click)="onCerrar()" title="Cerrar ventana">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Contenido del Modal -->
+    <div class="modal-body">
+      @if (cargando()) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Cargando información completa del formulario...</p>
+        </div>
+      } @else if (formulario(); as f) {
+        @if (errorMsg()) {
+          <div class="modal-alert-error">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>{{ errorMsg() }}</span>
+          </div>
+        }
+
+        <!-- 1. Ficha del Establecimiento y Período -->
+        <section class="info-section">
+          <h3 class="section-title">Datos del Establecimiento y Recepción</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Establecimiento</span>
+              <strong class="info-value">{{ f.seccion_a?.nombre_establecimiento || '—' }}</strong>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Categoría</span>
+              <span class="badge-cat">{{ formatearCategoria(f.seccion_a?.categoria) }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Fecha Presentación</span>
+              <strong class="info-value font-tabular">{{ formatearFecha(f.fecha_presentacion) }}</strong>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Teléfono / Contacto</span>
+              <span class="info-value">{{ f.seccion_a?.telefono || '—' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Dirección</span>
+              <span class="info-value">{{ f.seccion_a?.direccion || '—' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Personal Ocupado</span>
+              <span class="info-value font-tabular">
+                {{ f.total_empleados || (f.cant_emp_perma + f.cant_emp_event) }} empleados ({{ f.cant_emp_perma }} perm. / {{ f.cant_emp_event }} event.)
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Tarjetas Métricas del Formulario -->
+        <section class="metrics-section">
+          <h3 class="section-title">Resumen de Movimiento Declarado</h3>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-label">Total Huéspedes</span>
+              <div class="metric-val font-tabular">{{ f.total || (f.total_nals! + f.total_extr!) || 0 }}</div>
+              <span class="metric-sub">Nacionales y extranjeros</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Llegadas Nacionales</span>
+              <div class="metric-val font-tabular text-emerald">{{ f.r_ingreso_nals || 0 }}</div>
+              <span class="metric-sub">Visitantes del país</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Llegadas Extranjeras</span>
+              <div class="metric-val font-tabular text-blue">{{ f.r_ingreso_extr || 0 }}</div>
+              <span class="metric-sub">Visitantes internacionales</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Pernoctaciones Totales</span>
+              <div class="metric-val font-tabular text-amber">{{ f.total_perm || (f.r_permanencia_nals! + f.r_permanencia_extr!) || 0 }}</div>
+              <span class="metric-sub">Noches acumuladas</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Respaldos Digitales Oficiales -->
+        <section class="respaldo-section">
+          <h3 class="section-title">Respaldo Documental Digitalizado</h3>
+          <div class="respaldo-actions">
+            @if (getUrlPdf(); as urlPdf) {
+              <a [href]="urlPdf" target="_blank" rel="noopener noreferrer" class="btn-respaldo btn-respaldo-pdf">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span>Ver / Descargar Formulario Oficial (PDF)</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-external">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </a>
+            }
+
+            @if (getUrlFoto(); as urlFoto) {
+              <a [href]="urlFoto" target="_blank" rel="noopener noreferrer" class="btn-respaldo btn-respaldo-img">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <span>Ver Fotografía Original Escaneada</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-external">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </a>
+            }
+
+            @if (!getUrlPdf() && !getUrlFoto()) {
+              <p class="text-sin-respaldo">No se adjuntó archivo de respaldo digital en esta declaración.</p>
+            }
+          </div>
+        </section>
+
+        <!-- 4. Dictamen Administrativo: Aprobación y Observaciones -->
+        <section class="dictamen-section">
+          <h3 class="section-title">Dictamen Institucional de Recepción</h3>
+
+          @if (f.estado === 'APROBADO') {
+            <div class="banner-aprobado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <div>
+                <strong>Declaración Aprobada y Conforme</strong>
+                <p>Este formulario fue validado institucionalmente. Cumple con la normativa hotelera departamental.</p>
+                @if (f.observaciones) {
+                  <p class="obs-registradas"><strong>Nota registrada:</strong> {{ f.observaciones }}</p>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="dictamen-form">
+              <label for="dictamenObs" class="dictamen-label">
+                Observaciones o notas administrativas (opcional para aprobación, obligatorio para observar):
+              </label>
+              <textarea
+                id="dictamenObs"
+                rows="3"
+                class="dictamen-textarea"
+                placeholder="Ingrese notas de auditoría, observaciones de firmas o sellos..."
+                [ngModel]="observaciones()"
+                (ngModelChange)="observaciones.set($event)"></textarea>
+
+              <div class="dictamen-buttons">
+                <button
+                  type="button"
+                  class="btn-aprobar"
+                  (click)="aprobarFormulario()"
+                  [disabled]="guardando()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>{{ guardando() ? 'Procesando...' : 'Aprobar Recepción' }}</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="btn-observar"
+                  (click)="observarFormulario()"
+                  [disabled]="guardando()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  <span>{{ guardando() ? 'Procesando...' : 'Observar Formulario' }}</span>
+                </button>
+              </div>
+            </div>
+          }
+        </section>
+      }
+    </div>
+
+    <!-- Pie del Modal -->
+    <footer class="modal-footer">
+      <button type="button" class="btn-cancelar" (click)="onCerrar()">Cerrar Ventana</button>
+    </footer>
+  </div>
+</div>

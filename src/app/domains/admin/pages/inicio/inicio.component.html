@@ -20,10 +20,27 @@
     </div>
   </header>
 
+  @if (errorCarga()) {
+    <div class="alert-error">
+      <div class="alert-content">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="alert-icon">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <div>
+          <strong>Error de sincronización con la API:</strong>
+          <span> {{ errorCarga() }}</span>
+        </div>
+      </div>
+      <button type="button" class="btn-retry" (click)="cargarDatos()">Reintentar</button>
+    </div>
+  }
+
   <!-- Tarjetas KPI -->
   <section class="kpi-grid">
     @for (kpi of kpis(); track kpi.titulo) {
-      <div class="kpi-card border-{{ kpi.color }}">
+      <div class="kpi-card border-{{ kpi.color }}" [class.kpi-loading]="cargando()">
         <div class="kpi-top">
           <span class="kpi-title">{{ kpi.titulo }}</span>
           <div class="kpi-icon-wrap bg-{{ kpi.color }}">
@@ -43,8 +60,20 @@
             }
           </div>
         </div>
-        <div class="kpi-value">{{ kpi.valor }}</div>
-        <div class="kpi-sub">{{ kpi.subtexto }}</div>
+        <div class="kpi-value font-tabular">
+          @if (cargando()) {
+            <span class="skeleton-text skeleton-value"></span>
+          } @else {
+            {{ kpi.valor }}
+          }
+        </div>
+        <div class="kpi-sub">
+          @if (cargando()) {
+            <span class="skeleton-text skeleton-sub"></span>
+          } @else {
+            {{ kpi.subtexto }}
+          }
+        </div>
       </div>
     }
   </section>
@@ -54,9 +83,17 @@
     <div class="table-card-header">
       <div>
         <h3 class="table-card-title">Últimos Formularios Presentados</h3>
-        <p class="table-card-sub">Registro de declaraciones mensuales recibidas en plataforma</p>
+        <p class="table-card-sub">Registro de declaraciones mensuales recibidas en la plataforma</p>
       </div>
-      <a routerLink="../cumplimiento" class="table-link">Ver todos los reportes →</a>
+      <div class="header-right-actions">
+        <button type="button" class="btn-refresh" (click)="cargarDatos()" title="Actualizar datos" [disabled]="cargando()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [class.spinning]="cargando()">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          <span>Actualizar</span>
+        </button>
+        <a routerLink="../cumplimiento" class="table-link">Ver todos los reportes →</a>
+      </div>
     </div>
 
     <div class="table-responsive">
@@ -68,24 +105,77 @@
             <th>Período</th>
             <th>Fecha Envío</th>
             <th>Estado</th>
+            <th class="text-right">Nro. Formulario</th>
           </tr>
         </thead>
         <tbody>
-          @for (f of ultimosFormularios(); track f.hotel) {
-            <tr>
-              <td class="font-bold">{{ f.hotel }}</td>
-              <td><span class="badge-cat">{{ f.categoria }}</span></td>
-              <td>{{ f.mes }}</td>
-              <td>{{ f.fecha }}</td>
-              <td>
-                <span class="status-pill status-{{ f.estado.toLowerCase() }}">
-                  {{ f.estado }}
-                </span>
-              </td>
-            </tr>
+          @if (cargando()) {
+            @for (item of [1, 2, 3]; track item) {
+              <tr class="skeleton-row">
+                <td><div class="skeleton-cell cell-long"></div></td>
+                <td><div class="skeleton-cell cell-badge"></div></td>
+                <td><div class="skeleton-cell cell-short"></div></td>
+                <td><div class="skeleton-cell cell-date"></div></td>
+                <td><div class="skeleton-cell cell-pill"></div></td>
+                <td><div class="skeleton-cell cell-tag"></div></td>
+              </tr>
+            }
+          } @else {
+            @for (f of ultimosFormularios(); track f.id) {
+              <tr class="data-row">
+                <td class="font-bold">
+                  {{ f.seccion_a?.nombre_establecimiento || ('Establecimiento #' + f.id_establecimiento) }}
+                </td>
+                <td>
+                  <span class="badge-cat">{{ formatearCategoria(f.seccion_a?.categoria) }}</span>
+                </td>
+                <td>{{ f.mes }} {{ f.gestion }}</td>
+                <td class="font-tabular">{{ formatearFecha(f.fecha_presentacion) }}</td>
+                <td>
+                  <span class="status-pill status-{{ (f.estado || 'enviado').toLowerCase() }}">
+                    {{ f.estado || 'ENVIADO' }}
+                  </span>
+                </td>
+                <td class="text-right">
+                  <button
+                    type="button"
+                    class="btn-form-action"
+                    (click)="abrirRevision(f.id, f.numero_formulario)"
+                    title="Auditar formulario y dictaminar recepción">
+                    <span class="form-tag font-tabular">#{{ f.numero_formulario }}</span>
+                    <span class="action-hint">Auditar →</span>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-state">
+                  <div class="empty-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="empty-icon">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <p class="empty-title">Sin declaraciones recientes</p>
+                    <p class="empty-desc">No se encontraron formularios estadísticos presentados en el período actual.</p>
+                  </div>
+                </td>
+              </tr>
+            }
           }
         </tbody>
       </table>
     </div>
   </section>
+
+  <!-- Modal de Revisión y Dictamen de Formularios -->
+  @if (formularioParaRevisarId(); as id) {
+    <app-modal-revision-formulario
+      [formularioId]="id"
+      [numeroFormularioInicial]="formularioNumeroSeleccionado()"
+      (cerrar)="cerrarRevision()"
+      (formularioActualizado)="onFormularioActualizado($event)" />
+  }
 </div>
+

@@ -112,4 +112,47 @@ export class FormulariosService {
         map((res) => (Array.isArray(res) ? res : res.items || []))
       );
   }
+
+  // Obtener formulario de Estadística Hotelera completo por ID
+  obtenerEstadistica(id: number): Observable<EstadisticaHoteleraResponse> {
+    return this.http.get<EstadisticaHoteleraResponse>(`${this.baseUrl}/estadisticas-hoteleras/${id}`);
+  }
+
+  // Actualizar estado de formulario de Estadística Hotelera (Aprobar u Observar)
+  actualizarEstadoEstadistica(
+    id: number,
+    estado: EstadoFormulario,
+    observaciones?: string | null
+  ): Observable<EstadisticaHoteleraResponse> {
+    const payload: { estado: EstadoFormulario; observaciones?: string | null } = { estado };
+    if (observaciones !== undefined) {
+      payload.observaciones = observaciones;
+    }
+    return this.http.put<EstadisticaHoteleraResponse>(
+      `${this.baseUrl}/estadisticas-hoteleras/${id}`,
+      payload
+    );
+  }
+
+  // Obtener formulario de Ocupación Hotelera completo por ID
+  obtenerOcupacion(id: number): Observable<OcupacionHoteleraResponse> {
+    return this.http.get<OcupacionHoteleraResponse>(`${this.baseUrl}/ocupacion-hotelera/${id}`);
+  }
+
+  // Actualizar estado de formulario de Ocupación Hotelera
+  actualizarEstadoOcupacion(
+    id: number,
+    estado: EstadoFormulario,
+    observaciones?: string | null
+  ): Observable<OcupacionHoteleraResponse> {
+    const payload: { estado: EstadoFormulario; observaciones?: string | null } = { estado };
+    if (observaciones !== undefined) {
+      payload.observaciones = observaciones;
+    }
+    return this.http.put<OcupacionHoteleraResponse>(
+      `${this.baseUrl}/ocupacion-hotelera/${id}`,
+      payload
+    );
+  }
 }
+

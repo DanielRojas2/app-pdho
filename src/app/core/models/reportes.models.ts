@@ -1,8 +1,12 @@
 export interface PeriodoReporte {
+  tipo_filtro?: 'rango_fechas' | 'mes_gestion' | 'rango_gestiones' | 'general' | 'gestion_unica' | string;
+  descripcion?: string;
   mes?: string | null;
   gestion?: number | null;
   fecha_inicio?: string | null;
   fecha_fin?: string | null;
+  gestion_inicio?: number | null;
+  gestion_fin?: number | null;
 }
 
 export interface SegmentoHuespedes {
@@ -81,8 +85,50 @@ export interface FiltroReportesParam {
   gestion?: number;
   fecha_inicio?: string;
   fecha_fin?: string;
+  gestion_inicio?: number;
+  gestion_fin?: number;
   categoria?: string;
   id_establecimiento?: number;
   codigos_pais?: string[];
   criterio_orden?: 'total_afluencia' | 'ingresos' | 'permanencias';
 }
+
+export interface TableroEjecutivoResponse {
+  periodo: PeriodoReporte;
+  establecimientos_registrados: number;
+  establecimientos_declarantes: number;
+  porcentaje_cobertura_establecimientos: number;
+  total_formularios_declarados: number;
+  total_ingresos: number;
+  total_permanencias: number;
+  total_huespedes: number;
+  total_habitaciones_ofertadas: number;
+  total_habitaciones_ocupadas: number;
+  tasa_ocupacion_porcentaje: number;
+  estadia_media_noches: number;
+}
+
+export interface EstablecimientoCumplimientoItem {
+  id_establecimiento: number;
+  nombre_establecimiento: string;
+  categoria: string;
+  telefono?: string | null;
+  tiene_estadistica: boolean;
+  id_estadistica?: number | null;
+  estado_estadistica?: string | null;
+  tiene_ocupacion: boolean;
+  id_ocupacion?: number | null;
+  estado_ocupacion?: string | null;
+  cumplimiento_completo: boolean;
+}
+
+export interface CumplimientoDeclaracionesResponse {
+  mes: string;
+  gestion: number;
+  total_establecimientos: number;
+  total_al_dia: number;
+  total_pendientes: number;
+  porcentaje_cumplimiento: number;
+  establecimientos: EstablecimientoCumplimientoItem[];
+}
+

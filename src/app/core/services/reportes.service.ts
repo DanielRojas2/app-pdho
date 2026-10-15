@@ -6,7 +6,9 @@ import {
   GraficoTortaNacionalesExtranjerosResponse,
   GraficoBarrasRankingResponse,
   PermanenciasVsIngresosResponse,
-  FiltroReportesParam
+  FiltroReportesParam,
+  TableroEjecutivoResponse,
+  CumplimientoDeclaracionesResponse
 } from '../models/reportes.models';
 import { Nacionalidad } from '../models/nacionalidad.models';
 
@@ -125,7 +127,99 @@ export class ReportesService {
     });
   }
 
+  // 6. Tablero Ejecutivo: KPIs Consolidados
+  getTableroEjecutivo(filtros?: FiltroReportesParam): Observable<TableroEjecutivoResponse> {
+    let params = new HttpParams();
+    if (filtros?.mes) params = params.set('mes', filtros.mes);
+    if (filtros?.gestion) params = params.set('gestion', filtros.gestion.toString());
+    if (filtros?.fecha_inicio) params = params.set('fecha_inicio', filtros.fecha_inicio);
+    if (filtros?.fecha_fin) params = params.set('fecha_fin', filtros.fecha_fin);
+    if (filtros?.gestion_inicio) params = params.set('gestion_inicio', filtros.gestion_inicio.toString());
+    if (filtros?.gestion_fin) params = params.set('gestion_fin', filtros.gestion_fin.toString());
+    if (filtros?.categoria) params = params.set('categoria', filtros.categoria);
+    if (filtros?.id_establecimiento) {
+      params = params.set('id_establecimiento', filtros.id_establecimiento.toString());
+    }
+
+    return this.http
+      .get<TableroEjecutivoResponse>(`${this.baseUrl}/reportes/tablero-ejecutivo`, { params })
+      .pipe(
+        catchError((err) => {
+          console.warn('Usando datos de respaldo para Tablero Ejecutivo:', err);
+          return of(this.getMockTableroEjecutivo());
+        })
+      );
+  }
+
+  // 7. Cumplimiento de Declaraciones por Mes y Gestión
+  getCumplimientoDeclaraciones(
+    mes: string,
+    gestion: number
+  ): Observable<CumplimientoDeclaracionesResponse> {
+    const params = new HttpParams()
+      .set('mes', mes.toLowerCase())
+      .set('gestion', gestion.toString());
+
+    return this.http
+      .get<CumplimientoDeclaracionesResponse>(
+        `${this.baseUrl}/reportes/cumplimiento-declaraciones`,
+        { params }
+      )
+      .pipe(
+        catchError((err) => {
+          console.warn('Usando datos de respaldo para Cumplimiento de Declaraciones:', err);
+          return of(this.getMockCumplimiento(mes, gestion));
+        })
+      );
+  }
+
   // Fallbacks elegantes con datos estadísticos reales de Oruro si no hay conexión o no hay datos iniciales
+  private getMockTableroEjecutivo(): TableroEjecutivoResponse {
+    return {
+      periodo: {
+        tipo_filtro: 'general',
+        descripcion: 'Gestión actual 2026',
+        gestion: 2026
+      },
+      establecimientos_registrados: 1,
+      establecimientos_declarantes: 1,
+      porcentaje_cobertura_establecimientos: 100,
+      total_formularios_declarados: 2,
+      total_ingresos: 171,
+      total_permanencias: 10,
+      total_huespedes: 181,
+      total_habitaciones_ofertadas: 26,
+      total_habitaciones_ocupadas: 0,
+      tasa_ocupacion_porcentaje: 0,
+      estadia_media_noches: 0.06
+    };
+  }
+
+  private getMockCumplimiento(mes: string, gestion: number): CumplimientoDeclaracionesResponse {
+    return {
+      mes,
+      gestion,
+      total_establecimientos: 1,
+      total_al_dia: 1,
+      total_pendientes: 0,
+      porcentaje_cumplimiento: 100,
+      establecimientos: [
+        {
+          id_establecimiento: 1,
+          nombre_establecimiento: 'Hotel Bernal',
+          categoria: '3_estrellas',
+          telefono: '72874647',
+          tiene_estadistica: true,
+          id_estadistica: 1,
+          estado_estadistica: 'ENVIADO',
+          tiene_ocupacion: false,
+          id_ocupacion: null,
+          estado_ocupacion: null,
+          cumplimiento_completo: false
+        }
+      ]
+    };
+  }
   private getMockTorta(): GraficoTortaNacionalesExtranjerosResponse {
     return {
       periodo: { mes: 'Octubre', gestion: 2026 },

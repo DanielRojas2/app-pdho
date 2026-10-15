@@ -1,41 +1,118 @@
 <div class="page-container">
   <header class="section-header">
-    <div>
+    <div class="header-left">
       <h2 class="section-title">Reporte de Cumplimiento de Formularios</h2>
       <p class="section-sub">Seguimiento de la presentación de declaraciones obligatorias del período activo.</p>
     </div>
 
-    <div class="summary-chips">
-      <span class="chip chip-total">Total: <strong>{{ resumen().total }}</strong></span>
-      <span class="chip chip-declarado">Declarados: <strong>{{ resumen().declarados }}</strong></span>
-      <span class="chip chip-pendiente">Pendientes: <strong>{{ resumen().pendientes }}</strong></span>
-      <span class="chip chip-observado">Observados: <strong>{{ resumen().observados }}</strong></span>
+    <div class="header-right">
+      <!-- Selector de Período -->
+      <div class="period-selector">
+        <label for="mesSelect" class="selector-label">Período:</label>
+        <select
+          id="mesSelect"
+          class="select-control"
+          [ngModel]="mesSeleccionado()"
+          (ngModelChange)="cambiarPeriodo($event, gestionSeleccionada())">
+          @for (m of mesesLista; track m) {
+            <option [value]="m">{{ m }}</option>
+          }
+        </select>
+        <select
+          class="select-control select-gestion"
+          [ngModel]="gestionSeleccionada()"
+          (ngModelChange)="cambiarPeriodo(mesSeleccionado(), $event)">
+          @for (g of gestionesLista; track g) {
+            <option [value]="g">{{ g }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="summary-chips">
+        <span class="chip chip-total">Total: <strong>{{ resumen().total }}</strong></span>
+        <span class="chip chip-declarado">Declarados: <strong>{{ resumen().declarados }}</strong></span>
+        <span class="chip chip-pendiente">Pendientes: <strong>{{ resumen().pendientes }}</strong></span>
+        <span class="chip chip-observado">Observados: <strong>{{ resumen().observados }}</strong></span>
+      </div>
     </div>
   </header>
 
-  <!-- Filtros y Búsqueda -->
+  @if (errorCarga()) {
+    <div class="alert-error">
+      <div class="alert-content">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="alert-icon">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <div>
+          <strong>Error al sincronizar cumplimiento:</strong>
+          <span> {{ errorCarga() }}</span>
+        </div>
+      </div>
+      <button type="button" class="btn-retry" (click)="cargarDatosCumplimiento()">Reintentar</button>
+    </div>
+  }
+
+  <!-- Filtros, Búsqueda y Exportación -->
   <div class="toolbar">
     <div class="filter-tabs">
-      <button type="button" class="tab-btn" [class.active]="filtroEstado() === 'TODOS'" (click)="setFiltro('TODOS')">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="filtroEstado() === 'TODOS'"
+        (click)="setFiltro('TODOS')">
         Todos ({{ resumen().total }})
       </button>
-      <button type="button" class="tab-btn" [class.active]="filtroEstado() === 'DECLARADO'" (click)="setFiltro('DECLARADO')">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="filtroEstado() === 'DECLARADO'"
+        (click)="setFiltro('DECLARADO')">
         Declarados ({{ resumen().declarados }})
       </button>
-      <button type="button" class="tab-btn" [class.active]="filtroEstado() === 'PENDIENTE'" (click)="setFiltro('PENDIENTE')">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="filtroEstado() === 'PENDIENTE'"
+        (click)="setFiltro('PENDIENTE')">
         Pendientes ({{ resumen().pendientes }})
       </button>
-      <button type="button" class="tab-btn" [class.active]="filtroEstado() === 'OBSERVADO'" (click)="setFiltro('OBSERVADO')">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="filtroEstado() === 'OBSERVADO'"
+        (click)="setFiltro('OBSERVADO')">
         Observados ({{ resumen().observados }})
       </button>
     </div>
 
-    <div class="search-wrap">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-      <input type="text" placeholder="Buscar hotel o categoría..." (input)="onBuscar($event)" class="search-input" />
+    <div class="toolbar-actions">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          placeholder="Buscar hotel, operador o categoría..."
+          (input)="onBuscar($event)"
+          class="search-input" />
+      </div>
+
+      <button
+        type="button"
+        class="btn-export"
+        (click)="descargarReporteCsv()"
+        [disabled]="exportando() || cargando()"
+        title="Descargar reporte oficial en formato CSV">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>{{ exportando() ? 'Exportando...' : 'Exportar CSV' }}</span>
+      </button>
     </div>
   </div>
 
@@ -51,37 +128,80 @@
             <th>Teléfono</th>
             <th>Estado Declaración</th>
             <th>Fecha Presentación</th>
-            <th>Nro. Formulario</th>
+            <th class="text-right">Nro. Formulario</th>
           </tr>
         </thead>
         <tbody>
-          @for (h of hotelesFiltrados(); track h.id) {
-            <tr>
-              <td class="font-bold">{{ h.nombre }}</td>
-              <td><span class="badge-cat">{{ h.categoria }}</span></td>
-              <td>{{ h.operador }}</td>
-              <td>{{ h.telefono }}</td>
-              <td>
-                <span class="status-pill status-{{ h.estado.toLowerCase() }}">
-                  {{ h.estado }}
-                </span>
-              </td>
-              <td>{{ h.fecha || '—' }}</td>
-              <td>
-                @if (h.nroFormulario) {
-                  <span class="form-tag">#{{ h.nroFormulario }}</span>
-                } @else {
-                  <span class="text-muted">Pendiente</span>
-                }
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="7" class="empty-state">No se encontraron establecimientos con el filtro seleccionado.</td>
-            </tr>
+          @if (cargando()) {
+            @for (item of [1, 2, 3, 4]; track item) {
+              <tr class="skeleton-row">
+                <td><div class="skeleton-cell cell-long"></div></td>
+                <td><div class="skeleton-cell cell-badge"></div></td>
+                <td><div class="skeleton-cell cell-med"></div></td>
+                <td><div class="skeleton-cell cell-phone"></div></td>
+                <td><div class="skeleton-cell cell-pill"></div></td>
+                <td><div class="skeleton-cell cell-date"></div></td>
+                <td><div class="skeleton-cell cell-tag"></div></td>
+              </tr>
+            }
+          } @else {
+            @for (h of hotelesFiltrados(); track h.id) {
+              <tr class="data-row">
+                <td class="font-bold">{{ h.nombre }}</td>
+                <td><span class="badge-cat">{{ h.categoria }}</span></td>
+                <td>{{ h.operador }}</td>
+                <td class="font-tabular">{{ h.telefono }}</td>
+                <td>
+                  <span class="status-pill status-{{ h.estado.toLowerCase() }}">
+                    {{ h.estado }}
+                  </span>
+                </td>
+                <td class="font-tabular">{{ h.fecha || '—' }}</td>
+                <td class="text-right">
+                  @if (h.id_estadistica) {
+                    <button
+                      type="button"
+                      class="btn-form-action"
+                      (click)="abrirRevision(h.id_estadistica, h.nroFormulario)"
+                      title="Auditar formulario y dictaminar recepción">
+                      <span class="form-tag font-tabular">#{{ h.nroFormulario }}</span>
+                      <span class="action-hint">Auditar →</span>
+                    </button>
+                  } @else if (h.nroFormulario) {
+                    <span class="form-tag font-tabular">#{{ h.nroFormulario }}</span>
+                  } @else {
+                    <span class="text-muted">Pendiente</span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="empty-state">
+                  <div class="empty-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="empty-icon">
+                      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                      <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                      <path d="m9 14 2 2 4-4"></path>
+                    </svg>
+                    <p class="empty-title">Sin registros para mostrar</p>
+                    <p class="empty-desc">No se encontraron establecimientos con el filtro seleccionado para {{ mesSeleccionado() }} / {{ gestionSeleccionada() }}.</p>
+                  </div>
+                </td>
+              </tr>
+            }
           }
         </tbody>
       </table>
     </div>
   </div>
+
+  <!-- Modal de Revisión y Dictamen de Formularios -->
+  @if (formularioParaRevisarId(); as id) {
+    <app-modal-revision-formulario
+      [formularioId]="id"
+      [numeroFormularioInicial]="formularioNumeroSeleccionado()"
+      (cerrar)="cerrarRevision()"
+      (formularioActualizado)="onFormularioActualizado($event)" />
+  }
 </div>
+

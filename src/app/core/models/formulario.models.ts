@@ -80,6 +80,22 @@ export interface EstadisticaHoteleraResponse {
   total?: number;
   detalles: DetalleMovimientoResponse[];
   resumen?: ResumenEstadistica;
+  seccion_a?: {
+    nombre_establecimiento?: string;
+    direccion?: string;
+    categoria?: string;
+    ciudad?: string;
+    telefono?: string;
+  };
+  seccion_c?: {
+    total_habitaciones?: number;
+    total_plazas?: number;
+    habitaciones?: Array<{
+      tipo_habitacion?: string;
+      cant_habitaciones?: number;
+      nro_camas?: number;
+    }>;
+  };
 }
 
 export interface DetalleOcupacionResponse {

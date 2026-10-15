@@ -132,9 +132,15 @@ export class FormularioEstadisticasComponent implements OnInit {
   readonly archivoRespaldo = signal<File | null>(null);
   readonly archivoPreviewUrl = signal<string | null>(null);
   readonly respaldoSubido = signal<{ foto: string; pdf: string } | null>(null);
+  readonly modalPreviewImagenAbierto = signal<boolean>(false);
 
   // Matriz de movimientos: Key `${dia}_${idNacionalidad}` => CeldaMovimiento
   readonly movimientosMap = signal<Map<string, CeldaMovimiento>>(new Map());
+
+  // Validación reactiva: determina si la matriz tiene al menos un movimiento registrado (> 0)
+  readonly matrizTieneDatos = computed<boolean>(() => {
+    return this.resumen().total > 0;
+  });
 
   // Lista base oficial de meses
   readonly listaMeses = LISTA_MESES_OFICIALES;
@@ -896,6 +902,16 @@ export class FormularioEstadisticasComponent implements OnInit {
     }
   }
 
+  abrirModalPreviewImagen(): void {
+    if (this.archivoPreviewUrl()) {
+      this.modalPreviewImagenAbierto.set(true);
+    }
+  }
+
+  cerrarModalPreviewImagen(): void {
+    this.modalPreviewImagenAbierto.set(false);
+  }
+
   eliminarArchivoRespaldo(): void {
     if (this.archivoPreviewUrl()) {
       URL.revokeObjectURL(this.archivoPreviewUrl()!);
@@ -903,6 +919,7 @@ export class FormularioEstadisticasComponent implements OnInit {
     this.archivoRespaldo.set(null);
     this.archivoPreviewUrl.set(null);
     this.respaldoSubido.set(null);
+    this.modalPreviewImagenAbierto.set(false);
   }
 
   // Enviar Formulario Oficial
@@ -915,7 +932,7 @@ export class FormularioEstadisticasComponent implements OnInit {
       return;
     }
 
-    if (this.movimientosMap().size === 0) {
+    if (!this.matrizTieneDatos()) {
       this.toastService.warning(
         'La planilla oficial no contiene movimientos registrados. Ingrese los datos de huéspedes antes de enviar.'
       );
@@ -1005,7 +1022,7 @@ export class FormularioEstadisticasComponent implements OnInit {
 
   // Guardar Borrador
   guardarBorrador(): void {
-    if (this.movimientosMap().size === 0) {
+    if (!this.matrizTieneDatos()) {
       this.toastService.warning('No hay datos registrados para guardar en borrador.');
       return;
     }

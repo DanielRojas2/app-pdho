@@ -5,6 +5,7 @@ import { ReportesService } from '../../../../core/services/reportes.service';
 import { FormulariosService } from '../../../../core/services/formularios.service';
 import { EstablecimientoService } from '../../../../core/services/establecimiento.service';
 import { CumplimientoDeclaracionesResponse } from '../../../../core/models/reportes.models';
+import { EstadisticaHoteleraResponse } from '../../../../core/models/formulario.models';
 import { EstablecimientoResponse } from '../../../../core/models/establecimiento.models';
 import { ModalRevisionFormularioComponent } from '../../components/modal-revision-formulario/modal-revision-formulario.component';
 import { forkJoin } from 'rxjs';

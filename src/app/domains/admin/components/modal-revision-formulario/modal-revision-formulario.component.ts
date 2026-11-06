@@ -3,12 +3,14 @@ import {
   ChangeDetectionStrategy,
   inject,
   signal,
+  computed,
   input,
   output,
   effect
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { FormulariosService } from '../../../../core/services/formularios.service';
 import { EstadisticaHoteleraResponse, EstadoFormulario } from '../../../../core/models/formulario.models';
 import { environment } from '../../../../../environments/environment';
@@ -23,6 +25,7 @@ import { environment } from '../../../../../environments/environment';
 })
 export class ModalRevisionFormularioComponent {
   private readonly formulariosService = inject(FormulariosService);
+  private readonly sanitizer = inject(DomSanitizer);
 
   // Inputs reactivos
   readonly formularioId = input.required<number>();
@@ -37,6 +40,18 @@ export class ModalRevisionFormularioComponent {
   readonly guardando = signal<boolean>(false);
   readonly errorMsg = signal<string | null>(null);
   readonly formulario = signal<EstadisticaHoteleraResponse | null>(null);
+
+  // Estado del visor de respaldo integrado (imagen / PDF)
+  readonly visorRespaldoAbierto = signal<boolean>(false);
+  readonly tipoVisorRespaldo = signal<'imagen' | 'pdf' | null>(null);
+  readonly urlVisorRespaldo = signal<string | null>(null);
+  readonly tituloVisorRespaldo = signal<string>('');
+
+  readonly urlVisorSegura = computed<SafeResourceUrl | null>(() => {
+    const url = this.urlVisorRespaldo();
+    if (!url) return null;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  });
 
   // Modelo de observaciones para dictamen
   readonly observaciones = signal<string>('');
@@ -118,25 +133,57 @@ export class ModalRevisionFormularioComponent {
   }
 
   onCerrar(): void {
+    if (this.visorRespaldoAbierto()) {
+      this.cerrarVisorRespaldo();
+      return;
+    }
     this.cerrar.emit();
+  }
+
+  abrirVisorImagen(): void {
+    const url = this.getUrlFoto();
+    if (!url) return;
+    const f = this.formulario();
+    const num = f?.numero_formulario || this.numeroFormularioInicial() || '';
+    this.urlVisorRespaldo.set(url);
+    this.tipoVisorRespaldo.set('imagen');
+    this.tituloVisorRespaldo.set(`Fotografía Original Escaneada — Declaración #${num}`);
+    this.visorRespaldoAbierto.set(true);
+  }
+
+  abrirVisorPdf(): void {
+    const url = this.getUrlPdf();
+    if (!url) return;
+    const f = this.formulario();
+    const num = f?.numero_formulario || this.numeroFormularioInicial() || '';
+    this.urlVisorRespaldo.set(url);
+    this.tipoVisorRespaldo.set('pdf');
+    this.tituloVisorRespaldo.set(`Formulario Oficial Digitalizado (PDF) — Declaración #${num}`);
+    this.visorRespaldoAbierto.set(true);
+  }
+
+  cerrarVisorRespaldo(): void {
+    this.visorRespaldoAbierto.set(false);
+    this.urlVisorRespaldo.set(null);
+    this.tipoVisorRespaldo.set(null);
   }
 
   getUrlPdf(): string | null {
     const pdf = this.formulario()?.archivo_pdf;
     if (!pdf) return null;
     if (pdf.startsWith('http://') || pdf.startsWith('https://')) return pdf;
-    const base = environment.apiUrl.replace('/api/v1', '');
+    const apiBase = environment.apiUrl.replace(/\/+$/, '');
     const cleanPath = pdf.startsWith('/') ? pdf : '/' + pdf;
-    return `${base}${cleanPath}`;
+    return `${apiBase}${cleanPath}`;
   }
 
   getUrlFoto(): string | null {
     const foto = this.formulario()?.archivo_foto;
     if (!foto) return null;
     if (foto.startsWith('http://') || foto.startsWith('https://')) return foto;
-    const base = environment.apiUrl.replace('/api/v1', '');
+    const apiBase = environment.apiUrl.replace(/\/+$/, '');
     const cleanPath = foto.startsWith('/') ? foto : '/' + foto;
-    return `${base}${cleanPath}`;
+    return `${apiBase}${cleanPath}`;
   }
 
   formatearCategoria(cat?: string | null): string {

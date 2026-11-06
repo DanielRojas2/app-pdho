@@ -278,9 +278,9 @@ export class MisFormulariosComponent implements OnInit {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
-    const backendRoot = environment.apiUrl.replace('/api/v1', '');
+    const apiBase = environment.apiUrl.replace(/\/+$/, '');
     const cleanPath = path.startsWith('/') ? path : `/${path}`;
-    return `${backendRoot}${cleanPath}`;
+    return `${apiBase}${cleanPath}`;
   }
 
   formatearFecha(fechaStr?: string | null): string {

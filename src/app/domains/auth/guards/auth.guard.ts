@@ -1,4 +1,5 @@
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { RolUsuario } from '../models/auth.models';
@@ -14,6 +15,11 @@ export function obtenerRutaInicioPorRol(rol?: RolUsuario | null): string {
 }
 
 export const authGuard: CanActivateFn = () => {
+  const platformId = inject(PLATFORM_ID);
+  if (!isPlatformBrowser(platformId)) {
+    return true;
+  }
+
   const auth = inject(AuthService);
   const router = inject(Router);
 
@@ -24,6 +30,11 @@ export const authGuard: CanActivateFn = () => {
 };
 
 export const guestGuard: CanActivateFn = () => {
+  const platformId = inject(PLATFORM_ID);
+  if (!isPlatformBrowser(platformId)) {
+    return true;
+  }
+
   const auth = inject(AuthService);
   const router = inject(Router);
 
@@ -36,6 +47,11 @@ export const guestGuard: CanActivateFn = () => {
 
 export const roleGuard = (rolesPermitidos: RolUsuario[]): CanActivateFn => {
   return () => {
+    const platformId = inject(PLATFORM_ID);
+    if (!isPlatformBrowser(platformId)) {
+      return true;
+    }
+
     const auth = inject(AuthService);
     const router = inject(Router);
 
@@ -54,6 +70,11 @@ export const roleGuard = (rolesPermitidos: RolUsuario[]): CanActivateFn => {
 };
 
 export const rootGuard: CanActivateFn = () => {
+  const platformId = inject(PLATFORM_ID);
+  if (!isPlatformBrowser(platformId)) {
+    return true;
+  }
+
   const auth = inject(AuthService);
   const router = inject(Router);
 

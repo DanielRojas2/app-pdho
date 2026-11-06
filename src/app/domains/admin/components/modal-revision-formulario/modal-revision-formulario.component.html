@@ -122,22 +122,29 @@
           <h3 class="section-title">Respaldo Documental Digitalizado</h3>
           <div class="respaldo-actions">
             @if (getUrlPdf(); as urlPdf) {
-              <a [href]="urlPdf" target="_blank" rel="noopener noreferrer" class="btn-respaldo btn-respaldo-pdf">
+              <button
+                type="button"
+                (click)="abrirVisorPdf()"
+                class="btn-respaldo btn-respaldo-pdf"
+                title="Previsualizar formulario oficial en formato PDF">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                   <polyline points="14 2 14 8 20 8"></polyline>
                 </svg>
                 <span>Ver / Descargar Formulario Oficial (PDF)</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-external">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                  <polyline points="15 3 21 3 21 9"></polyline>
-                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
                 </svg>
-              </a>
+              </button>
             }
 
             @if (getUrlFoto(); as urlFoto) {
-              <a [href]="urlFoto" target="_blank" rel="noopener noreferrer" class="btn-respaldo btn-respaldo-img">
+              <button
+                type="button"
+                (click)="abrirVisorImagen()"
+                class="btn-respaldo btn-respaldo-img"
+                title="Previsualizar fotografía original escaneada">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                   <circle cx="8.5" cy="8.5" r="1.5"></circle>
@@ -145,11 +152,10 @@
                 </svg>
                 <span>Ver Fotografía Original Escaneada</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-external">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                  <polyline points="15 3 21 3 21 9"></polyline>
-                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
                 </svg>
-              </a>
+              </button>
             }
 
             @if (!getUrlPdf() && !getUrlFoto()) {
@@ -222,7 +228,59 @@
 
     <!-- Pie del Modal -->
     <footer class="modal-footer">
-      <button type="button" class="btn-cancelar" (click)="onCerrar()">Cerrar Ventana</button>
+      <button type="button" class="btn-cancelar" (click)="cerrar.emit()">Cerrar Ventana</button>
     </footer>
   </div>
 </div>
+
+<!-- Visor Superpuesto de Respaldo Digital (Fotografía / PDF) -->
+@if (visorRespaldoAbierto()) {
+  <div class="visor-backdrop" (click)="cerrarVisorRespaldo()" role="dialog" aria-modal="true">
+    <div class="visor-dialog" (click)="$event.stopPropagation()">
+      <header class="visor-header">
+        <div class="visor-title-group">
+          <span class="type-pill">DOCUMENTO OFICIAL DE RESPALDO</span>
+          <h3 class="visor-title">{{ tituloVisorRespaldo() }}</h3>
+        </div>
+        <button type="button" class="btn-close" (click)="cerrarVisorRespaldo()" title="Cerrar visor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </header>
+
+      <div class="visor-body">
+        @if (tipoVisorRespaldo() === 'imagen') {
+          <img
+            [src]="urlVisorRespaldo()"
+            alt="Fotografía original escaneada del formulario"
+            class="visor-full-img" />
+        } @else if (tipoVisorRespaldo() === 'pdf' && urlVisorSegura()) {
+          <iframe
+            [src]="urlVisorSegura()"
+            class="visor-pdf-frame"
+            title="Visor de Formulario Oficial PDF"></iframe>
+        }
+      </div>
+
+      <footer class="visor-footer">
+        <a
+          [href]="urlVisorRespaldo()"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-visor-external">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          <span>Abrir / Descargar en pestaña nueva</span>
+        </a>
+        <button type="button" class="btn-cancelar" (click)="cerrarVisorRespaldo()">
+          Volver a la Auditoría
+        </button>
+      </footer>
+    </div>
+  </div>
+}

@@ -1,14 +1,22 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
+import { catchError, EMPTY, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const platformId = inject(PLATFORM_ID);
+  const isBrowser = isPlatformBrowser(platformId);
   const authService = inject(AuthService);
   const router = inject(Router);
   const token = authService.token();
+
+  // Evitar disparar peticiones autenticadas a la API durante SSR (sin localStorage)
+  if (!isBrowser && req.url.startsWith(environment.apiUrl)) {
+    return EMPTY;
+  }
 
   // Clonar la solicitud e inyectar el Bearer Token para rutas de la API de PDHO
   let authReq = req;
@@ -22,7 +30,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
+      if (isBrowser && error.status === 401 && !req.url.includes('/usuarios/login')) {
         // Token expirado o inválido -> Cerrar sesión y redirigir
         authService.logout();
         router.navigate(['/login'], { queryParams: { sesionExpirada: true } });

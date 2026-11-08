@@ -4,43 +4,10 @@
   <!-- ====================================================================== -->
   <nav class="form-tabs-navbar" aria-label="Selector de formulario para estadísticas">
     <div class="form-tabs-list" role="tablist">
-      <button
-        type="button"
-        class="form-tab-btn"
-        [class.active]="formularioActivo() === 'f1'"
-        (click)="seleccionarFormulario('f1')"
-        role="tab"
-        [attr.aria-selected]="formularioActivo() === 'f1'"
-        id="tab-f1"
-      >
+      <button type="button" class="form-tab-btn" [class.active]="formularioActivo() === 'f1'"
+        (click)="seleccionarFormulario('f1')" role="tab" [attr.aria-selected]="formularioActivo() === 'f1'" id="tab-f1">
         <span class="tab-label">Formulario 1</span>
         <span class="tab-sublabel">Estadística Hotelera</span>
-      </button>
-
-      <button
-        type="button"
-        class="form-tab-btn"
-        [class.active]="formularioActivo() === 'f2'"
-        (click)="seleccionarFormulario('f2')"
-        role="tab"
-        [attr.aria-selected]="formularioActivo() === 'f2'"
-        id="tab-f2"
-      >
-        <span class="tab-label">Formulario 2</span>
-        <span class="tab-sublabel">Ocupación Hotelera</span>
-      </button>
-
-      <button
-        type="button"
-        class="form-tab-btn"
-        [class.active]="formularioActivo() === 'f3'"
-        (click)="seleccionarFormulario('f3')"
-        role="tab"
-        [attr.aria-selected]="formularioActivo() === 'f3'"
-        id="tab-f3"
-      >
-        <span class="tab-label">Formulario 3</span>
-        <span class="tab-sublabel">Registros Consolidados</span>
       </button>
     </div>
   </nav>
@@ -49,685 +16,552 @@
   <!-- CONTENIDO DE FORMULARIO 1: ESTADÍSTICAS HOTELERAS -->
   <!-- ====================================================================== -->
   @if (formularioActivo() === 'f1') {
-    <!-- BARRA DE PERÍODO Y ACCIÓN DE EXPORTACIÓN -->
-    <header class="workspace-top-bar">
-      <div class="periodo-controls-group">
-        <span class="periodo-tag">FILTRAR PERÍODO:</span>
+  <!-- BARRA DE PERÍODO Y ACCIÓN DE EXPORTACIÓN -->
+  <header class="workspace-top-bar">
+    <div class="periodo-controls-group">
+      <span class="periodo-tag">FILTRAR PERÍODO:</span>
 
-        <!-- Segmented switch: Por Mes vs Rango de Fechas -->
-        <div class="modo-periodo-switch" role="radiogroup" aria-label="Modo de consulta de período">
-          <button
-            type="button"
-            class="modo-tab-pill"
-            [class.active]="modoFiltroPeriodo() === 'mes'"
-            (click)="cambiarModoPeriodo('mes')"
-            title="Consultar por mes calendario y gestión"
-          >
-            <span>Por Mes</span>
-          </button>
-          <button
-            type="button"
-            class="modo-tab-pill"
-            [class.active]="modoFiltroPeriodo() === 'rango'"
-            (click)="cambiarModoPeriodo('rango')"
-            title="Consultar por rango personalizado de fechas"
-          >
-            <span>Rango de Fechas</span>
-          </button>
-        </div>
-
-        @if (modoFiltroPeriodo() === 'mes') {
-          <div class="select-inline-wrapper">
-            <label for="select_mes" class="sr-only">Mes</label>
-            <select
-              id="select_mes"
-              class="periodo-select"
-              [ngModel]="mesSeleccionado()"
-              (ngModelChange)="cambiarMes($event)"
-            >
-              @for (m of mesesLista; track m) {
-                <option [value]="m">{{ m }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="select-inline-wrapper">
-            <label for="select_gestion" class="sr-only">Gestión</label>
-            <select
-              id="select_gestion"
-              class="periodo-select"
-              [ngModel]="gestionSeleccionada()"
-              (ngModelChange)="cambiarGestion($event)"
-            >
-              @for (g of gestionesLista; track g) {
-                <option [value]="g">Gestión {{ g }}</option>
-              }
-            </select>
-          </div>
-        } @else {
-          <!-- Selector de Rango de Fechas (Desde / Hasta) -->
-          <div class="rango-fechas-box">
-            <div class="fecha-field-wrap">
-              <label for="input_fecha_ini" class="fecha-label">Desde:</label>
-              <input
-                id="input_fecha_ini"
-                type="date"
-                class="periodo-date-input"
-                [ngModel]="fechaInicio()"
-                (ngModelChange)="cambiarFechaInicio($event)"
-              />
-            </div>
-
-            <div class="fecha-field-wrap">
-              <label for="input_fecha_fin" class="fecha-label">Hasta:</label>
-              <input
-                id="input_fecha_fin"
-                type="date"
-                class="periodo-date-input"
-                [ngModel]="fechaFin()"
-                (ngModelChange)="cambiarFechaFin($event)"
-              />
-            </div>
-
-            <button
-              type="button"
-              class="btn-aplicar-filtro"
-              (click)="aplicarRangoFechas()"
-              [disabled]="cargando()"
-              title="Aplicar rango de fechas"
-            >
-              <span>Consultar</span>
-            </button>
-          </div>
-        }
-
-        <button
-          type="button"
-          class="btn-recargar-icon"
-          (click)="cargarDatos()"
-          [disabled]="cargando()"
-          title="Actualizar datos"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [class.spinning]="cargando()">
-            <polyline points="23 4 23 10 17 10"></polyline>
-            <polyline points="1 20 1 14 7 14"></polyline>
-            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-          </svg>
+      <!-- Segmented switch: Por Mes vs Rango de Fechas -->
+      <div class="modo-periodo-switch" role="radiogroup" aria-label="Modo de consulta de período">
+        <button type="button" class="modo-tab-pill" [class.active]="modoFiltroPeriodo() === 'mes'"
+          (click)="cambiarModoPeriodo('mes')" title="Consultar por mes calendario y gestión">
+          <span>Por Mes</span>
+        </button>
+        <button type="button" class="modo-tab-pill" [class.active]="modoFiltroPeriodo() === 'rango'"
+          (click)="cambiarModoPeriodo('rango')" title="Consultar por rango personalizado de fechas">
+          <span>Rango de Fechas</span>
         </button>
       </div>
 
-      <!-- BOTÓN EXPORTAR (UBICADO ARRIBA A LA DERECHA COMO EN EL BOCETO) -->
-      <div class="top-bar-right-action">
-        <button
-          type="button"
-          class="btn-exportar-main"
-          (click)="abrirModalExportar()"
-          title="Abrir opciones de exportación"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="export-icon">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          <span>Exportar</span>
+      @if (modoFiltroPeriodo() === 'mes') {
+      <div class="select-inline-wrapper">
+        <label for="select_mes" class="sr-only">Mes</label>
+        <select id="select_mes" class="periodo-select" [ngModel]="mesSeleccionado()"
+          (ngModelChange)="cambiarMes($event)">
+          @for (m of mesesLista; track m) {
+          <option [value]="m">{{ m }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="select-inline-wrapper">
+        <label for="select_gestion" class="sr-only">Gestión</label>
+        <select id="select_gestion" class="periodo-select" [ngModel]="gestionSeleccionada()"
+          (ngModelChange)="cambiarGestion($event)">
+          @for (g of gestionesLista; track g) {
+          <option [value]="g">Gestión {{ g }}</option>
+          }
+        </select>
+      </div>
+      } @else {
+      <!-- Selector de Rango de Fechas (Desde / Hasta) -->
+      <div class="rango-fechas-box">
+        <div class="fecha-field-wrap">
+          <label for="input_fecha_ini" class="fecha-label">Desde:</label>
+          <input id="input_fecha_ini" type="date" class="periodo-date-input" [ngModel]="fechaInicio()"
+            (ngModelChange)="cambiarFechaInicio($event)" />
+        </div>
+
+        <div class="fecha-field-wrap">
+          <label for="input_fecha_fin" class="fecha-label">Hasta:</label>
+          <input id="input_fecha_fin" type="date" class="periodo-date-input" [ngModel]="fechaFin()"
+            (ngModelChange)="cambiarFechaFin($event)" />
+        </div>
+
+        <button type="button" class="btn-aplicar-filtro" (click)="aplicarRangoFechas()" [disabled]="cargando()"
+          title="Aplicar rango de fechas">
+          <span>Consultar</span>
         </button>
       </div>
-    </header>
+      }
 
-    <!-- ==================================================================== -->
-    <!-- ESPACIO DE TRABAJO EN 3 COLUMNAS: FILTROS | GRÁFICO | PAÍSES A VER -->
-    <!-- ==================================================================== -->
-    <main class="estadisticas-layout-grid">
-      <!-- ------------------------------------------------------------------ -->
-      <!-- COLUMNA IZQUIERDA: CAJA DE FILTROS DINÁMICOS -->
-      <!-- ------------------------------------------------------------------ -->
-      <aside class="panel-filtros-box">
-        <div class="panel-header">
-          <h3 class="panel-title">Filtros</h3>
-          <span class="panel-badge-sub">Visualización</span>
-        </div>
+      <button type="button" class="btn-recargar-icon" (click)="cargarDatos()" [disabled]="cargando()"
+        title="Actualizar datos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" [class.spinning]="cargando()">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+      </button>
+    </div>
 
-        <div class="filtros-radio-list" role="radiogroup" aria-label="Tipo de gráfico estadístico">
-          <!-- Opción 1: Gráfico de barras de Ingresos -->
-          <label
-            class="filtro-radio-item"
-            [class.selected]="filtroVisualizacionF1() === 'ingresos'"
-          >
-            <input
-              type="radio"
-              name="filtroF1"
-              value="ingresos"
-              [checked]="filtroVisualizacionF1() === 'ingresos'"
-              (change)="seleccionarFiltroF1('ingresos')"
-            />
-            <span class="radio-custom-circle"></span>
-            <div class="radio-content">
-              <span class="radio-label">Ingresos por país</span>
-              <p class="radio-desc">Gráfico de barras de los ingresos de extranjeros y nacionales detallando países.</p>
-            </div>
-          </label>
+    <!-- BOTÓN EXPORTAR (UBICADO ARRIBA A LA DERECHA COMO EN EL BOCETO) -->
+    <div class="top-bar-right-action">
+      <button type="button" class="btn-exportar-main" (click)="abrirModalExportar()"
+        title="Abrir opciones de exportación">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="export-icon">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Exportar</span>
+      </button>
+    </div>
+  </header>
 
-          <!-- Opción 2: Gráfico de barras de Permanencias -->
-          <label
-            class="filtro-radio-item"
-            [class.selected]="filtroVisualizacionF1() === 'permanencias'"
-          >
-            <input
-              type="radio"
-              name="filtroF1"
-              value="permanencias"
-              [checked]="filtroVisualizacionF1() === 'permanencias'"
-              (change)="seleccionarFiltroF1('permanencias')"
-            />
-            <span class="radio-custom-circle"></span>
-            <div class="radio-content">
-              <span class="radio-label">Permanencias por país</span>
-              <p class="radio-desc">Gráfico de barras de las pernoctaciones de extranjeros y nacionales detallando países.</p>
-            </div>
-          </label>
+  <!-- ==================================================================== -->
+  <!-- ESPACIO DE TRABAJO EN 3 COLUMNAS: FILTROS | GRÁFICO | PAÍSES A VER -->
+  <!-- ==================================================================== -->
+  <main class="estadisticas-layout-grid">
+    <!-- ------------------------------------------------------------------ -->
+    <!-- COLUMNA IZQUIERDA: CAJA DE FILTROS DINÁMICOS -->
+    <!-- ------------------------------------------------------------------ -->
+    <aside class="panel-filtros-box">
+      <div class="panel-header">
+        <h3 class="panel-title">Filtros</h3>
+        <span class="panel-badge-sub">Visualización</span>
+      </div>
 
-          <!-- Opción 3: Gráfico de barras combinado (Ingresos vs Permanencias) -->
-          <label
-            class="filtro-radio-item"
-            [class.selected]="filtroVisualizacionF1() === 'combinado'"
-          >
-            <input
-              type="radio"
-              name="filtroF1"
-              value="combinado"
-              [checked]="filtroVisualizacionF1() === 'combinado'"
-              (change)="seleccionarFiltroF1('combinado')"
-            />
-            <span class="radio-custom-circle"></span>
-            <div class="radio-content">
-              <span class="radio-label">Gráfico combinado</span>
-              <p class="radio-desc">Barras combinadas de ingresos vs. permanencias detallando cada país.</p>
-            </div>
-          </label>
-
-          <!-- Opción 4: Gráfico de torta (Nacionales vs Extranjeros general con switch) -->
-          <label
-            class="filtro-radio-item"
-            [class.selected]="filtroVisualizacionF1() === 'torta'"
-          >
-            <input
-              type="radio"
-              name="filtroF1"
-              value="torta"
-              [checked]="filtroVisualizacionF1() === 'torta'"
-              (change)="seleccionarFiltroF1('torta')"
-            />
-            <span class="radio-custom-circle"></span>
-            <div class="radio-content">
-              <span class="radio-label">Gráfico de torta</span>
-              <p class="radio-desc">Distribución general de nacionales vs. extranjeros con switch de métrica.</p>
-            </div>
-          </label>
-        </div>
-
-        <!-- Indicador de total del período actual -->
-        <div class="kpi-mini-card">
-          <span class="kpi-mini-lbl">Período Consultado</span>
-          <strong class="kpi-mini-val">{{ etiquetaPeriodoConsultado() }}</strong>
-          <span class="kpi-mini-sub">{{ listaPaisesDisponibles().length }} países con registros</span>
-        </div>
-      </aside>
-
-      <!-- ------------------------------------------------------------------ -->
-      <!-- COLUMNA CENTRAL: ÁREA PRINCIPAL DEL GRÁFICO DINÁMICO -->
-      <!-- ------------------------------------------------------------------ -->
-      <section class="panel-grafico-center">
-        <!-- CABECERA DEL GRÁFICO -->
-        <div class="chart-box-header">
-          <div>
-            @switch (filtroVisualizacionF1()) {
-              @case ('ingresos') {
-                <h2 class="chart-main-title">Ingresos de Huéspedes por País de Procedencia</h2>
-                <p class="chart-main-sub">Llegadas registradas de nacionales y extranjeros • Total: {{ totalIngresosActual() | number }} pax</p>
-              }
-              @case ('permanencias') {
-                <h2 class="chart-main-title">Permanencias (Pernoctaciones) por País de Procedencia</h2>
-                <p class="chart-main-sub">Noches de estadía registradas • Total: {{ totalPermanenciasActual() | number }} noches</p>
-              }
-              @case ('combinado') {
-                <h2 class="chart-main-title">Comparativa Combinada: Ingresos vs. Permanencias</h2>
-                <p class="chart-main-sub">Relación de llegadas y noches pernoctadas con cálculo de estadía promedio</p>
-              }
-              @case ('torta') {
-                <h2 class="chart-main-title">Distribución General: Nacionales vs. Extranjeros</h2>
-                <p class="chart-main-sub">Proporción departamental consolidada • Período: {{ etiquetaPeriodoConsultado() }}</p>
-              }
-            }
+      <div class="filtros-radio-list" role="radiogroup" aria-label="Tipo de gráfico estadístico">
+        <!-- Opción 1: Gráfico de barras de Ingresos -->
+        <label class="filtro-radio-item" [class.selected]="filtroVisualizacionF1() === 'ingresos'">
+          <input type="radio" name="filtroF1" value="ingresos" [checked]="filtroVisualizacionF1() === 'ingresos'"
+            (change)="seleccionarFiltroF1('ingresos')" />
+          <span class="radio-custom-circle"></span>
+          <div class="radio-content">
+            <span class="radio-label">Ingresos por país</span>
+            <p class="radio-desc">Gráfico de barras de los ingresos de extranjeros y nacionales detallando países.</p>
           </div>
+        </label>
 
-          <!-- SI ES GRÁFICO DE TORTA: SWITCH DE 3 OPCIONES (INGRESOS, PERMANENCIAS, COMBINADO) -->
-          @if (filtroVisualizacionF1() === 'torta') {
-            <div class="torta-switch-pill" role="radiogroup" aria-label="Métrica de torta">
-              <button
-                type="button"
-                class="pill-option-btn"
-                [class.active]="tortaMetrica() === 'ingresos'"
-                (click)="cambiarTortaMetrica('ingresos')"
-                title="Ver distribución por cantidad de llegadas (huéspedes)"
-              >
-                <span>Ingresos</span>
-              </button>
-              <button
-                type="button"
-                class="pill-option-btn"
-                [class.active]="tortaMetrica() === 'permanencias'"
-                (click)="cambiarTortaMetrica('permanencias')"
-                title="Ver distribución por noches pernoctadas"
-              >
-                <span>Permanencias</span>
-              </button>
-              <button
-                type="button"
-                class="pill-option-btn"
-                [class.active]="tortaMetrica() === 'combinado'"
-                (click)="cambiarTortaMetrica('combinado')"
-                title="Ver distribución combinada de afluencia total (ingresos + noches)"
-              >
-                <span>Combinado</span>
-              </button>
-            </div>
-          }
-
-          <!-- LEYENDA SI ES COMBINADO -->
-          @if (filtroVisualizacionF1() === 'combinado') {
-            <div class="legend-badges-group">
-              <span class="legend-pill pill-ingresos">
-                <span class="pill-dot dot-ingresos"></span>
-                <span>Ingresos (Llegadas)</span>
-              </span>
-              <span class="legend-pill pill-permanencias">
-                <span class="pill-dot dot-permanencias"></span>
-                <span>Permanencias (Noches)</span>
-              </span>
-            </div>
-          }
-        </div>
-
-        <!-- CANVAS / CONTENEDOR DEL GRÁFICO -->
-        <div class="chart-render-canvas">
-          <!-- ESTADO DE CARGA -->
-          @if (cargando()) {
-            <div class="chart-loading-state">
-              <div class="spinner-chart"></div>
-              <span>Cargando datos estadísticos...</span>
-            </div>
-          } @else {
-            <!-- ============================================================== -->
-            <!-- MODO 1: GRÁFICO DE BARRAS DE INGRESOS POR PAÍS -->
-            <!-- ============================================================== -->
-            @if (filtroVisualizacionF1() === 'ingresos') {
-              @if (itemsRankingFiltrados().length > 0) {
-                <div class="bars-container-vertical-scroll">
-                  @for (item of itemsRankingFiltrados(); track item.id_nacionalidad) {
-                    <div
-                      class="bar-row-country"
-                      (mouseenter)="mostrarTooltip($event, item.pais, 'Ingresos: ' + item.cant_ingresos + ' pax', 'Participación: ' + item.porcentaje_del_total + '%')"
-                      (mouseleave)="ocultarTooltip()"
-                    >
-                      <div class="bar-label-col">
-                        <span class="country-badge-iso">{{ item.cod_pais }}</span>
-                        <strong class="country-name-txt" [class.is-bolivia]="item.cod_pais === 'BO'">
-                          {{ item.pais }}
-                        </strong>
-                      </div>
-
-                      <div class="bar-track-col">
-                        <div
-                          class="bar-fill-dynamic bar-fill-ingresos"
-                          [class.bar-bolivia]="item.cod_pais === 'BO'"
-                          [style.width.%]="(item.cant_ingresos / maxValorIngresos()) * 100"
-                        ></div>
-                      </div>
-
-                      <div class="bar-value-col tabular-nums">
-                        <strong class="val-num">{{ item.cant_ingresos | number }}</strong>
-                        <span class="val-sub">{{ item.porcentaje_del_total }}%</span>
-                      </div>
-                    </div>
-                  }
-                </div>
-              } @else {
-                <div class="empty-chart-notice">
-                  <p>No hay datos de ingresos para los países seleccionados en este período.</p>
-                </div>
-              }
-            }
-
-            <!-- ============================================================== -->
-            <!-- MODO 2: GRÁFICO DE BARRAS DE PERMANENCIAS POR PAÍS -->
-            <!-- ============================================================== -->
-            @if (filtroVisualizacionF1() === 'permanencias') {
-              @if (itemsRankingFiltrados().length > 0) {
-                <div class="bars-container-vertical-scroll">
-                  @for (item of itemsRankingFiltrados(); track item.id_nacionalidad) {
-                    <div
-                      class="bar-row-country"
-                      (mouseenter)="mostrarTooltip($event, item.pais, 'Permanencias: ' + item.cant_permanencias + ' noches', 'Afluencia total: ' + item.total_afluencia)"
-                      (mouseleave)="ocultarTooltip()"
-                    >
-                      <div class="bar-label-col">
-                        <span class="country-badge-iso">{{ item.cod_pais }}</span>
-                        <strong class="country-name-txt" [class.is-bolivia]="item.cod_pais === 'BO'">
-                          {{ item.pais }}
-                        </strong>
-                      </div>
-
-                      <div class="bar-track-col">
-                        <div
-                          class="bar-fill-dynamic bar-fill-permanencias"
-                          [class.bar-bolivia-perm]="item.cod_pais === 'BO'"
-                          [style.width.%]="(item.cant_permanencias / maxValorPermanencias()) * 100"
-                        ></div>
-                      </div>
-
-                      <div class="bar-value-col tabular-nums">
-                        <strong class="val-num text-perm">{{ item.cant_permanencias | number }}</strong>
-                        <span class="val-sub">noches</span>
-                      </div>
-                    </div>
-                  }
-                </div>
-              } @else {
-                <div class="empty-chart-notice">
-                  <p>No hay datos de permanencias para los países seleccionados en este período.</p>
-                </div>
-              }
-            }
-
-            <!-- ============================================================== -->
-            <!-- MODO 3: GRÁFICO COMBINADO DE INGRESOS Y PERMANENCIAS -->
-            <!-- ============================================================== -->
-            @if (filtroVisualizacionF1() === 'combinado') {
-              @if (seriesComparativaFiltradas().length > 0) {
-                <div class="bars-container-vertical-scroll">
-                  @for (item of seriesComparativaFiltradas(); track item.etiqueta) {
-                    <div
-                      class="grouped-bar-row"
-                      (mouseenter)="mostrarTooltip($event, item.etiqueta, 'Ingresos: ' + item.ingresos + ' pax', 'Permanencias: ' + item.permanencias + ' noches (Ratio: ' + item.ratio_permanencia_ingreso + ' noch/pax)')"
-                      (mouseleave)="ocultarTooltip()"
-                    >
-                      <div class="bar-label-col">
-                        <span class="country-badge-iso">{{ item.codigo || 'OT' }}</span>
-                        <strong class="country-name-txt">{{ item.etiqueta }}</strong>
-                        <span class="ratio-badge-tag tabular-nums" title="Noches promedio por huésped">
-                          {{ item.ratio_permanencia_ingreso }}x
-                        </span>
-                      </div>
-
-                      <div class="grouped-tracks-col">
-                        <!-- Barra 1: Ingresos -->
-                        <div class="single-track">
-                          <div
-                            class="bar-fill-dynamic bar-fill-ingresos"
-                            [style.width.%]="(item.ingresos / maxValorCombinado()) * 100"
-                          ></div>
-                          <span class="track-val tabular-nums">{{ item.ingresos }}</span>
-                        </div>
-
-                        <!-- Barra 2: Permanencias -->
-                        <div class="single-track">
-                          <div
-                            class="bar-fill-dynamic bar-fill-permanencias"
-                            [style.width.%]="(item.permanencias / maxValorCombinado()) * 100"
-                          ></div>
-                          <span class="track-val tabular-nums">{{ item.permanencias }}</span>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                </div>
-              } @else {
-                <div class="empty-chart-notice">
-                  <p>No hay series comparativas disponibles para la selección actual.</p>
-                </div>
-              }
-            }
-
-            <!-- ============================================================== -->
-            <!-- MODO 4: GRÁFICO DE TORTA DE INGRESOS / PERMANENCIAS (GENERAL) -->
-            <!-- ============================================================== -->
-            @if (filtroVisualizacionF1() === 'torta') {
-              @let torta = datosTortaCalculados();
-              <div class="donut-chart-view-layout">
-                <div class="donut-graphic-box">
-                  <svg class="donut-svg" viewBox="0 0 200 200" width="220" height="220">
-                    <!-- Círculo base de fondo -->
-                    <circle
-                      cx="100"
-                      cy="100"
-                      [attr.r]="radioDonut"
-                      fill="transparent"
-                      stroke="#f1f5f9"
-                      stroke-width="32"
-                    />
-
-                    <!-- Segmento Nacionales (Bolivia) -->
-                    <circle
-                      cx="100"
-                      cy="100"
-                      [attr.r]="radioDonut"
-                      fill="transparent"
-                      stroke="#8f1d2c"
-                      stroke-width="32"
-                      [attr.stroke-dasharray]="donutStrokeNacionales()"
-                      stroke-dashoffset="0"
-                      transform="rotate(-90 100 100)"
-                      class="donut-segment"
-                      (mouseenter)="mostrarTooltip($event, 'Nacionales (Bolivia)', torta.nacionalesCant + ' (' + torta.nacionalesPct + '%)')"
-                      (mouseleave)="ocultarTooltip()"
-                    />
-
-                    <!-- Segmento Extranjeros -->
-                    <circle
-                      cx="100"
-                      cy="100"
-                      [attr.r]="radioDonut"
-                      fill="transparent"
-                      stroke="#2563eb"
-                      stroke-width="32"
-                      [attr.stroke-dasharray]="donutStrokeExtranjeros()"
-                      [attr.stroke-dashoffset]="donutOffsetExtranjeros()"
-                      transform="rotate(-90 100 100)"
-                      class="donut-segment"
-                      (mouseenter)="mostrarTooltip($event, 'Extranjeros', torta.extranjerosCant + ' (' + torta.extranjerosPct + '%)')"
-                      (mouseleave)="ocultarTooltip()"
-                    />
-                  </svg>
-
-                  <!-- Centro del Donut -->
-                  <div class="donut-center-info">
-                    <span class="donut-center-lbl">
-                      @if (tortaMetrica() === 'ingresos') { TOTAL INGRESOS }
-                      @else if (tortaMetrica() === 'permanencias') { TOTAL NOCHES }
-                      @else { AFLUENCIA TOTAL }
-                    </span>
-                    <strong class="donut-center-val tabular-nums">{{ torta.total | number }}</strong>
-                    <span class="donut-center-unit">{{ torta.unidad }}</span>
-                  </div>
-                </div>
-
-                <!-- LEYENDA Y TARJETAS COMPARATIVAS -->
-                <div class="donut-details-side">
-                  <div class="torta-segment-card card-nac">
-                    <div class="t-card-header">
-                      <span class="color-indicator bg-burgundy"></span>
-                      <strong class="t-card-title">Huéspedes Nacionales (Bolivia)</strong>
-                    </div>
-                    <div class="t-card-numbers">
-                      <span class="t-num tabular-nums">{{ torta.nacionalesCant | number }}</span>
-                      <span class="t-pct tabular-nums">{{ torta.nacionalesPct }}%</span>
-                    </div>
-                    <div class="t-progress-bar">
-                      <div class="t-bar-fill bg-burgundy" [style.width.%]="torta.nacionalesPct"></div>
-                    </div>
-                  </div>
-
-                  <div class="torta-segment-card card-ext">
-                    <div class="t-card-header">
-                      <span class="color-indicator bg-blue"></span>
-                      <strong class="t-card-title">Huéspedes Extranjeros</strong>
-                    </div>
-                    <div class="t-card-numbers">
-                      <span class="t-num tabular-nums">{{ torta.extranjerosCant | number }}</span>
-                      <span class="t-pct tabular-nums">{{ torta.extranjerosPct }}%</span>
-                    </div>
-                    <div class="t-progress-bar">
-                      <div class="t-bar-fill bg-blue" [style.width.%]="torta.extranjerosPct"></div>
-                    </div>
-                  </div>
-
-                  <div class="torta-note-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="note-icon">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="16" x2="12" y2="12"></line>
-                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                    </svg>
-                    <span>
-                      Mostrando la métrica <strong>{{ torta.labelMetrica }}</strong> a nivel general en todo el Departamento de Oruro.
-                    </span>
-                  </div>
-                </div>
-              </div>
-            }
-          }
-        </div>
-      </section>
-
-      <!-- ------------------------------------------------------------------ -->
-      <!-- COLUMNA DERECHA: SELECTOR DE PAÍSES A VER -->
-      <!-- ------------------------------------------------------------------ -->
-      <aside class="panel-paises-box" [class.disabled-torta]="filtroVisualizacionF1() === 'torta'">
-        <!-- Encabezado del selector -->
-        <div class="paises-header-row">
-          <div>
-            <h3 class="panel-title">Países a Ver</h3>
-            <span class="panel-badge-sub">
-              {{ todosLosPaises() ? 'Todos seleccionados' : codigosPaisesSeleccionados().length + ' elegidos' }}
-            </span>
+        <!-- Opción 2: Gráfico de barras de Permanencias -->
+        <label class="filtro-radio-item" [class.selected]="filtroVisualizacionF1() === 'permanencias'">
+          <input type="radio" name="filtroF1" value="permanencias"
+            [checked]="filtroVisualizacionF1() === 'permanencias'" (change)="seleccionarFiltroF1('permanencias')" />
+          <span class="radio-custom-circle"></span>
+          <div class="radio-content">
+            <span class="radio-label">Permanencias por país</span>
+            <p class="radio-desc">Gráfico de barras de las pernoctaciones de extranjeros y nacionales detallando países.
+            </p>
           </div>
+        </label>
 
-          <!-- CHECKBOX "VER TODOS LOS PAÍSES" -->
-          <label class="cbx-todos-label" [class.pointer-events-none]="filtroVisualizacionF1() === 'torta'">
-            <input
-              type="checkbox"
-              [checked]="todosLosPaises()"
-              (change)="toggleTodosLosPaises()"
-              [disabled]="filtroVisualizacionF1() === 'torta'"
-            />
-            <span>Ver todos</span>
-          </label>
+        <!-- Opción 3: Gráfico de barras combinado (Ingresos vs Permanencias) -->
+        <label class="filtro-radio-item" [class.selected]="filtroVisualizacionF1() === 'combinado'">
+          <input type="radio" name="filtroF1" value="combinado" [checked]="filtroVisualizacionF1() === 'combinado'"
+            (change)="seleccionarFiltroF1('combinado')" />
+          <span class="radio-custom-circle"></span>
+          <div class="radio-content">
+            <span class="radio-label">Gráfico combinado</span>
+            <p class="radio-desc">Barras combinadas de ingresos vs. permanencias detallando cada país.</p>
+          </div>
+        </label>
+
+        <!-- Opción 4: Gráfico de torta (Nacionales vs Extranjeros general con switch) -->
+        <label class="filtro-radio-item" [class.selected]="filtroVisualizacionF1() === 'torta'">
+          <input type="radio" name="filtroF1" value="torta" [checked]="filtroVisualizacionF1() === 'torta'"
+            (change)="seleccionarFiltroF1('torta')" />
+          <span class="radio-custom-circle"></span>
+          <div class="radio-content">
+            <span class="radio-label">Gráfico de torta</span>
+            <p class="radio-desc">Distribución general de nacionales vs. extranjeros con switch de métrica.</p>
+          </div>
+        </label>
+      </div>
+
+      <!-- Indicador de total del período actual -->
+      <div class="kpi-mini-card">
+        <span class="kpi-mini-lbl">Período Consultado</span>
+        <strong class="kpi-mini-val">{{ etiquetaPeriodoConsultado() }}</strong>
+        <span class="kpi-mini-sub">{{ listaPaisesDisponibles().length }} países con registros</span>
+      </div>
+    </aside>
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- COLUMNA CENTRAL: ÁREA PRINCIPAL DEL GRÁFICO DINÁMICO -->
+    <!-- ------------------------------------------------------------------ -->
+    <section class="panel-grafico-center">
+      <!-- CABECERA DEL GRÁFICO -->
+      <div class="chart-box-header">
+        <div>
+          @switch (filtroVisualizacionF1()) {
+          @case ('ingresos') {
+          <h2 class="chart-main-title">Ingresos de Huéspedes por País de Procedencia</h2>
+          <p class="chart-main-sub">Llegadas registradas de nacionales y extranjeros • Total: {{ totalIngresosActual() |
+            number }} pax</p>
+          }
+          @case ('permanencias') {
+          <h2 class="chart-main-title">Permanencias (Pernoctaciones) por País de Procedencia</h2>
+          <p class="chart-main-sub">Noches de estadía registradas • Total: {{ totalPermanenciasActual() | number }}
+            noches</p>
+          }
+          @case ('combinado') {
+          <h2 class="chart-main-title">Comparativa Combinada: Ingresos vs. Permanencias</h2>
+          <p class="chart-main-sub">Relación de llegadas y noches pernoctadas con cálculo de estadía promedio</p>
+          }
+          @case ('torta') {
+          <h2 class="chart-main-title">Distribución General: Nacionales vs. Extranjeros</h2>
+          <p class="chart-main-sub">Proporción departamental consolidada • Período: {{ etiquetaPeriodoConsultado() }}
+          </p>
+          }
+          }
         </div>
 
+        <!-- SI ES GRÁFICO DE TORTA: SWITCH DE 3 OPCIONES (INGRESOS, PERMANENCIAS, COMBINADO) -->
         @if (filtroVisualizacionF1() === 'torta') {
-          <div class="torta-disabled-warning">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="info-icon">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="16" x2="12" y2="12"></line>
-              <line x1="12" y1="8" x2="12.01" y2="8"></line>
-            </svg>
-            <p>El selector de países no aplica para el gráfico de torta (representa el consolidado global Nacionales vs Extranjeros).</p>
-          </div>
-        } @else {
-          <!-- BUSCADOR DE PAÍS DENTRO DE LA CAJA -->
-          <div class="paises-search-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-mini-icon">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input
-              type="text"
-              class="paises-search-input"
-              [ngModel]="busquedaPais()"
-              (ngModelChange)="busquedaPais.set($event)"
-              placeholder="Buscar país a filtrar..."
-            />
-          </div>
-
-          <!-- BOTONES RÁPIDOS -->
-          <div class="quick-actions-bar">
-            <button type="button" class="btn-quick-link" (click)="seleccionarTodosLosPaises()">Todos</button>
-            <span class="quick-sep">|</span>
-            <button type="button" class="btn-quick-link" (click)="deseleccionarTodosLosPaises()">Solo Bolivia</button>
-          </div>
-
-          <!-- LISTA DE PAÍSES CON CHECKBOX -->
-          <div class="paises-scroll-checklist">
-            @for (pais of listaPaisesFiltradaPorBusqueda(); track pais.cod_pais) {
-              <label class="country-check-row">
-                <input
-                  type="checkbox"
-                  [checked]="todosLosPaises() || setCodigosSeleccionados().has(pais.cod_pais.toUpperCase())"
-                  (change)="togglePais(pais.cod_pais)"
-                />
-                <span class="c-code">{{ pais.cod_pais }}</span>
-                <span class="c-name">{{ pais.pais }}</span>
-              </label>
-            }
-            @if (listaPaisesDisponibles().length === 0) {
-              <div class="empty-filter-hint">
-                <span>No se registraron movimientos en este período.</span>
-              </div>
-            } @else if (listaPaisesFiltradaPorBusqueda().length === 0) {
-              <div class="empty-filter-hint">
-                <span>No se encontró "{{ busquedaPais() }}"</span>
-              </div>
-            }
-          </div>
+        <div class="torta-switch-pill" role="radiogroup" aria-label="Métrica de torta">
+          <button type="button" class="pill-option-btn" [class.active]="tortaMetrica() === 'ingresos'"
+            (click)="cambiarTortaMetrica('ingresos')" title="Ver distribución por cantidad de llegadas (huéspedes)">
+            <span>Ingresos</span>
+          </button>
+          <button type="button" class="pill-option-btn" [class.active]="tortaMetrica() === 'permanencias'"
+            (click)="cambiarTortaMetrica('permanencias')" title="Ver distribución por noches pernoctadas">
+            <span>Permanencias</span>
+          </button>
+          <button type="button" class="pill-option-btn" [class.active]="tortaMetrica() === 'combinado'"
+            (click)="cambiarTortaMetrica('combinado')"
+            title="Ver distribución combinada de afluencia total (ingresos + noches)">
+            <span>Combinado</span>
+          </button>
+        </div>
         }
-      </aside>
-    </main>
+
+        <!-- LEYENDA SI ES COMBINADO -->
+        @if (filtroVisualizacionF1() === 'combinado') {
+        <div class="legend-badges-group">
+          <span class="legend-pill pill-ingresos">
+            <span class="pill-dot dot-ingresos"></span>
+            <span>Ingresos (Llegadas)</span>
+          </span>
+          <span class="legend-pill pill-permanencias">
+            <span class="pill-dot dot-permanencias"></span>
+            <span>Permanencias (Noches)</span>
+          </span>
+        </div>
+        }
+      </div>
+
+      <!-- CANVAS / CONTENEDOR DEL GRÁFICO -->
+      <div class="chart-render-canvas">
+        <!-- ESTADO DE CARGA -->
+        @if (cargando()) {
+        <div class="chart-loading-state">
+          <div class="spinner-chart"></div>
+          <span>Cargando datos estadísticos...</span>
+        </div>
+        } @else {
+        <!-- ============================================================== -->
+        <!-- MODO 1: GRÁFICO DE BARRAS DE INGRESOS POR PAÍS -->
+        <!-- ============================================================== -->
+        @if (filtroVisualizacionF1() === 'ingresos') {
+        @if (itemsRankingFiltrados().length > 0) {
+        <div class="bars-container-vertical-scroll">
+          @for (item of itemsRankingFiltrados(); track item.id_nacionalidad) {
+          <div class="bar-row-country"
+            (mouseenter)="mostrarTooltip($event, item.pais, 'Ingresos: ' + item.cant_ingresos + ' pax', 'Participación: ' + item.porcentaje_del_total + '%')"
+            (mouseleave)="ocultarTooltip()">
+            <div class="bar-label-col">
+              <span class="country-badge-iso">{{ item.cod_pais }}</span>
+              <strong class="country-name-txt" [class.is-bolivia]="item.cod_pais === 'BO'">
+                {{ item.pais }}
+              </strong>
+            </div>
+
+            <div class="bar-track-col">
+              <div class="bar-fill-dynamic bar-fill-ingresos" [class.bar-bolivia]="item.cod_pais === 'BO'"
+                [style.width.%]="(item.cant_ingresos / maxValorIngresos()) * 100"></div>
+            </div>
+
+            <div class="bar-value-col tabular-nums">
+              <strong class="val-num">{{ item.cant_ingresos | number }}</strong>
+              <span class="val-sub">{{ item.porcentaje_del_total }}%</span>
+            </div>
+          </div>
+          }
+        </div>
+        } @else {
+        <div class="empty-chart-notice">
+          <p>No hay datos de ingresos para los países seleccionados en este período.</p>
+        </div>
+        }
+        }
+
+        <!-- ============================================================== -->
+        <!-- MODO 2: GRÁFICO DE BARRAS DE PERMANENCIAS POR PAÍS -->
+        <!-- ============================================================== -->
+        @if (filtroVisualizacionF1() === 'permanencias') {
+        @if (itemsRankingFiltrados().length > 0) {
+        <div class="bars-container-vertical-scroll">
+          @for (item of itemsRankingFiltrados(); track item.id_nacionalidad) {
+          <div class="bar-row-country"
+            (mouseenter)="mostrarTooltip($event, item.pais, 'Permanencias: ' + item.cant_permanencias + ' noches', 'Afluencia total: ' + item.total_afluencia)"
+            (mouseleave)="ocultarTooltip()">
+            <div class="bar-label-col">
+              <span class="country-badge-iso">{{ item.cod_pais }}</span>
+              <strong class="country-name-txt" [class.is-bolivia]="item.cod_pais === 'BO'">
+                {{ item.pais }}
+              </strong>
+            </div>
+
+            <div class="bar-track-col">
+              <div class="bar-fill-dynamic bar-fill-permanencias" [class.bar-bolivia-perm]="item.cod_pais === 'BO'"
+                [style.width.%]="(item.cant_permanencias / maxValorPermanencias()) * 100"></div>
+            </div>
+
+            <div class="bar-value-col tabular-nums">
+              <strong class="val-num text-perm">{{ item.cant_permanencias | number }}</strong>
+              <span class="val-sub">noches</span>
+            </div>
+          </div>
+          }
+        </div>
+        } @else {
+        <div class="empty-chart-notice">
+          <p>No hay datos de permanencias para los países seleccionados en este período.</p>
+        </div>
+        }
+        }
+
+        <!-- ============================================================== -->
+        <!-- MODO 3: GRÁFICO COMBINADO DE INGRESOS Y PERMANENCIAS -->
+        <!-- ============================================================== -->
+        @if (filtroVisualizacionF1() === 'combinado') {
+        @if (seriesComparativaFiltradas().length > 0) {
+        <div class="bars-container-vertical-scroll">
+          @for (item of seriesComparativaFiltradas(); track item.etiqueta) {
+          <div class="grouped-bar-row"
+            (mouseenter)="mostrarTooltip($event, item.etiqueta, 'Ingresos: ' + item.ingresos + ' pax', 'Permanencias: ' + item.permanencias + ' noches (Ratio: ' + item.ratio_permanencia_ingreso + ' noch/pax)')"
+            (mouseleave)="ocultarTooltip()">
+            <div class="bar-label-col">
+              <span class="country-badge-iso">{{ item.codigo || 'OT' }}</span>
+              <strong class="country-name-txt">{{ item.etiqueta }}</strong>
+              <span class="ratio-badge-tag tabular-nums" title="Noches promedio por huésped">
+                {{ item.ratio_permanencia_ingreso }}x
+              </span>
+            </div>
+
+            <div class="grouped-tracks-col">
+              <!-- Barra 1: Ingresos -->
+              <div class="single-track">
+                <div class="bar-fill-dynamic bar-fill-ingresos"
+                  [style.width.%]="(item.ingresos / maxValorCombinado()) * 100"></div>
+                <span class="track-val tabular-nums">{{ item.ingresos }}</span>
+              </div>
+
+              <!-- Barra 2: Permanencias -->
+              <div class="single-track">
+                <div class="bar-fill-dynamic bar-fill-permanencias"
+                  [style.width.%]="(item.permanencias / maxValorCombinado()) * 100"></div>
+                <span class="track-val tabular-nums">{{ item.permanencias }}</span>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+        } @else {
+        <div class="empty-chart-notice">
+          <p>No hay series comparativas disponibles para la selección actual.</p>
+        </div>
+        }
+        }
+
+        <!-- ============================================================== -->
+        <!-- MODO 4: GRÁFICO DE TORTA DE INGRESOS / PERMANENCIAS (GENERAL) -->
+        <!-- ============================================================== -->
+        @if (filtroVisualizacionF1() === 'torta') {
+        @let torta = datosTortaCalculados();
+        <div class="donut-chart-view-layout">
+          <div class="donut-graphic-box">
+            <svg class="donut-svg" viewBox="0 0 200 200" width="220" height="220">
+              <!-- Círculo base de fondo -->
+              <circle cx="100" cy="100" [attr.r]="radioDonut" fill="transparent" stroke="#f1f5f9" stroke-width="32" />
+
+              <!-- Segmento Nacionales (Bolivia) -->
+              <circle cx="100" cy="100" [attr.r]="radioDonut" fill="transparent" stroke="#8f1d2c" stroke-width="32"
+                [attr.stroke-dasharray]="donutStrokeNacionales()" stroke-dashoffset="0" transform="rotate(-90 100 100)"
+                class="donut-segment"
+                (mouseenter)="mostrarTooltip($event, 'Nacionales (Bolivia)', torta.nacionalesCant + ' (' + torta.nacionalesPct + '%)')"
+                (mouseleave)="ocultarTooltip()" />
+
+              <!-- Segmento Extranjeros -->
+              <circle cx="100" cy="100" [attr.r]="radioDonut" fill="transparent" stroke="#2563eb" stroke-width="32"
+                [attr.stroke-dasharray]="donutStrokeExtranjeros()" [attr.stroke-dashoffset]="donutOffsetExtranjeros()"
+                transform="rotate(-90 100 100)" class="donut-segment"
+                (mouseenter)="mostrarTooltip($event, 'Extranjeros', torta.extranjerosCant + ' (' + torta.extranjerosPct + '%)')"
+                (mouseleave)="ocultarTooltip()" />
+            </svg>
+
+            <!-- Centro del Donut -->
+            <div class="donut-center-info">
+              <span class="donut-center-lbl">
+                @if (tortaMetrica() === 'ingresos') { TOTAL INGRESOS }
+                @else if (tortaMetrica() === 'permanencias') { TOTAL NOCHES }
+                @else { AFLUENCIA TOTAL }
+              </span>
+              <strong class="donut-center-val tabular-nums">{{ torta.total | number }}</strong>
+              <span class="donut-center-unit">{{ torta.unidad }}</span>
+            </div>
+          </div>
+
+          <!-- LEYENDA Y TARJETAS COMPARATIVAS -->
+          <div class="donut-details-side">
+            <div class="torta-segment-card card-nac">
+              <div class="t-card-header">
+                <span class="color-indicator bg-burgundy"></span>
+                <strong class="t-card-title">Huéspedes Nacionales (Bolivia)</strong>
+              </div>
+              <div class="t-card-numbers">
+                <span class="t-num tabular-nums">{{ torta.nacionalesCant | number }}</span>
+                <span class="t-pct tabular-nums">{{ torta.nacionalesPct }}%</span>
+              </div>
+              <div class="t-progress-bar">
+                <div class="t-bar-fill bg-burgundy" [style.width.%]="torta.nacionalesPct"></div>
+              </div>
+            </div>
+
+            <div class="torta-segment-card card-ext">
+              <div class="t-card-header">
+                <span class="color-indicator bg-blue"></span>
+                <strong class="t-card-title">Huéspedes Extranjeros</strong>
+              </div>
+              <div class="t-card-numbers">
+                <span class="t-num tabular-nums">{{ torta.extranjerosCant | number }}</span>
+                <span class="t-pct tabular-nums">{{ torta.extranjerosPct }}%</span>
+              </div>
+              <div class="t-progress-bar">
+                <div class="t-bar-fill bg-blue" [style.width.%]="torta.extranjerosPct"></div>
+              </div>
+            </div>
+
+            <div class="torta-note-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="note-icon">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              <span>
+                Mostrando la métrica <strong>{{ torta.labelMetrica }}</strong> a nivel general en todo el Departamento
+                de Oruro.
+              </span>
+            </div>
+          </div>
+        </div>
+        }
+        }
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------------------ -->
+    <!-- COLUMNA DERECHA: SELECTOR DE PAÍSES A VER -->
+    <!-- ------------------------------------------------------------------ -->
+    <aside class="panel-paises-box" [class.disabled-torta]="filtroVisualizacionF1() === 'torta'">
+      <!-- Encabezado del selector -->
+      <div class="paises-header-row">
+        <div>
+          <h3 class="panel-title">Países a Ver</h3>
+          <span class="panel-badge-sub">
+            {{ todosLosPaises() ? 'Todos seleccionados' : codigosPaisesSeleccionados().length + ' elegidos' }}
+          </span>
+        </div>
+
+        <!-- CHECKBOX "VER TODOS LOS PAÍSES" -->
+        <label class="cbx-todos-label" [class.pointer-events-none]="filtroVisualizacionF1() === 'torta'">
+          <input type="checkbox" [checked]="todosLosPaises()" (change)="toggleTodosLosPaises()"
+            [disabled]="filtroVisualizacionF1() === 'torta'" />
+          <span>Ver todos</span>
+        </label>
+      </div>
+
+      @if (filtroVisualizacionF1() === 'torta') {
+      <div class="torta-disabled-warning">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="info-icon">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <p>El selector de países no aplica para el gráfico de torta (representa el consolidado global Nacionales vs
+          Extranjeros).</p>
+      </div>
+      } @else {
+      <!-- BUSCADOR DE PAÍS DENTRO DE LA CAJA -->
+      <div class="paises-search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-mini-icon">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="paises-search-input" [ngModel]="busquedaPais()"
+          (ngModelChange)="busquedaPais.set($event)" placeholder="Buscar país a filtrar..." />
+      </div>
+
+      <!-- BOTONES RÁPIDOS -->
+      <div class="quick-actions-bar">
+        <button type="button" class="btn-quick-link" (click)="seleccionarTodosLosPaises()">Todos</button>
+        <span class="quick-sep">|</span>
+        <button type="button" class="btn-quick-link" (click)="deseleccionarTodosLosPaises()">Solo Bolivia</button>
+      </div>
+
+      <!-- LISTA DE PAÍSES CON CHECKBOX -->
+      <div class="paises-scroll-checklist">
+        @for (pais of listaPaisesFiltradaPorBusqueda(); track pais.cod_pais) {
+        <label class="country-check-row">
+          <input type="checkbox"
+            [checked]="todosLosPaises() || setCodigosSeleccionados().has(pais.cod_pais.toUpperCase())"
+            (change)="togglePais(pais.cod_pais)" />
+          <span class="c-code">{{ pais.cod_pais }}</span>
+          <span class="c-name">{{ pais.pais }}</span>
+        </label>
+        }
+        @if (listaPaisesDisponibles().length === 0) {
+        <div class="empty-filter-hint">
+          <span>No se registraron movimientos en este período.</span>
+        </div>
+        } @else if (listaPaisesFiltradaPorBusqueda().length === 0) {
+        <div class="empty-filter-hint">
+          <span>No se encontró "{{ busquedaPais() }}"</span>
+        </div>
+        }
+      </div>
+      }
+    </aside>
+  </main>
   }
 
   <!-- ====================================================================== -->
   <!-- CONTENIDO DE FORMULARIO 2: OCUPACIÓN HOTELERA (PESTAÑA 2) -->
   <!-- ====================================================================== -->
   @if (formularioActivo() === 'f2') {
-    <section class="placeholder-form-view">
-      <div class="placeholder-card">
-        <div class="placeholder-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-        </div>
-        <h3 class="placeholder-title">Estadísticas de Formulario 2: Ocupación Hotelera</h3>
-        <p class="placeholder-desc">
-          Panel analítico de habitaciones disponibles vs. ocupadas, plazas/camas utilizadas y tasa de ocupación departamental promedio.
-        </p>
-        <div class="placeholder-chips">
-          <span class="chip-metric">Capacidad Hotelera Registrada</span>
-          <span class="chip-metric">Tasa de Ocupación Mensual</span>
-          <span class="chip-metric">Personas Alojadas</span>
-        </div>
+  <section class="placeholder-form-view">
+    <div class="placeholder-card">
+      <div class="placeholder-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
       </div>
-    </section>
+      <h3 class="placeholder-title">Estadísticas de Formulario 2: Ocupación Hotelera</h3>
+      <p class="placeholder-desc">
+        Panel analítico de habitaciones disponibles vs. ocupadas, plazas/camas utilizadas y tasa de ocupación
+        departamental promedio.
+      </p>
+      <div class="placeholder-chips">
+        <span class="chip-metric">Capacidad Hotelera Registrada</span>
+        <span class="chip-metric">Tasa de Ocupación Mensual</span>
+        <span class="chip-metric">Personas Alojadas</span>
+      </div>
+    </div>
+  </section>
   }
 
   <!-- ====================================================================== -->
   <!-- CONTENIDO DE FORMULARIO 3 (PESTAÑA 3) -->
   <!-- ====================================================================== -->
   @if (formularioActivo() === 'f3') {
-    <section class="placeholder-form-view">
-      <div class="placeholder-card">
-        <div class="placeholder-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-          </svg>
-        </div>
-        <h3 class="placeholder-title">Estadísticas de Formulario 3: Registros Consolidados</h3>
-        <p class="placeholder-desc">
-          Consolidación general y series temporales anuales de establecimientos acreditados por la Gobernación de Oruro.
-        </p>
+  <section class="placeholder-form-view">
+    <div class="placeholder-card">
+      <div class="placeholder-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+        </svg>
       </div>
-    </section>
+      <h3 class="placeholder-title">Estadísticas de Formulario 3: Registros Consolidados</h3>
+      <p class="placeholder-desc">
+        Consolidación general y series temporales anuales de establecimientos acreditados por la Gobernación de Oruro.
+      </p>
+    </div>
+  </section>
   }
 </div>
 
@@ -735,121 +569,107 @@
 <!-- TOOLTIP FLOTANTE INTERACTIVO -->
 <!-- ======================================================================== -->
 @if (tooltipVisible()) {
-  <div
-    class="chart-floating-tooltip"
-    [style.left.px]="tooltipX()"
-    [style.top.px]="tooltipY()"
-  >
-    <div class="tt-title">{{ tooltipTitulo() }}</div>
-    <div class="tt-val-1">{{ tooltipValor1() }}</div>
-    @if (tooltipValor2()) {
-      <div class="tt-val-2">{{ tooltipValor2() }}</div>
-    }
-  </div>
+<div class="chart-floating-tooltip" [style.left.px]="tooltipX()" [style.top.px]="tooltipY()">
+  <div class="tt-title">{{ tooltipTitulo() }}</div>
+  <div class="tt-val-1">{{ tooltipValor1() }}</div>
+  @if (tooltipValor2()) {
+  <div class="tt-val-2">{{ tooltipValor2() }}</div>
+  }
+</div>
 }
 
 <!-- ======================================================================== -->
 <!-- MODAL DE EXPORTACIÓN (FORMATOS Y GRÁFICOS A EXPORTAR) -->
 <!-- ======================================================================== -->
 @if (modalExportarAbierto()) {
-  <div class="modal-backdrop" (click)="cerrarModalExportar()" role="dialog" aria-modal="true">
-    <div class="modal-dialog-export" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <div class="modal-header-text">
-          <span class="modal-tag-pill">EXPORTACIÓN OFICIAL</span>
-          <h3 class="modal-title">Exportar Estadísticas y Gráficos</h3>
-          <p class="modal-sub">Selecciona el formato y los gráficos a exportar para el Formulario 1 ({{ etiquetaPeriodoConsultado() }}).</p>
-        </div>
-        <button type="button" class="btn-modal-close-icon" (click)="cerrarModalExportar()" title="Cerrar modal">✕</button>
+<div class="modal-backdrop" (click)="cerrarModalExportar()" role="dialog" aria-modal="true">
+  <div class="modal-dialog-export" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-header-text">
+        <span class="modal-tag-pill">EXPORTACIÓN OFICIAL</span>
+        <h3 class="modal-title">Exportar Estadísticas y Gráficos</h3>
+        <p class="modal-sub">Selecciona el formato y los gráficos a exportar para el Formulario 1 ({{
+          etiquetaPeriodoConsultado() }}).</p>
       </div>
+      <button type="button" class="btn-modal-close-icon" (click)="cerrarModalExportar()" title="Cerrar modal">✕</button>
+    </div>
 
-      <div class="modal-body-content">
-        <!-- 1. SELECCIÓN DE FORMATO (EXCLUSIVO PDF) -->
-        <div class="export-section">
-          <h4 class="export-section-title">1. Formato de Exportación</h4>
-          <div class="format-options-single">
-            <div class="format-card selected">
-              <div class="format-icon-box icon-pdf">PDF</div>
-              <div class="format-info-col">
-                <strong class="format-name">Reporte Oficial (PDF)</strong>
-                <span class="format-desc">Documento institucional formal imprimible y descargable con membrete oficial, indicadores clave y gráficos analíticos.</span>
-              </div>
+    <div class="modal-body-content">
+      <!-- 1. SELECCIÓN DE FORMATO (EXCLUSIVO PDF) -->
+      <div class="export-section">
+        <h4 class="export-section-title">1. Formato de Exportación</h4>
+        <div class="format-options-single">
+          <div class="format-card selected">
+            <div class="format-icon-box icon-pdf">PDF</div>
+            <div class="format-info-col">
+              <strong class="format-name">Reporte Oficial (PDF)</strong>
+              <span class="format-desc">Documento institucional formal imprimible y descargable con membrete oficial,
+                indicadores clave y gráficos analíticos.</span>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- 2. SELECCIÓN DE GRÁFICOS A EXPORTAR -->
-        <div class="export-section mt-4">
-          <div class="section-title-split">
-            <h4 class="export-section-title">2. Gráficos del Formulario 1 a Incluir</h4>
-            <span class="section-hint">Seleccione los reportes requeridos</span>
-          </div>
+      <!-- 2. SELECCIÓN DE GRÁFICOS A EXPORTAR -->
+      <div class="export-section mt-4">
+        <div class="section-title-split">
+          <h4 class="export-section-title">2. Gráficos del Formulario 1 a Incluir</h4>
+          <span class="section-hint">Seleccione los reportes requeridos</span>
+        </div>
 
-          <div class="charts-checkbox-list">
-            <label class="chart-cbx-item">
-              <input
-                type="checkbox"
-                [checked]="exportarGraficoIngresos()"
-                (change)="exportarGraficoIngresos.set(!exportarGraficoIngresos())"
-              />
-              <div class="cbx-content">
-                <strong>1. Gráfico de barras de ingresos por país</strong>
-                <span>Detalle de extranjeros y nacionales por procedencia.</span>
-              </div>
-            </label>
+        <div class="charts-checkbox-list">
+          <label class="chart-cbx-item">
+            <input type="checkbox" [checked]="exportarGraficoIngresos()"
+              (change)="exportarGraficoIngresos.set(!exportarGraficoIngresos())" />
+            <div class="cbx-content">
+              <strong>1. Gráfico de barras de ingresos por país</strong>
+              <span>Detalle de extranjeros y nacionales por procedencia.</span>
+            </div>
+          </label>
 
-            <label class="chart-cbx-item">
-              <input
-                type="checkbox"
-                [checked]="exportarGraficoPermanencias()"
-                (change)="exportarGraficoPermanencias.set(!exportarGraficoPermanencias())"
-              />
-              <div class="cbx-content">
-                <strong>2. Gráfico de barras de permanencias por país</strong>
-                <span>Noches pernoctadas registradas detallando países.</span>
-              </div>
-            </label>
+          <label class="chart-cbx-item">
+            <input type="checkbox" [checked]="exportarGraficoPermanencias()"
+              (change)="exportarGraficoPermanencias.set(!exportarGraficoPermanencias())" />
+            <div class="cbx-content">
+              <strong>2. Gráfico de barras de permanencias por país</strong>
+              <span>Noches pernoctadas registradas detallando países.</span>
+            </div>
+          </label>
 
-            <label class="chart-cbx-item">
-              <input
-                type="checkbox"
-                [checked]="exportarGraficoCombinado()"
-                (change)="exportarGraficoCombinado.set(!exportarGraficoCombinado())"
-              />
-              <div class="cbx-content">
-                <strong>3. Gráfico de barras combinado (Ingresos vs Permanencias)</strong>
-                <span>Comparativa simultánea con cálculo de estadía promedio.</span>
-              </div>
-            </label>
+          <label class="chart-cbx-item">
+            <input type="checkbox" [checked]="exportarGraficoCombinado()"
+              (change)="exportarGraficoCombinado.set(!exportarGraficoCombinado())" />
+            <div class="cbx-content">
+              <strong>3. Gráfico de barras combinado (Ingresos vs Permanencias)</strong>
+              <span>Comparativa simultánea con cálculo de estadía promedio.</span>
+            </div>
+          </label>
 
-            <label class="chart-cbx-item">
-              <input
-                type="checkbox"
-                [checked]="exportarGraficoTorta()"
-                (change)="exportarGraficoTorta.set(!exportarGraficoTorta())"
-              />
-              <div class="cbx-content">
-                <strong>4. Gráfico de torta (Nacionales vs Extranjeros)</strong>
-                <span>Distribución general porcentual de afluencia hotelera.</span>
-              </div>
-            </label>
-          </div>
+          <label class="chart-cbx-item">
+            <input type="checkbox" [checked]="exportarGraficoTorta()"
+              (change)="exportarGraficoTorta.set(!exportarGraficoTorta())" />
+            <div class="cbx-content">
+              <strong>4. Gráfico de torta (Nacionales vs Extranjeros)</strong>
+              <span>Distribución general porcentual de afluencia hotelera.</span>
+            </div>
+          </label>
         </div>
       </div>
+    </div>
 
-      <div class="modal-footer-actions">
-        <button type="button" class="btn-cancelar" (click)="cerrarModalExportar()">Cancelar</button>
-        <button type="button" class="btn-confirmar-descarga" (click)="ejecutarExportacion()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-icon">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          <span>Descargar / Exportar Reporte (PDF)</span>
-        </button>
-      </div>
+    <div class="modal-footer-actions">
+      <button type="button" class="btn-cancelar" (click)="cerrarModalExportar()">Cancelar</button>
+      <button type="button" class="btn-confirmar-descarga" (click)="ejecutarExportacion()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-svg-icon">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Descargar / Exportar Reporte (PDF)</span>
+      </button>
     </div>
   </div>
+</div>
 }
 
 <!-- ======================================================================== -->
@@ -862,7 +682,8 @@
       <div class="print-institution-block">
         <span class="inst-line-1">GOBIERNO AUTÓNOMO DEPARTAMENTAL DE ORURO</span>
         <span class="inst-line-2">Secretaría Departamental de Cultura y Turismo</span>
-        <span class="inst-line-3">Dirección Departamental de Turismo • Plataforma Departamental Hotelera Oruro (PDHO)</span>
+        <span class="inst-line-3">Dirección Departamental de Turismo • Plataforma Departamental Hotelera Oruro
+          (PDHO)</span>
       </div>
       <div class="print-seal-badge">
         <span class="seal-text-1">PDHO</span>
@@ -915,366 +736,345 @@
   <div class="print-body-content">
     <!-- SECCIÓN 1: GRÁFICO DE BARRAS DE INGRESOS POR PAÍS -->
     @if (exportarGraficoIngresos()) {
-      <section class="print-report-section">
-        <div class="print-section-header">
-          <span class="print-section-num">1</span>
-          <div class="print-section-titles">
-            <h2 class="print-section-title">Gráfico de Ingresos de Huéspedes por País de Procedencia</h2>
-            <p class="print-section-desc">Llegadas registradas de viajeros nacionales y extranjeros detallando países de origen.</p>
-          </div>
+    <section class="print-report-section">
+      <div class="print-section-header">
+        <span class="print-section-num">1</span>
+        <div class="print-section-titles">
+          <h2 class="print-section-title">Gráfico de Ingresos de Huéspedes por País de Procedencia</h2>
+          <p class="print-section-desc">Llegadas registradas de viajeros nacionales y extranjeros detallando países de
+            origen.</p>
         </div>
+      </div>
 
-        <div class="print-chart-container">
-          @if (itemsRankingFiltrados().length > 0) {
-            <div class="print-bars-list">
-              @for (item of itemsRankingFiltrados(); track item.id_nacionalidad) {
-                <div class="print-bar-row">
-                  <div class="p-bar-label">
-                    <span class="p-iso-badge">{{ item.cod_pais }}</span>
-                    <strong class="p-country-name" [class.is-bolivia]="item.cod_pais === 'BO'">{{ item.pais }}</strong>
-                  </div>
-                  <div class="p-bar-track">
-                    <div
-                      class="p-bar-fill print-bar-ingresos"
-                      [class.p-bar-bolivia]="item.cod_pais === 'BO'"
-                      [style.width.%]="(item.cant_ingresos / maxValorIngresos()) * 100"
-                    ></div>
-                  </div>
-                  <div class="p-bar-values tabular-nums">
-                    <strong class="p-num-val">{{ item.cant_ingresos | number }}</strong>
-                    <span class="p-pct-val">{{ item.porcentaje_del_total }}%</span>
-                  </div>
-                </div>
-              }
+      <div class="print-chart-container">
+        @if (itemsRankingFiltrados().length > 0) {
+        <div class="print-bars-list">
+          @for (item of itemsRankingFiltrados(); track item.id_nacionalidad) {
+          <div class="print-bar-row">
+            <div class="p-bar-label">
+              <span class="p-iso-badge">{{ item.cod_pais }}</span>
+              <strong class="p-country-name" [class.is-bolivia]="item.cod_pais === 'BO'">{{ item.pais }}</strong>
             </div>
-
-            <!-- TABLA FORMAL DE SOPORTE -->
-            <table class="print-data-table">
-              <thead>
-                <tr>
-                  <th>N°</th>
-                  <th>Código ISO</th>
-                  <th>País de Procedencia</th>
-                  <th class="text-right">Huéspedes (Llegadas)</th>
-                  <th class="text-right">Participación (%)</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (item of itemsRankingFiltrados(); track item.id_nacionalidad; let i = $index) {
-                  <tr>
-                    <td>{{ i + 1 }}</td>
-                    <td><span class="table-iso-tag">{{ item.cod_pais }}</span></td>
-                    <td><strong>{{ item.pais }}</strong></td>
-                    <td class="text-right tabular-nums">{{ item.cant_ingresos | number }}</td>
-                    <td class="text-right tabular-nums">{{ item.porcentaje_del_total }}%</td>
-                  </tr>
-                }
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th colspan="3" class="text-left">TOTAL INGRESOS REGISTRADOS</th>
-                  <th class="text-right tabular-nums">{{ totalIngresosActual() | number }}</th>
-                  <th class="text-right tabular-nums">100.0%</th>
-                </tr>
-              </tfoot>
-            </table>
-          } @else {
-            <p class="print-empty-msg">No se encontraron registros de ingresos para el período y países seleccionados.</p>
+            <div class="p-bar-track">
+              <div class="p-bar-fill print-bar-ingresos" [class.p-bar-bolivia]="item.cod_pais === 'BO'"
+                [style.width.%]="(item.cant_ingresos / maxValorIngresos()) * 100"></div>
+            </div>
+            <div class="p-bar-values tabular-nums">
+              <strong class="p-num-val">{{ item.cant_ingresos | number }}</strong>
+              <span class="p-pct-val">{{ item.porcentaje_del_total }}%</span>
+            </div>
+          </div>
           }
         </div>
-      </section>
+
+        <!-- TABLA FORMAL DE SOPORTE -->
+        <table class="print-data-table">
+          <thead>
+            <tr>
+              <th>N°</th>
+              <th>Código ISO</th>
+              <th>País de Procedencia</th>
+              <th class="text-right">Huéspedes (Llegadas)</th>
+              <th class="text-right">Participación (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of itemsRankingFiltrados(); track item.id_nacionalidad; let i = $index) {
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td><span class="table-iso-tag">{{ item.cod_pais }}</span></td>
+              <td><strong>{{ item.pais }}</strong></td>
+              <td class="text-right tabular-nums">{{ item.cant_ingresos | number }}</td>
+              <td class="text-right tabular-nums">{{ item.porcentaje_del_total }}%</td>
+            </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="3" class="text-left">TOTAL INGRESOS REGISTRADOS</th>
+              <th class="text-right tabular-nums">{{ totalIngresosActual() | number }}</th>
+              <th class="text-right tabular-nums">100.0%</th>
+            </tr>
+          </tfoot>
+        </table>
+        } @else {
+        <p class="print-empty-msg">No se encontraron registros de ingresos para el período y países seleccionados.</p>
+        }
+      </div>
+    </section>
     }
 
     <!-- SECCIÓN 2: GRÁFICO DE BARRAS DE PERMANENCIAS POR PAÍS -->
     @if (exportarGraficoPermanencias()) {
-      <section class="print-report-section">
-        <div class="print-section-header">
-          <span class="print-section-num">2</span>
-          <div class="print-section-titles">
-            <h2 class="print-section-title">Gráfico de Permanencias (Pernoctaciones) por País de Procedencia</h2>
-            <p class="print-section-desc">Volumen de pernoctaciones y noches de estadía generadas por turistas en el departamento.</p>
-          </div>
+    <section class="print-report-section">
+      <div class="print-section-header">
+        <span class="print-section-num">2</span>
+        <div class="print-section-titles">
+          <h2 class="print-section-title">Gráfico de Permanencias (Pernoctaciones) por País de Procedencia</h2>
+          <p class="print-section-desc">Volumen de pernoctaciones y noches de estadía generadas por turistas en el
+            departamento.</p>
         </div>
+      </div>
 
-        <div class="print-chart-container">
-          @if (itemsRankingFiltrados().length > 0) {
-            <div class="print-bars-list">
-              @for (item of itemsRankingFiltrados(); track item.id_nacionalidad) {
-                <div class="print-bar-row">
-                  <div class="p-bar-label">
-                    <span class="p-iso-badge">{{ item.cod_pais }}</span>
-                    <strong class="p-country-name" [class.is-bolivia]="item.cod_pais === 'BO'">{{ item.pais }}</strong>
-                  </div>
-                  <div class="p-bar-track">
-                    <div
-                      class="p-bar-fill print-bar-permanencias"
-                      [class.p-bar-bolivia-perm]="item.cod_pais === 'BO'"
-                      [style.width.%]="(item.cant_permanencias / maxValorPermanencias()) * 100"
-                    ></div>
-                  </div>
-                  <div class="p-bar-values tabular-nums">
-                    <strong class="p-num-val text-perm">{{ item.cant_permanencias | number }}</strong>
-                    <span class="p-pct-val">noches</span>
-                  </div>
-                </div>
-              }
+      <div class="print-chart-container">
+        @if (itemsRankingFiltrados().length > 0) {
+        <div class="print-bars-list">
+          @for (item of itemsRankingFiltrados(); track item.id_nacionalidad) {
+          <div class="print-bar-row">
+            <div class="p-bar-label">
+              <span class="p-iso-badge">{{ item.cod_pais }}</span>
+              <strong class="p-country-name" [class.is-bolivia]="item.cod_pais === 'BO'">{{ item.pais }}</strong>
             </div>
-
-            <!-- TABLA FORMAL DE SOPORTE -->
-            <table class="print-data-table">
-              <thead>
-                <tr>
-                  <th>N°</th>
-                  <th>Código ISO</th>
-                  <th>País de Procedencia</th>
-                  <th class="text-right">Noches Pernoctadas</th>
-                  <th class="text-right">Afluencia Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (item of itemsRankingFiltrados(); track item.id_nacionalidad; let i = $index) {
-                  <tr>
-                    <td>{{ i + 1 }}</td>
-                    <td><span class="table-iso-tag">{{ item.cod_pais }}</span></td>
-                    <td><strong>{{ item.pais }}</strong></td>
-                    <td class="text-right tabular-nums">{{ item.cant_permanencias | number }}</td>
-                    <td class="text-right tabular-nums">{{ item.total_afluencia | number }}</td>
-                  </tr>
-                }
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th colspan="3" class="text-left">TOTAL NOCHES PERNOCTADAS</th>
-                  <th class="text-right tabular-nums">{{ totalPermanenciasActual() | number }}</th>
-                  <th class="text-right tabular-nums">—</th>
-                </tr>
-              </tfoot>
-            </table>
-          } @else {
-            <p class="print-empty-msg">No se encontraron registros de permanencias para el período y países seleccionados.</p>
+            <div class="p-bar-track">
+              <div class="p-bar-fill print-bar-permanencias" [class.p-bar-bolivia-perm]="item.cod_pais === 'BO'"
+                [style.width.%]="(item.cant_permanencias / maxValorPermanencias()) * 100"></div>
+            </div>
+            <div class="p-bar-values tabular-nums">
+              <strong class="p-num-val text-perm">{{ item.cant_permanencias | number }}</strong>
+              <span class="p-pct-val">noches</span>
+            </div>
+          </div>
           }
         </div>
-      </section>
+
+        <!-- TABLA FORMAL DE SOPORTE -->
+        <table class="print-data-table">
+          <thead>
+            <tr>
+              <th>N°</th>
+              <th>Código ISO</th>
+              <th>País de Procedencia</th>
+              <th class="text-right">Noches Pernoctadas</th>
+              <th class="text-right">Afluencia Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of itemsRankingFiltrados(); track item.id_nacionalidad; let i = $index) {
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td><span class="table-iso-tag">{{ item.cod_pais }}</span></td>
+              <td><strong>{{ item.pais }}</strong></td>
+              <td class="text-right tabular-nums">{{ item.cant_permanencias | number }}</td>
+              <td class="text-right tabular-nums">{{ item.total_afluencia | number }}</td>
+            </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th colspan="3" class="text-left">TOTAL NOCHES PERNOCTADAS</th>
+              <th class="text-right tabular-nums">{{ totalPermanenciasActual() | number }}</th>
+              <th class="text-right tabular-nums">—</th>
+            </tr>
+          </tfoot>
+        </table>
+        } @else {
+        <p class="print-empty-msg">No se encontraron registros de permanencias para el período y países seleccionados.
+        </p>
+        }
+      </div>
+    </section>
     }
 
     <!-- SECCIÓN 3: GRÁFICO COMBINADO (INGRESOS VS PERMANENCIAS) -->
     @if (exportarGraficoCombinado()) {
-      <section class="print-report-section">
-        <div class="print-section-header">
-          <span class="print-section-num">3</span>
-          <div class="print-section-titles">
-            <h2 class="print-section-title">Gráfico Comparativo Combinado: Ingresos vs. Permanencias</h2>
-            <p class="print-section-desc">Comparación simultánea entre volumen de llegadas y noches pernoctadas con cálculo de estadía promedio.</p>
+    <section class="print-report-section">
+      <div class="print-section-header">
+        <span class="print-section-num">3</span>
+        <div class="print-section-titles">
+          <h2 class="print-section-title">Gráfico Comparativo Combinado: Ingresos vs. Permanencias</h2>
+          <p class="print-section-desc">Comparación simultánea entre volumen de llegadas y noches pernoctadas con
+            cálculo de estadía promedio.</p>
+        </div>
+      </div>
+
+      <div class="print-chart-container">
+        <!-- Leyenda de barras combinadas -->
+        <div class="print-legend-row">
+          <div class="print-legend-item">
+            <span class="p-leg-color bg-burgundy"></span>
+            <span>Ingresos (Huéspedes llegados)</span>
+          </div>
+          <div class="print-legend-item">
+            <span class="p-leg-color bg-amber"></span>
+            <span>Permanencias (Noches pernoctadas)</span>
           </div>
         </div>
 
-        <div class="print-chart-container">
-          <!-- Leyenda de barras combinadas -->
-          <div class="print-legend-row">
-            <div class="print-legend-item">
-              <span class="p-leg-color bg-burgundy"></span>
-              <span>Ingresos (Huéspedes llegados)</span>
+        @if (seriesComparativaFiltradas().length > 0) {
+        <div class="print-grouped-bars-list">
+          @for (item of seriesComparativaFiltradas(); track item.etiqueta) {
+          <div class="print-grouped-bar-row">
+            <div class="p-bar-label">
+              <span class="p-iso-badge">{{ item.codigo || 'OT' }}</span>
+              <strong class="p-country-name">{{ item.etiqueta }}</strong>
+              <span class="p-ratio-tag tabular-nums">{{ item.ratio_permanencia_ingreso }}x</span>
             </div>
-            <div class="print-legend-item">
-              <span class="p-leg-color bg-amber"></span>
-              <span>Permanencias (Noches pernoctadas)</span>
+
+            <div class="p-grouped-tracks">
+              <div class="p-sub-track">
+                <div class="p-bar-fill print-bar-ingresos"
+                  [style.width.%]="(item.ingresos / maxValorCombinado()) * 100"></div>
+                <span class="p-track-number tabular-nums">{{ item.ingresos }} pax</span>
+              </div>
+
+              <div class="p-sub-track">
+                <div class="p-bar-fill print-bar-permanencias"
+                  [style.width.%]="(item.permanencias / maxValorCombinado()) * 100"></div>
+                <span class="p-track-number tabular-nums">{{ item.permanencias }} noches</span>
+              </div>
             </div>
           </div>
-
-          @if (seriesComparativaFiltradas().length > 0) {
-            <div class="print-grouped-bars-list">
-              @for (item of seriesComparativaFiltradas(); track item.etiqueta) {
-                <div class="print-grouped-bar-row">
-                  <div class="p-bar-label">
-                    <span class="p-iso-badge">{{ item.codigo || 'OT' }}</span>
-                    <strong class="p-country-name">{{ item.etiqueta }}</strong>
-                    <span class="p-ratio-tag tabular-nums">{{ item.ratio_permanencia_ingreso }}x</span>
-                  </div>
-
-                  <div class="p-grouped-tracks">
-                    <div class="p-sub-track">
-                      <div
-                        class="p-bar-fill print-bar-ingresos"
-                        [style.width.%]="(item.ingresos / maxValorCombinado()) * 100"
-                      ></div>
-                      <span class="p-track-number tabular-nums">{{ item.ingresos }} pax</span>
-                    </div>
-
-                    <div class="p-sub-track">
-                      <div
-                        class="p-bar-fill print-bar-permanencias"
-                        [style.width.%]="(item.permanencias / maxValorCombinado()) * 100"
-                      ></div>
-                      <span class="p-track-number tabular-nums">{{ item.permanencias }} noches</span>
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
-
-            <!-- TABLA COMBINADA DE SOPORTE -->
-            <table class="print-data-table">
-              <thead>
-                <tr>
-                  <th>N°</th>
-                  <th>Código</th>
-                  <th>País</th>
-                  <th class="text-right">Llegadas (pax)</th>
-                  <th class="text-right">Pernoctaciones (noches)</th>
-                  <th class="text-right">Total Afluencia</th>
-                  <th class="text-right">Estadía Promedio</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (item of seriesComparativaFiltradas(); track item.etiqueta; let i = $index) {
-                  <tr>
-                    <td>{{ i + 1 }}</td>
-                    <td><span class="table-iso-tag">{{ item.codigo || 'OT' }}</span></td>
-                    <td><strong>{{ item.etiqueta }}</strong></td>
-                    <td class="text-right tabular-nums">{{ item.ingresos | number }}</td>
-                    <td class="text-right tabular-nums">{{ item.permanencias | number }}</td>
-                    <td class="text-right tabular-nums">{{ item.total | number }}</td>
-                    <td class="text-right tabular-nums"><strong>{{ item.ratio_permanencia_ingreso }} noches/pax</strong></td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          } @else {
-            <p class="print-empty-msg">No se encontraron series comparativas para la selección actual.</p>
           }
         </div>
-      </section>
+
+        <!-- TABLA COMBINADA DE SOPORTE -->
+        <table class="print-data-table">
+          <thead>
+            <tr>
+              <th>N°</th>
+              <th>Código</th>
+              <th>País</th>
+              <th class="text-right">Llegadas (pax)</th>
+              <th class="text-right">Pernoctaciones (noches)</th>
+              <th class="text-right">Total Afluencia</th>
+              <th class="text-right">Estadía Promedio</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of seriesComparativaFiltradas(); track item.etiqueta; let i = $index) {
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td><span class="table-iso-tag">{{ item.codigo || 'OT' }}</span></td>
+              <td><strong>{{ item.etiqueta }}</strong></td>
+              <td class="text-right tabular-nums">{{ item.ingresos | number }}</td>
+              <td class="text-right tabular-nums">{{ item.permanencias | number }}</td>
+              <td class="text-right tabular-nums">{{ item.total | number }}</td>
+              <td class="text-right tabular-nums"><strong>{{ item.ratio_permanencia_ingreso }} noches/pax</strong></td>
+            </tr>
+            }
+          </tbody>
+        </table>
+        } @else {
+        <p class="print-empty-msg">No se encontraron series comparativas para la selección actual.</p>
+        }
+      </div>
+    </section>
     }
 
     <!-- SECCIÓN 4: GRÁFICO DE TORTA / DISTRIBUCIÓN GENERAL -->
     @if (exportarGraficoTorta()) {
-      @let torta = datosTortaCalculados();
-      <section class="print-report-section">
-        <div class="print-section-header">
-          <span class="print-section-num">4</span>
-          <div class="print-section-titles">
-            <h2 class="print-section-title">Distribución General: Nacionales vs. Extranjeros</h2>
-            <p class="print-section-desc">Proporción general consolidada a nivel departamental ({{ torta.labelMetrica }}).</p>
-          </div>
+    @let torta = datosTortaCalculados();
+    <section class="print-report-section">
+      <div class="print-section-header">
+        <span class="print-section-num">4</span>
+        <div class="print-section-titles">
+          <h2 class="print-section-title">Distribución General: Nacionales vs. Extranjeros</h2>
+          <p class="print-section-desc">Proporción general consolidada a nivel departamental ({{ torta.labelMetrica }}).
+          </p>
         </div>
+      </div>
 
-        <div class="print-chart-container">
-          <div class="print-donut-summary-row">
-            <!-- Representación gráfica Donut para impresión -->
-            <div class="print-donut-svg-box">
-              <svg viewBox="0 0 200 200" width="180" height="180">
-                <circle cx="100" cy="100" r="70" fill="transparent" stroke="#f1f5f9" stroke-width="28" />
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="70"
-                  fill="transparent"
-                  stroke="#8f1d2c"
-                  stroke-width="28"
-                  [attr.stroke-dasharray]="donutStrokeNacionales()"
-                  stroke-dashoffset="0"
-                  transform="rotate(-90 100 100)"
-                />
-                <circle
-                  cx="100"
-                  cy="100"
-                  r="70"
-                  fill="transparent"
-                  stroke="#2563eb"
-                  stroke-width="28"
-                  [attr.stroke-dasharray]="donutStrokeExtranjeros()"
-                  [attr.stroke-dashoffset]="donutOffsetExtranjeros()"
-                  transform="rotate(-90 100 100)"
-                />
-              </svg>
-              <div class="print-donut-center">
-                <span class="p-d-lbl">TOTAL</span>
-                <strong class="p-d-val tabular-nums">{{ torta.total | number }}</strong>
-                <span class="p-d-unit">{{ torta.unidad }}</span>
-              </div>
-            </div>
-
-            <!-- Tarjetas de resumen para Nacionales y Extranjeros -->
-            <div class="print-torta-cards-grid">
-              <div class="print-segment-card border-burgundy">
-                <div class="p-sc-title-row">
-                  <span class="color-indicator bg-burgundy"></span>
-                  <strong>Huéspedes Nacionales (Bolivia)</strong>
-                </div>
-                <div class="p-sc-stats tabular-nums">
-                  <span class="p-sc-big">{{ torta.nacionalesCant | number }}</span>
-                  <span class="p-sc-pct">{{ torta.nacionalesPct }}%</span>
-                </div>
-                <div class="p-sc-bar-track">
-                  <div class="p-sc-bar-fill bg-burgundy" [style.width.%]="torta.nacionalesPct"></div>
-                </div>
-              </div>
-
-              <div class="print-segment-card border-blue">
-                <div class="p-sc-title-row">
-                  <span class="color-indicator bg-blue"></span>
-                  <strong>Huéspedes Extranjeros</strong>
-                </div>
-                <div class="p-sc-stats tabular-nums">
-                  <span class="p-sc-big">{{ torta.extranjerosCant | number }}</span>
-                  <span class="p-sc-pct">{{ torta.extranjerosPct }}%</span>
-                </div>
-                <div class="p-sc-bar-track">
-                  <div class="p-sc-bar-fill bg-blue" [style.width.%]="torta.extranjerosPct"></div>
-                </div>
-              </div>
+      <div class="print-chart-container">
+        <div class="print-donut-summary-row">
+          <!-- Representación gráfica Donut para impresión -->
+          <div class="print-donut-svg-box">
+            <svg viewBox="0 0 200 200" width="180" height="180">
+              <circle cx="100" cy="100" r="70" fill="transparent" stroke="#f1f5f9" stroke-width="28" />
+              <circle cx="100" cy="100" r="70" fill="transparent" stroke="#8f1d2c" stroke-width="28"
+                [attr.stroke-dasharray]="donutStrokeNacionales()" stroke-dashoffset="0"
+                transform="rotate(-90 100 100)" />
+              <circle cx="100" cy="100" r="70" fill="transparent" stroke="#2563eb" stroke-width="28"
+                [attr.stroke-dasharray]="donutStrokeExtranjeros()" [attr.stroke-dashoffset]="donutOffsetExtranjeros()"
+                transform="rotate(-90 100 100)" />
+            </svg>
+            <div class="print-donut-center">
+              <span class="p-d-lbl">TOTAL</span>
+              <strong class="p-d-val tabular-nums">{{ torta.total | number }}</strong>
+              <span class="p-d-unit">{{ torta.unidad }}</span>
             </div>
           </div>
 
-          <!-- TABLA CONSOLIDADA OFICIAL DE NACIONALES VS EXTRANJEROS -->
-          @if (tortaData(); as td) {
-            <table class="print-data-table mt-4">
-              <thead>
-                <tr>
-                  <th>Segmento</th>
-                  <th class="text-right">Ingresos (Llegadas)</th>
-                  <th class="text-right">% Ingresos</th>
-                  <th class="text-right">Permanencias (Noches)</th>
-                  <th class="text-right">% Noches</th>
-                  <th class="text-right">Total Afluencia</th>
-                  <th class="text-right">% Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Nacionales (Bolivia)</strong></td>
-                  <td class="text-right tabular-nums">{{ td.nacionales.cant_ingresos | number }}</td>
-                  <td class="text-right tabular-nums">{{ td.nacionales.porcentaje_ingresos }}%</td>
-                  <td class="text-right tabular-nums">{{ td.nacionales.cant_permanencias | number }}</td>
-                  <td class="text-right tabular-nums">{{ td.nacionales.porcentaje_permanencias }}%</td>
-                  <td class="text-right tabular-nums">{{ td.nacionales.total | number }}</td>
-                  <td class="text-right tabular-nums">{{ td.nacionales.porcentaje_total }}%</td>
-                </tr>
-                <tr>
-                  <td><strong>Extranjeros (Internacionales)</strong></td>
-                  <td class="text-right tabular-nums">{{ td.extranjeros.cant_ingresos | number }}</td>
-                  <td class="text-right tabular-nums">{{ td.extranjeros.porcentaje_ingresos }}%</td>
-                  <td class="text-right tabular-nums">{{ td.extranjeros.cant_permanencias | number }}</td>
-                  <td class="text-right tabular-nums">{{ td.extranjeros.porcentaje_permanencias }}%</td>
-                  <td class="text-right tabular-nums">{{ td.extranjeros.total | number }}</td>
-                  <td class="text-right tabular-nums">{{ td.extranjeros.porcentaje_total }}%</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>TOTALES GENERALES</th>
-                  <th class="text-right tabular-nums">{{ td.totales_generales.total_ingresos | number }}</th>
-                  <th class="text-right tabular-nums">100.0%</th>
-                  <th class="text-right tabular-nums">{{ td.totales_generales.total_permanencias | number }}</th>
-                  <th class="text-right tabular-nums">100.0%</th>
-                  <th class="text-right tabular-nums">{{ td.totales_generales.total_general | number }}</th>
-                  <th class="text-right tabular-nums">100.0%</th>
-                </tr>
-              </tfoot>
-            </table>
-          }
+          <!-- Tarjetas de resumen para Nacionales y Extranjeros -->
+          <div class="print-torta-cards-grid">
+            <div class="print-segment-card border-burgundy">
+              <div class="p-sc-title-row">
+                <span class="color-indicator bg-burgundy"></span>
+                <strong>Huéspedes Nacionales (Bolivia)</strong>
+              </div>
+              <div class="p-sc-stats tabular-nums">
+                <span class="p-sc-big">{{ torta.nacionalesCant | number }}</span>
+                <span class="p-sc-pct">{{ torta.nacionalesPct }}%</span>
+              </div>
+              <div class="p-sc-bar-track">
+                <div class="p-sc-bar-fill bg-burgundy" [style.width.%]="torta.nacionalesPct"></div>
+              </div>
+            </div>
+
+            <div class="print-segment-card border-blue">
+              <div class="p-sc-title-row">
+                <span class="color-indicator bg-blue"></span>
+                <strong>Huéspedes Extranjeros</strong>
+              </div>
+              <div class="p-sc-stats tabular-nums">
+                <span class="p-sc-big">{{ torta.extranjerosCant | number }}</span>
+                <span class="p-sc-pct">{{ torta.extranjerosPct }}%</span>
+              </div>
+              <div class="p-sc-bar-track">
+                <div class="p-sc-bar-fill bg-blue" [style.width.%]="torta.extranjerosPct"></div>
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
+
+        <!-- TABLA CONSOLIDADA OFICIAL DE NACIONALES VS EXTRANJEROS -->
+        @if (tortaData(); as td) {
+        <table class="print-data-table mt-4">
+          <thead>
+            <tr>
+              <th>Segmento</th>
+              <th class="text-right">Ingresos (Llegadas)</th>
+              <th class="text-right">% Ingresos</th>
+              <th class="text-right">Permanencias (Noches)</th>
+              <th class="text-right">% Noches</th>
+              <th class="text-right">Total Afluencia</th>
+              <th class="text-right">% Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Nacionales (Bolivia)</strong></td>
+              <td class="text-right tabular-nums">{{ td.nacionales.cant_ingresos | number }}</td>
+              <td class="text-right tabular-nums">{{ td.nacionales.porcentaje_ingresos }}%</td>
+              <td class="text-right tabular-nums">{{ td.nacionales.cant_permanencias | number }}</td>
+              <td class="text-right tabular-nums">{{ td.nacionales.porcentaje_permanencias }}%</td>
+              <td class="text-right tabular-nums">{{ td.nacionales.total | number }}</td>
+              <td class="text-right tabular-nums">{{ td.nacionales.porcentaje_total }}%</td>
+            </tr>
+            <tr>
+              <td><strong>Extranjeros (Internacionales)</strong></td>
+              <td class="text-right tabular-nums">{{ td.extranjeros.cant_ingresos | number }}</td>
+              <td class="text-right tabular-nums">{{ td.extranjeros.porcentaje_ingresos }}%</td>
+              <td class="text-right tabular-nums">{{ td.extranjeros.cant_permanencias | number }}</td>
+              <td class="text-right tabular-nums">{{ td.extranjeros.porcentaje_permanencias }}%</td>
+              <td class="text-right tabular-nums">{{ td.extranjeros.total | number }}</td>
+              <td class="text-right tabular-nums">{{ td.extranjeros.porcentaje_total }}%</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>TOTALES GENERALES</th>
+              <th class="text-right tabular-nums">{{ td.totales_generales.total_ingresos | number }}</th>
+              <th class="text-right tabular-nums">100.0%</th>
+              <th class="text-right tabular-nums">{{ td.totales_generales.total_permanencias | number }}</th>
+              <th class="text-right tabular-nums">100.0%</th>
+              <th class="text-right tabular-nums">{{ td.totales_generales.total_general | number }}</th>
+              <th class="text-right tabular-nums">100.0%</th>
+            </tr>
+          </tfoot>
+        </table>
+        }
+      </div>
+    </section>
     }
   </div>
 
@@ -1307,7 +1107,9 @@
 
     <div class="print-disclaimer-box">
       <p>
-        Documento estadístico emitido por la Plataforma Departamental Hotelera de Oruro (PDHO). Información procesada a partir de los partes y formularios presentados por los prestadores de servicios de hospedaje acreditados del Departamento de Oruro.
+        Documento estadístico emitido por la Plataforma Departamental Hotelera de Oruro (PDHO). Información procesada a
+        partir de los partes y formularios presentados por los prestadores de servicios de hospedaje acreditados del
+        Departamento de Oruro.
       </p>
     </div>
   </footer>

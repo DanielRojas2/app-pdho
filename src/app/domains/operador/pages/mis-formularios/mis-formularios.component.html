@@ -5,64 +5,60 @@
       <div class="tag-category">HISTORIAL Y ARCHIVO OFICIAL</div>
       <h1 class="page-main-title">Mis Declaraciones Juradas</h1>
       <p class="page-subtitle">
-        Consulta el registro histórico y estado legal de las declaraciones juradas mensuales enviadas al Sistema SIREH y Gobernanza de Oruro.
+        Consulta el registro histórico y estado legal de las declaraciones juradas mensuales enviadas al Sistema SIREH y
+        Gobernanza de Oruro.
       </p>
     </div>
 
     <div class="header-action-buttons">
-      <a routerLink="../formulario-1" class="btn-create btn-create-f1" title="Llenar nueva declaración de Estadística Hotelera">
+      <a routerLink="../formulario-1" class="btn-create btn-create-f1"
+        title="Llenar nueva declaración de Estadística Hotelera">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
         <span>+ Llenar Formulario 1</span>
       </a>
-      <a routerLink="../formulario-2" class="btn-create btn-create-f2" title="Llenar nueva declaración de Ocupación Hotelera">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-        <span>+ Llenar Formulario 2</span>
-      </a>
     </div>
   </header>
 
   <!-- TARJETA DEL ESTABLECIMIENTO EMISOR -->
   @if (establecimiento(); as est) {
-    <section class="est-summary-card">
-      <div class="est-info-col">
-        <div class="est-pill-row">
-          <span class="est-label-tag">ESTABLECIMIENTO EMISOR</span>
-          <span class="est-status-chip" [class.chip-activo]="est.activo" [class.chip-inactivo]="!est.activo">
-            <span class="chip-dot"></span>
-            <span>{{ est.activo ? 'HABILITADO / CONFORME' : 'NO HABILITADO' }}</span>
-          </span>
-        </div>
-        <h2 class="est-main-name">{{ est.nombre_establecimiento }}</h2>
-        <p class="est-main-addr">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-icon">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-            <circle cx="12" cy="10" r="3"></circle>
-          </svg>
-          <span>{{ est.direccion }}, Oruro, Bolivia</span>
-        </p>
+  <section class="est-summary-card">
+    <div class="est-info-col">
+      <div class="est-pill-row">
+        <span class="est-label-tag">ESTABLECIMIENTO EMISOR</span>
+        <span class="est-status-chip" [class.chip-activo]="est.activo" [class.chip-inactivo]="!est.activo">
+          <span class="chip-dot"></span>
+          <span>{{ est.activo ? 'HABILITADO / CONFORME' : 'NO HABILITADO' }}</span>
+        </span>
       </div>
+      <h2 class="est-main-name">{{ est.nombre_establecimiento }}</h2>
+      <p class="est-main-addr">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-icon">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <span>{{ est.direccion }}, Oruro, Bolivia</span>
+      </p>
+    </div>
 
-      <div class="est-metrics-col">
-        <div class="metric-mini-tile">
-          <span class="metric-lbl">CATEGORÍA</span>
-          <strong class="metric-val">{{ formatCategoria(est.categoria) }}</strong>
-        </div>
-        <div class="metric-mini-tile">
-          <span class="metric-lbl">CAPACIDAD INSTALADA</span>
-          <strong class="metric-val tabular-nums">{{ est.total_habitaciones }} Hab / {{ est.total_plazas }} Camas</strong>
-        </div>
-        <div class="metric-mini-tile">
-          <span class="metric-lbl">TOTAL REGISTRADOS</span>
-          <strong class="metric-val tabular-nums">{{ estadisticas().length + ocupaciones().length }} Declaraciones</strong>
-        </div>
+    <div class="est-metrics-col">
+      <div class="metric-mini-tile">
+        <span class="metric-lbl">CATEGORÍA</span>
+        <strong class="metric-val">{{ formatCategoria(est.categoria) }}</strong>
       </div>
-    </section>
+      <div class="metric-mini-tile">
+        <span class="metric-lbl">CAPACIDAD INSTALADA</span>
+        <strong class="metric-val tabular-nums">{{ est.total_habitaciones }} Hab / {{ est.total_plazas }} Camas</strong>
+      </div>
+      <div class="metric-mini-tile">
+        <span class="metric-lbl">TOTAL REGISTRADOS</span>
+        <strong class="metric-val tabular-nums">{{ estadisticas().length + ocupaciones().length }}
+          Declaraciones</strong>
+      </div>
+    </div>
+  </section>
   }
 
   <!-- CONTENEDOR PRINCIPAL: SWITCH, FILTROS Y TABLA -->
@@ -71,15 +67,9 @@
     <div class="toolbar-wrapper">
       <!-- SWITCH CONMUTADOR ENTRE FORMULARIO 1 Y FORMULARIO 2 -->
       <div class="switch-container" role="tablist" aria-label="Seleccionar tipo de formulario">
-        <button
-          type="button"
-          class="switch-btn"
-          [class.active]="tipoFormularioActivo() === 'f1'"
-          (click)="cambiarTipoFormulario('f1')"
-          role="tab"
-          [attr.aria-selected]="tipoFormularioActivo() === 'f1'"
-          id="tab-formulario-1"
-        >
+        <button type="button" class="switch-btn" [class.active]="tipoFormularioActivo() === 'f1'"
+          (click)="cambiarTipoFormulario('f1')" role="tab" [attr.aria-selected]="tipoFormularioActivo() === 'f1'"
+          id="tab-formulario-1">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="switch-icon">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
@@ -92,42 +82,17 @@
             {{ estadisticas().length }}
           </span>
         </button>
-
-        <button
-          type="button"
-          class="switch-btn"
-          [class.active]="tipoFormularioActivo() === 'f2'"
-          (click)="cambiarTipoFormulario('f2')"
-          role="tab"
-          [attr.aria-selected]="tipoFormularioActivo() === 'f2'"
-          id="tab-formulario-2"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="switch-icon">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-          <span class="switch-title">Formulario 2: Ocupación</span>
-          <span class="switch-badge tabular-nums" [class.badge-active]="tipoFormularioActivo() === 'f2'">
-            {{ ocupaciones().length }}
-          </span>
-        </button>
       </div>
 
       <!-- FILTROS Y RECARGA -->
       <div class="filters-container">
         <!-- Selector de Gestión (Año) -->
         <div class="filter-select-wrapper">
-          <select
-            class="filter-select"
-            [ngModel]="filtroGestion()"
-            (ngModelChange)="cambiarFiltroGestion($event)"
-            title="Filtrar por gestión"
-          >
+          <select class="filter-select" [ngModel]="filtroGestion()" (ngModelChange)="cambiarFiltroGestion($event)"
+            title="Filtrar por gestión">
             <option value="TODAS">Todas las gestiones</option>
             @for (g of listaGestiones(); track g) {
-              <option [value]="g">Gestión {{ g }}</option>
+            <option [value]="g">Gestión {{ g }}</option>
             }
           </select>
         </div>
@@ -138,28 +103,19 @@
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input
-            type="text"
-            class="search-input"
-            [ngModel]="busqueda()"
-            (ngModelChange)="cambiarBusqueda($event)"
-            placeholder="Buscar por mes, año, N°..."
-            autocomplete="off"
-          />
+          <input type="text" class="search-input" [ngModel]="busqueda()" (ngModelChange)="cambiarBusqueda($event)"
+            placeholder="Buscar por mes, año, N°..." autocomplete="off" />
           @if (busqueda()) {
-            <button type="button" class="search-clear-btn" (click)="cambiarBusqueda('')" title="Limpiar búsqueda">✕</button>
+          <button type="button" class="search-clear-btn" (click)="cambiarBusqueda('')"
+            title="Limpiar búsqueda">✕</button>
           }
         </div>
 
         <!-- Botón refrescar datos -->
-        <button
-          type="button"
-          class="btn-refresh"
-          (click)="cargarDatos()"
-          [disabled]="cargando()"
-          title="Recargar datos del servidor"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="refresh-icon" [class.spinning]="cargando()">
+        <button type="button" class="btn-refresh" (click)="cargarDatos()" [disabled]="cargando()"
+          title="Recargar datos del servidor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="refresh-icon"
+            [class.spinning]="cargando()">
             <polyline points="23 4 23 10 17 10"></polyline>
             <polyline points="1 20 1 14 7 14"></polyline>
             <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
@@ -170,358 +126,210 @@
 
     <!-- ESTADO DE CARGA -->
     @if (cargando()) {
-      <div class="loading-state-box">
-        <div class="spinner-mid" aria-hidden="true"></div>
-        <p>Cargando declaraciones juradas del establecimiento...</p>
-      </div>
+    <div class="loading-state-box">
+      <div class="spinner-mid" aria-hidden="true"></div>
+      <p>Cargando declaraciones juradas del establecimiento...</p>
+    </div>
     } @else {
-      <!-- ======================================================== -->
-      <!-- TABLA FORMULARIO 1: ESTADÍSTICA HOTELERA -->
-      <!-- ======================================================== -->
-      @if (tipoFormularioActivo() === 'f1') {
-        @if (itemsPaginadosF1().length > 0) {
-          <div class="table-scroll-container">
-            <table class="history-table">
-              <thead>
-                <tr>
-                  <th scope="col" class="th-corr">N° FORMULARIO</th>
-                  <th scope="col" class="th-periodo">PERÍODO OFICIAL</th>
-                  <th scope="col" class="th-fecha">FECHA ENVÍO</th>
-                  <th scope="col" class="th-huespedes text-center">TOTAL HUÉSPEDES</th>
-                  <th scope="col" class="th-pernoctaciones text-center">PERNOCTACIONES</th>
-                  <th scope="col" class="th-personal text-center">PERSONAL</th>
-                  <th scope="col" class="th-respaldo text-center">RESPALDO FÍSICO</th>
-                  <th scope="col" class="th-estado text-center">ESTADO LEGAL</th>
-                  <th scope="col" class="th-acciones text-right">ACCIONES</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (item of itemsPaginadosF1(); track item.id) {
-                  <tr class="history-row">
-                    <!-- N° Formulario / Correlativo -->
-                    <td class="td-corr">
-                      <div class="corr-badge-cell">
-                        <span class="corr-hash">#</span>
-                        <strong class="corr-num tabular-nums">{{ item.numero_formulario || ('000' + item.id) }}</strong>
-                      </div>
-                    </td>
+    <!-- ======================================================== -->
+    <!-- TABLA FORMULARIO 1: ESTADÍSTICA HOTELERA -->
+    <!-- ======================================================== -->
+    @if (tipoFormularioActivo() === 'f1') {
+    @if (itemsPaginadosF1().length > 0) {
+    <div class="table-scroll-container">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th scope="col" class="th-corr">N° FORMULARIO</th>
+            <th scope="col" class="th-periodo">PERÍODO OFICIAL</th>
+            <th scope="col" class="th-fecha">FECHA ENVÍO</th>
+            <th scope="col" class="th-huespedes text-center">TOTAL HUÉSPEDES</th>
+            <th scope="col" class="th-pernoctaciones text-center">PERNOCTACIONES</th>
+            <th scope="col" class="th-personal text-center">PERSONAL</th>
+            <th scope="col" class="th-respaldo text-center">RESPALDO FÍSICO</th>
+            <th scope="col" class="th-estado text-center">ESTADO LEGAL</th>
+            <th scope="col" class="th-acciones text-right">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of itemsPaginadosF1(); track item.id) {
+          <tr class="history-row">
+            <!-- N° Formulario / Correlativo -->
+            <td class="td-corr">
+              <div class="corr-badge-cell">
+                <span class="corr-hash">#</span>
+                <strong class="corr-num tabular-nums">{{ item.numero_formulario || ('000' + item.id) }}</strong>
+              </div>
+            </td>
 
-                    <!-- Período Oficial -->
-                    <td class="td-periodo">
-                      <div class="periodo-cell">
-                        <span class="periodo-mes">{{ item.mes }}</span>
-                        <span class="periodo-gestion">{{ item.gestion }}</span>
-                      </div>
-                    </td>
+            <!-- Período Oficial -->
+            <td class="td-periodo">
+              <div class="periodo-cell">
+                <span class="periodo-mes">{{ item.mes }}</span>
+                <span class="periodo-gestion">{{ item.gestion }}</span>
+              </div>
+            </td>
 
-                    <!-- Fecha de Envío -->
-                    <td class="td-fecha">
-                      <div class="fecha-cell">
-                        <span class="fecha-main tabular-nums">{{ formatearFecha(item.fecha_presentacion || item.fecha_creacion) }}</span>
-                        <span class="fecha-sub">{{ getHoraAmigable(item.fecha_creacion) }}</span>
-                      </div>
-                    </td>
+            <!-- Fecha de Envío -->
+            <td class="td-fecha">
+              <div class="fecha-cell">
+                <span class="fecha-main tabular-nums">{{ formatearFecha(item.fecha_presentacion || item.fecha_creacion)
+                  }}</span>
+                <span class="fecha-sub">{{ getHoraAmigable(item.fecha_creacion) }}</span>
+              </div>
+            </td>
 
-                    <!-- Total Huéspedes (con desglose nals / extr) -->
-                    <td class="td-huespedes text-center">
-                      <div class="metric-pair">
-                        <strong class="metric-total tabular-nums">{{ item.total_ing ?? item.resumen?.total_ing ?? 0 }} pax</strong>
-                        <span class="metric-sub-detail tabular-nums">
-                          Nal: {{ item.r_ingreso_nals ?? item.resumen?.r_ingreso_nals ?? 0 }} | Ext: {{ item.r_ingreso_extr ?? item.resumen?.r_ingreso_extr ?? 0 }}
-                        </span>
-                      </div>
-                    </td>
+            <!-- Total Huéspedes (con desglose nals / extr) -->
+            <td class="td-huespedes text-center">
+              <div class="metric-pair">
+                <strong class="metric-total tabular-nums">{{ item.total_ing ?? item.resumen?.total_ing ?? 0 }}
+                  pax</strong>
+                <span class="metric-sub-detail tabular-nums">
+                  Nal: {{ item.r_ingreso_nals ?? item.resumen?.r_ingreso_nals ?? 0 }} | Ext: {{ item.r_ingreso_extr ??
+                  item.resumen?.r_ingreso_extr ?? 0 }}
+                </span>
+              </div>
+            </td>
 
-                    <!-- Pernoctaciones -->
-                    <td class="td-pernoctaciones text-center">
-                      <div class="metric-pair">
-                        <strong class="metric-total tabular-nums">{{ item.total_perm ?? item.resumen?.total_perm ?? 0 }} noch</strong>
-                        <span class="metric-sub-detail tabular-nums">
-                          Nal: {{ item.r_permanencia_nals ?? item.resumen?.r_permanencia_nals ?? 0 }} | Ext: {{ item.r_permanencia_extr ?? item.resumen?.r_permanencia_extr ?? 0 }}
-                        </span>
-                      </div>
-                    </td>
+            <!-- Pernoctaciones -->
+            <td class="td-pernoctaciones text-center">
+              <div class="metric-pair">
+                <strong class="metric-total tabular-nums">{{ item.total_perm ?? item.resumen?.total_perm ?? 0 }}
+                  noch</strong>
+                <span class="metric-sub-detail tabular-nums">
+                  Nal: {{ item.r_permanencia_nals ?? item.resumen?.r_permanencia_nals ?? 0 }} | Ext: {{
+                  item.r_permanencia_extr ?? item.resumen?.r_permanencia_extr ?? 0 }}
+                </span>
+              </div>
+            </td>
 
-                    <!-- Personal ocupado -->
-                    <td class="td-personal text-center tabular-nums">
-                      <span class="chip-personal" title="Permanentes: {{ item.cant_emp_perma }} | Eventuales: {{ item.cant_emp_event }}">
-                        {{ (item.cant_emp_perma + item.cant_emp_event) }} emp.
-                      </span>
-                    </td>
+            <!-- Personal ocupado -->
+            <td class="td-personal text-center tabular-nums">
+              <span class="chip-personal"
+                title="Permanentes: {{ item.cant_emp_perma }} | Eventuales: {{ item.cant_emp_event }}">
+                {{ (item.cant_emp_perma + item.cant_emp_event) }} emp.
+              </span>
+            </td>
 
-                    <!-- Respaldo digital adjunto -->
-                    <td class="td-respaldo text-center">
-                      @if (item.archivo_foto || item.archivo_pdf) {
-                        <button
-                          type="button"
-                          class="badge-respaldo-btn"
-                          (click)="abrirModalRespaldo(item.archivo_foto, item.archivo_pdf, 'Formulario 1 - ' + item.mes + ' ' + item.gestion)"
-                          title="Haga clic para ver el documento de respaldo oficial"
-                        >
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-resp-icon">
-                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-                          </svg>
-                          <span>{{ item.archivo_foto ? 'Foto JPG' : 'PDF' }}</span>
-                        </button>
-                      } @else {
-                        <span class="chip-sin-respaldo">Sin adjunto</span>
-                      }
-                    </td>
-
-                    <!-- Estado legal -->
-                    <td class="td-estado text-center">
-                      <span class="status-chip" [ngClass]="getClaseEstado(item.estado)">
-                        <span class="dot-status"></span>
-                        <span>{{ item.estado }}</span>
-                      </span>
-                    </td>
-
-                    <!-- Acciones -->
-                    <td class="td-acciones text-right">
-                      <div class="row-actions-group">
-                        <button
-                          type="button"
-                          class="btn-row-action btn-ver-detalle"
-                          (click)="abrirModalDetalleF1(item)"
-                          title="Ver desglose completo de la declaración"
-                        >
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                          </svg>
-                          <span>Ver Detalle</span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        } @else {
-          <!-- Empty State Formulario 1 -->
-          <div class="empty-state-view">
-            <div class="empty-icon-circle">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-            </div>
-            <h3 class="empty-title">
-              {{ busqueda() ? 'No se encontraron declaraciones que coincidan con la búsqueda' : 'No hay declaraciones de Formulario 1 registradas aún' }}
-            </h3>
-            <p class="empty-description">
-              {{ busqueda() ? 'Intente modificando el término o la gestión seleccionada.' : 'Las declaraciones juradas mensuales de Estadística Hotelera que envíe aparecerán listadas aquí con su correlativo y respaldo digital.' }}
-            </p>
-            @if (!busqueda()) {
-              <a routerLink="../formulario-1" class="btn-empty-action">
-                <span>Llenar primer Formulario 1</span>
-              </a>
-            }
-          </div>
-        }
-      }
-
-      <!-- ======================================================== -->
-      <!-- TABLA FORMULARIO 2: OCUPACIÓN HOTELERA -->
-      <!-- ======================================================== -->
-      @if (tipoFormularioActivo() === 'f2') {
-        @if (itemsPaginadosF2().length > 0) {
-          <div class="table-scroll-container">
-            <table class="history-table">
-              <thead>
-                <tr>
-                  <th scope="col" class="th-corr">ID DECLARACIÓN</th>
-                  <th scope="col" class="th-periodo">PERÍODO OFICIAL</th>
-                  <th scope="col" class="th-fecha">FECHA ENVÍO</th>
-                  <th scope="col" class="th-huespedes text-center">HABITACIONES OCUPADAS</th>
-                  <th scope="col" class="th-pernoctaciones text-center">PERSONAS ALOJADAS</th>
-                  <th scope="col" class="th-respaldo text-center">RESPALDO FÍSICO</th>
-                  <th scope="col" class="th-estado text-center">ESTADO LEGAL</th>
-                  <th scope="col" class="th-acciones text-right">ACCIONES</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (item of itemsPaginadosF2(); track item.id) {
-                  <tr class="history-row">
-                    <!-- ID / Correlativo -->
-                    <td class="td-corr">
-                      <div class="corr-badge-cell">
-                        <span class="corr-hash">#</span>
-                        <strong class="corr-num tabular-nums">{{ ('000' + item.id).slice(-6) }}</strong>
-                      </div>
-                    </td>
-
-                    <!-- Período Oficial -->
-                    <td class="td-periodo">
-                      <div class="periodo-cell">
-                        <span class="periodo-mes">{{ item.mes }}</span>
-                        <span class="periodo-gestion">{{ item.gestion }}</span>
-                      </div>
-                    </td>
-
-                    <!-- Fecha de Envío -->
-                    <td class="td-fecha">
-                      <div class="fecha-cell">
-                        <span class="fecha-main tabular-nums">{{ formatearFecha(item.fecha_presentacion || item.fecha_creacion) }}</span>
-                        <span class="fecha-sub">{{ getHoraAmigable(item.fecha_creacion) }}</span>
-                      </div>
-                    </td>
-
-                    <!-- Habitaciones ocupadas -->
-                    <td class="td-huespedes text-center">
-                      <div class="metric-pair">
-                        <strong class="metric-total tabular-nums">{{ item.total_hab_ocupadas }} habs</strong>
-                        <span class="metric-sub-detail">Acumulado del mes</span>
-                      </div>
-                    </td>
-
-                    <!-- Personas alojadas -->
-                    <td class="td-pernoctaciones text-center">
-                      <div class="metric-pair">
-                        <strong class="metric-total tabular-nums">{{ item.total_personas }} personas</strong>
-                        <span class="metric-sub-detail">Huéspedes alojados</span>
-                      </div>
-                    </td>
-
-                    <!-- Respaldo digital adjunto -->
-                    <td class="td-respaldo text-center">
-                      @if (item.archivo_foto || item.archivo_pdf) {
-                        <button
-                          type="button"
-                          class="badge-respaldo-btn"
-                          (click)="abrirModalRespaldo(item.archivo_foto, item.archivo_pdf, 'Formulario 2 - ' + item.mes + ' ' + item.gestion)"
-                          title="Haga clic para ver el documento de respaldo oficial"
-                        >
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-resp-icon">
-                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-                          </svg>
-                          <span>{{ item.archivo_foto ? 'Foto JPG' : 'PDF' }}</span>
-                        </button>
-                      } @else {
-                        <span class="chip-sin-respaldo">Sin adjunto</span>
-                      }
-                    </td>
-
-                    <!-- Estado legal -->
-                    <td class="td-estado text-center">
-                      <span class="status-chip" [ngClass]="getClaseEstado(item.estado)">
-                        <span class="dot-status"></span>
-                        <span>{{ item.estado }}</span>
-                      </span>
-                    </td>
-
-                    <!-- Acciones -->
-                    <td class="td-acciones text-right">
-                      <div class="row-actions-group">
-                        <button
-                          type="button"
-                          class="btn-row-action btn-ver-detalle"
-                          (click)="abrirModalDetalleF2(item)"
-                          title="Ver desglose completo de la declaración"
-                        >
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                          </svg>
-                          <span>Ver Detalle</span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        } @else {
-          <!-- Empty State Formulario 2 -->
-          <div class="empty-state-view">
-            <div class="empty-icon-circle">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-              </svg>
-            </div>
-            <h3 class="empty-title">
-              {{ busqueda() ? 'No se encontraron declaraciones que coincidan con la búsqueda' : 'No hay declaraciones de Formulario 2 registradas aún' }}
-            </h3>
-            <p class="empty-description">
-              {{ busqueda() ? 'Intente modificando el término o la gestión seleccionada.' : 'Las declaraciones juradas mensuales de Ocupación Hotelera que envíe aparecerán listadas aquí con su respectivo resumen.' }}
-            </p>
-            @if (!busqueda()) {
-              <a routerLink="../formulario-2" class="btn-empty-action">
-                <span>Llenar primer Formulario 2</span>
-              </a>
-            }
-          </div>
-        }
-      }
-
-      <!-- ======================================================== -->
-      <!-- BARRA DE PAGINACIÓN DE 10 ITEMS -->
-      <!-- ======================================================== -->
-      @if (totalItems() > 0) {
-        <footer class="pagination-footer">
-          <div class="pagination-info">
-            <span>Mostrando</span>
-            <strong class="tabular-nums">{{ rangoDesde() }}</strong>
-            <span>al</span>
-            <strong class="tabular-nums">{{ rangoHasta() }}</strong>
-            <span>de</span>
-            <strong class="tabular-nums">{{ totalItems() }}</strong>
-            <span>declaraciones</span>
-          </div>
-
-          <div class="pagination-nav">
-            <!-- Botón Anterior -->
-            <button
-              type="button"
-              class="btn-page-step"
-              [disabled]="paginaActual() <= 1"
-              (click)="cambiarPagina(paginaActual() - 1)"
-              title="Página anterior"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
-              <span>Anterior</span>
-            </button>
-
-            <!-- Botones numéricos de página -->
-            <div class="page-numbers-list">
-              @for (p of paginasVisibles(); track p) {
-                <button
-                  type="button"
-                  class="btn-page-num tabular-nums"
-                  [class.active]="p === paginaActual()"
-                  (click)="cambiarPagina(p)"
-                >
-                  {{ p }}
-                </button>
+            <!-- Respaldo digital adjunto -->
+            <td class="td-respaldo text-center">
+              @if (item.archivo_foto || item.archivo_pdf) {
+              <button type="button" class="badge-respaldo-btn"
+                (click)="abrirModalRespaldo(item.archivo_foto, item.archivo_pdf, 'Formulario 1 - ' + item.mes + ' ' + item.gestion)"
+                title="Haga clic para ver el documento de respaldo oficial">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-resp-icon">
+                  <path
+                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
+                  </path>
+                </svg>
+                <span>{{ item.archivo_foto ? 'Foto JPG' : 'PDF' }}</span>
+              </button>
+              } @else {
+              <span class="chip-sin-respaldo">Sin adjunto</span>
               }
-            </div>
+            </td>
 
-            <!-- Botón Siguiente -->
-            <button
-              type="button"
-              class="btn-page-step"
-              [disabled]="paginaActual() >= totalPaginas()"
-              (click)="cambiarPagina(paginaActual() + 1)"
-              title="Página siguiente"
-            >
-              <span>Siguiente</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </button>
-          </div>
-        </footer>
+            <!-- Estado legal -->
+            <td class="td-estado text-center">
+              <span class="status-chip" [ngClass]="getClaseEstado(item.estado)">
+                <span class="dot-status"></span>
+                <span>{{ item.estado }}</span>
+              </span>
+            </td>
+
+            <!-- Acciones -->
+            <td class="td-acciones text-right">
+              <div class="row-actions-group">
+                <button type="button" class="btn-row-action btn-ver-detalle" (click)="abrirModalDetalleF1(item)"
+                  title="Ver desglose completo de la declaración">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  <span>Ver Detalle</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    } @else {
+    <!-- Empty State Formulario 1 -->
+    <div class="empty-state-view">
+      <div class="empty-icon-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+      </div>
+      <h3 class="empty-title">
+        {{ busqueda() ? 'No se encontraron declaraciones que coincidan con la búsqueda' : 'No hay declaraciones de
+        Formulario 1 registradas aún' }}
+      </h3>
+      <p class="empty-description">
+        {{ busqueda() ? 'Intente modificando el término o la gestión seleccionada.' : 'Las declaraciones juradas
+        mensuales de Estadística Hotelera que envíe aparecerán listadas aquí con su correlativo y respaldo digital.' }}
+      </p>
+      @if (!busqueda()) {
+      <a routerLink="../formulario-1" class="btn-empty-action">
+        <span>Llenar primer Formulario 1</span>
+      </a>
       }
+    </div>
+    }
+    }
+
+    <!-- ======================================================== -->
+    <!-- BARRA DE PAGINACIÓN DE 10 ITEMS -->
+    <!-- ======================================================== -->
+    @if (totalItems() > 0) {
+    <footer class="pagination-footer">
+      <div class="pagination-info">
+        <span>Mostrando</span>
+        <strong class="tabular-nums">{{ rangoDesde() }}</strong>
+        <span>al</span>
+        <strong class="tabular-nums">{{ rangoHasta() }}</strong>
+        <span>de</span>
+        <strong class="tabular-nums">{{ totalItems() }}</strong>
+        <span>declaraciones</span>
+      </div>
+
+      <div class="pagination-nav">
+        <!-- Botón Anterior -->
+        <button type="button" class="btn-page-step" [disabled]="paginaActual() <= 1"
+          (click)="cambiarPagina(paginaActual() - 1)" title="Página anterior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Anterior</span>
+        </button>
+
+        <!-- Botones numéricos de página -->
+        <div class="page-numbers-list">
+          @for (p of paginasVisibles(); track p) {
+          <button type="button" class="btn-page-num tabular-nums" [class.active]="p === paginaActual()"
+            (click)="cambiarPagina(p)">
+            {{ p }}
+          </button>
+          }
+        </div>
+
+        <!-- Botón Siguiente -->
+        <button type="button" class="btn-page-step" [disabled]="paginaActual() >= totalPaginas()"
+          (click)="cambiarPagina(paginaActual() + 1)" title="Página siguiente">
+          <span>Siguiente</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </footer>
+    }
     }
   </section>
 </div>
@@ -530,217 +338,142 @@
 <!-- MODAL DE DETALLE: FORMULARIO 1 (ESTADÍSTICA HOTELERA) -->
 <!-- ================================================================ -->
 @if (modalDetalleF1Abierto(); as f1) {
-  <div class="modal-backdrop" (click)="cerrarModales()" role="dialog" aria-modal="true">
-    <div class="modal-dialog modal-dialog-lg" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <div class="modal-title-group">
-          <span class="modal-tag">FORMULARIO 1: ESTADÍSTICA HOTELERA</span>
-          <h3 class="modal-title">Declaración Jurada N° {{ f1.numero_formulario }} • {{ f1.mes }} {{ f1.gestion }}</h3>
-        </div>
-        <button type="button" class="btn-close-modal" (click)="cerrarModales()" title="Cerrar ventana">✕</button>
+<div class="modal-backdrop" (click)="cerrarModales()" role="dialog" aria-modal="true">
+  <div class="modal-dialog modal-dialog-lg" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <span class="modal-tag">FORMULARIO 1: ESTADÍSTICA HOTELERA</span>
+        <h3 class="modal-title">Declaración Jurada N° {{ f1.numero_formulario }} • {{ f1.mes }} {{ f1.gestion }}</h3>
       </div>
+      <button type="button" class="btn-close-modal" (click)="cerrarModales()" title="Cerrar ventana">✕</button>
+    </div>
 
-      <div class="modal-body">
-        <!-- Tarjetas de resumen del formulario -->
-        <div class="modal-kpi-grid">
-          <div class="kpi-card">
-            <span class="kpi-lbl">TOTAL HUÉSPEDES</span>
-            <strong class="kpi-val tabular-nums">{{ f1.total_ing ?? f1.resumen?.total_ing ?? 0 }} pax</strong>
-            <span class="kpi-sub tabular-nums">Nal: {{ f1.r_ingreso_nals ?? 0 }} | Ext: {{ f1.r_ingreso_extr ?? 0 }}</span>
-          </div>
-
-          <div class="kpi-card">
-            <span class="kpi-lbl">PERNOCTACIONES</span>
-            <strong class="kpi-val tabular-nums">{{ f1.total_perm ?? f1.resumen?.total_perm ?? 0 }} noches</strong>
-            <span class="kpi-sub tabular-nums">Nal: {{ f1.r_permanencia_nals ?? 0 }} | Ext: {{ f1.r_permanencia_extr ?? 0 }}</span>
-          </div>
-
-          <div class="kpi-card">
-            <span class="kpi-lbl">PERSONAL OCUPADO</span>
-            <strong class="kpi-val tabular-nums">{{ (f1.cant_emp_perma + f1.cant_emp_event) }} personas</strong>
-            <span class="kpi-sub tabular-nums">{{ f1.cant_emp_perma }} perm / {{ f1.cant_emp_event }} event</span>
-          </div>
-
-          <div class="kpi-card">
-            <span class="kpi-lbl">ESTADO LEGAL</span>
-            <span class="status-chip mt-1" [ngClass]="getClaseEstado(f1.estado)">
-              <span class="dot-status"></span>
-              <span>{{ f1.estado }}</span>
-            </span>
-            <span class="kpi-sub tabular-nums">Fecha: {{ formatearFecha(f1.fecha_presentacion) }}</span>
-          </div>
+    <div class="modal-body">
+      <!-- Tarjetas de resumen del formulario -->
+      <div class="modal-kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-lbl">TOTAL HUÉSPEDES</span>
+          <strong class="kpi-val tabular-nums">{{ f1.total_ing ?? f1.resumen?.total_ing ?? 0 }} pax</strong>
+          <span class="kpi-sub tabular-nums">Nal: {{ f1.r_ingreso_nals ?? 0 }} | Ext: {{ f1.r_ingreso_extr ?? 0
+            }}</span>
         </div>
 
-        <!-- Archivo de respaldo si está disponible -->
-        @if (f1.archivo_foto || f1.archivo_pdf) {
-          <div class="modal-respaldo-banner">
-            <div class="m-banner-left">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="banner-icon">
-                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-              </svg>
-              <div>
-                <strong>Respaldo Digital Adjunto</strong>
-                <p>Fotografía o documento firmado cargado al sistema.</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              class="btn-banner-action"
-              (click)="abrirModalRespaldo(f1.archivo_foto, f1.archivo_pdf, 'Respaldo Formulario 1 N° ' + f1.numero_formulario)"
-            >
-              Ver Respaldo Digital
-            </button>
-          </div>
-        }
+        <div class="kpi-card">
+          <span class="kpi-lbl">PERNOCTACIONES</span>
+          <strong class="kpi-val tabular-nums">{{ f1.total_perm ?? f1.resumen?.total_perm ?? 0 }} noches</strong>
+          <span class="kpi-sub tabular-nums">Nal: {{ f1.r_permanencia_nals ?? 0 }} | Ext: {{ f1.r_permanencia_extr ?? 0
+            }}</span>
+        </div>
 
-        <!-- Detalle de movimientos si existen -->
-        @if (f1.detalles && f1.detalles.length > 0) {
-          <div class="modal-detail-table-box">
-            <h4 class="sub-section-title">Movimientos Diarios Registrados ({{ f1.detalles.length }} registros)</h4>
-            <div class="modal-table-scroll">
-              <table class="modal-mini-table">
-                <thead>
-                  <tr>
-                    <th>DÍA</th>
-                    <th>PAÍS / NACIONALIDAD</th>
-                    <th class="text-center">INGRESOS (I)</th>
-                    <th class="text-center">PERMANENCIAS (P)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (det of f1.detalles; track $index) {
-                    <tr>
-                      <td class="tabular-nums font-bold">Día {{ det.dia }}</td>
-                      <td>{{ det.pais || ('Nacionalidad #' + det.id_nacionalidad) }}</td>
-                      <td class="text-center tabular-nums font-bold text-burgundy">{{ det.cant_ingresos }}</td>
-                      <td class="text-center tabular-nums font-bold text-blue">{{ det.cant_permanencias }}</td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          </div>
-        }
+        <div class="kpi-card">
+          <span class="kpi-lbl">PERSONAL OCUPADO</span>
+          <strong class="kpi-val tabular-nums">{{ (f1.cant_emp_perma + f1.cant_emp_event) }} personas</strong>
+          <span class="kpi-sub tabular-nums">{{ f1.cant_emp_perma }} perm / {{ f1.cant_emp_event }} event</span>
+        </div>
+
+        <div class="kpi-card">
+          <span class="kpi-lbl">ESTADO LEGAL</span>
+          <span class="status-chip mt-1" [ngClass]="getClaseEstado(f1.estado)">
+            <span class="dot-status"></span>
+            <span>{{ f1.estado }}</span>
+          </span>
+          <span class="kpi-sub tabular-nums">Fecha: {{ formatearFecha(f1.fecha_presentacion) }}</span>
+        </div>
       </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn-modal-close" (click)="cerrarModales()">Cerrar</button>
+      <!-- Archivo de respaldo si está disponible -->
+      @if (f1.archivo_foto || f1.archivo_pdf) {
+      <div class="modal-respaldo-banner">
+        <div class="m-banner-left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="banner-icon">
+            <path
+              d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
+            </path>
+          </svg>
+          <div>
+            <strong>Respaldo Digital Adjunto</strong>
+            <p>Fotografía o documento firmado cargado al sistema.</p>
+          </div>
+        </div>
+        <button type="button" class="btn-banner-action"
+          (click)="abrirModalRespaldo(f1.archivo_foto, f1.archivo_pdf, 'Respaldo Formulario 1 N° ' + f1.numero_formulario)">
+          Ver Respaldo Digital
+        </button>
       </div>
+      }
+
+      <!-- Detalle de movimientos si existen -->
+      @if (f1.detalles && f1.detalles.length > 0) {
+      <div class="modal-detail-table-box">
+        <h4 class="sub-section-title">Movimientos Diarios Registrados ({{ f1.detalles.length }} registros)</h4>
+        <div class="modal-table-scroll">
+          <table class="modal-mini-table">
+            <thead>
+              <tr>
+                <th>DÍA</th>
+                <th>PAÍS / NACIONALIDAD</th>
+                <th class="text-center">INGRESOS (I)</th>
+                <th class="text-center">PERMANENCIAS (P)</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (det of f1.detalles; track $index) {
+              <tr>
+                <td class="tabular-nums font-bold">Día {{ det.dia }}</td>
+                <td>{{ det.pais || ('Nacionalidad #' + det.id_nacionalidad) }}</td>
+                <td class="text-center tabular-nums font-bold text-burgundy">{{ det.cant_ingresos }}</td>
+                <td class="text-center tabular-nums font-bold text-blue">{{ det.cant_permanencias }}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+      }
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-modal-close" (click)="cerrarModales()">Cerrar</button>
     </div>
   </div>
-}
-
-<!-- ================================================================ -->
-<!-- MODAL DE DETALLE: FORMULARIO 2 (OCUPACIÓN HOTELERA) -->
-<!-- ================================================================ -->
-@if (modalDetalleF2Abierto(); as f2) {
-  <div class="modal-backdrop" (click)="cerrarModales()" role="dialog" aria-modal="true">
-    <div class="modal-dialog" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <div class="modal-title-group">
-          <span class="modal-tag">FORMULARIO 2: OCUPACIÓN HOTELERA</span>
-          <h3 class="modal-title">Declaración Jurada • {{ f2.mes }} {{ f2.gestion }}</h3>
-        </div>
-        <button type="button" class="btn-close-modal" (click)="cerrarModales()" title="Cerrar ventana">✕</button>
-      </div>
-
-      <div class="modal-body">
-        <div class="modal-kpi-grid">
-          <div class="kpi-card">
-            <span class="kpi-lbl">HABITACIONES OCUPADAS</span>
-            <strong class="kpi-val tabular-nums">{{ f2.total_hab_ocupadas }} habs</strong>
-            <span class="kpi-sub">Total del mes</span>
-          </div>
-
-          <div class="kpi-card">
-            <span class="kpi-lbl">PERSONAS ALOJADAS</span>
-            <strong class="kpi-val tabular-nums">{{ f2.total_personas }} huéspedes</strong>
-            <span class="kpi-sub">Huéspedes del período</span>
-          </div>
-
-          <div class="kpi-card">
-            <span class="kpi-lbl">ESTADO LEGAL</span>
-            <span class="status-chip mt-1" [ngClass]="getClaseEstado(f2.estado)">
-              <span class="dot-status"></span>
-              <span>{{ f2.estado }}</span>
-            </span>
-            <span class="kpi-sub tabular-nums">Fecha: {{ formatearFecha(f2.fecha_presentacion) }}</span>
-          </div>
-        </div>
-
-        @if (f2.archivo_foto || f2.archivo_pdf) {
-          <div class="modal-respaldo-banner mt-3">
-            <div class="m-banner-left">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="banner-icon">
-                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-              </svg>
-              <div>
-                <strong>Respaldo Digital Adjunto</strong>
-                <p>Fotografía o documento oficial firmado.</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              class="btn-banner-action"
-              (click)="abrirModalRespaldo(f2.archivo_foto, f2.archivo_pdf, 'Respaldo Formulario 2 - ' + f2.mes + ' ' + f2.gestion)"
-            >
-              Ver Respaldo Digital
-            </button>
-          </div>
-        }
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn-modal-close" (click)="cerrarModales()">Cerrar</button>
-      </div>
-    </div>
-  </div>
+</div>
 }
 
 <!-- ================================================================ -->
 <!-- MODAL DE VISUALIZACIÓN DE RESPALDO (FOTO / PDF) -->
 <!-- ================================================================ -->
 @if (modalRespaldoAbierto()) {
-  <div class="modal-backdrop" (click)="cerrarModales()" role="dialog" aria-modal="true">
-    <div class="modal-dialog modal-dialog-img" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <div class="modal-title-group">
-          <span class="modal-tag">DOCUMENTO OFICIAL DE RESPALDO</span>
-          <h3 class="modal-title">{{ tituloRespaldoActivo() || 'Respaldo Físico Digitalizado' }}</h3>
-        </div>
-        <button type="button" class="btn-close-modal" (click)="cerrarModales()" title="Cerrar ventana">✕</button>
+<div class="modal-backdrop" (click)="cerrarModales()" role="dialog" aria-modal="true">
+  <div class="modal-dialog modal-dialog-img" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title-group">
+        <span class="modal-tag">DOCUMENTO OFICIAL DE RESPALDO</span>
+        <h3 class="modal-title">{{ tituloRespaldoActivo() || 'Respaldo Físico Digitalizado' }}</h3>
       </div>
+      <button type="button" class="btn-close-modal" (click)="cerrarModales()" title="Cerrar ventana">✕</button>
+    </div>
 
-      <div class="modal-body text-center body-respaldo-preview">
-        @if (tipoRespaldoActivo() === 'imagen') {
-          <img
-            [src]="urlRespaldoActivo()"
-            alt="Fotografía del formulario oficial firmado"
-            class="respaldo-full-image"
-          />
-        } @else {
-          <div class="pdf-viewer-container">
-            <iframe [src]="urlRespaldoSegura()" class="pdf-iframe" title="Documento PDF de respaldo"></iframe>
-          </div>
-        }
+    <div class="modal-body text-center body-respaldo-preview">
+      @if (tipoRespaldoActivo() === 'imagen') {
+      <img [src]="urlRespaldoActivo()" alt="Fotografía del formulario oficial firmado" class="respaldo-full-image" />
+      } @else {
+      <div class="pdf-viewer-container">
+        <iframe [src]="urlRespaldoSegura()" class="pdf-iframe" title="Documento PDF de respaldo"></iframe>
       </div>
+      }
+    </div>
 
-      <div class="modal-footer justify-between">
-        <a
-          [href]="urlRespaldoActivo()"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn-download-external"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
-          <span>Abrir en pestaña nueva</span>
-        </a>
-        <button type="button" class="btn-modal-close" (click)="cerrarModales()">Cerrar</button>
-      </div>
+    <div class="modal-footer justify-between">
+      <a [href]="urlRespaldoActivo()" target="_blank" rel="noopener noreferrer" class="btn-download-external">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+        <span>Abrir en pestaña nueva</span>
+      </a>
+      <button type="button" class="btn-modal-close" (click)="cerrarModales()">Cerrar</button>
     </div>
   </div>
+</div>
 }

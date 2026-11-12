@@ -30,16 +30,21 @@
 }
 
 .brand-icon-badge {
-  width: 42px;
-  height: 42px;
-  background-color: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 9px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.brand-icon-badge .brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .brand-icon-badge svg {

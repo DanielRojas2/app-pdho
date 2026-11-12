@@ -91,6 +91,7 @@ textarea {
    REGLAS GLOBALES DE IMPRESIÓN Y EXPORTACIÓN A PDF OFICIAL
    ========================================================================== */
 @media print {
+
   /* Ocultar elementos estructurales de la aplicación fuera del componente */
   header.admin-header,
   nav.options-ribbon,
@@ -113,7 +114,8 @@ textarea {
     overflow: hidden !important;
   }
 
-  html, body {
+  html,
+  body {
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;

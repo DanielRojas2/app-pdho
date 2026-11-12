@@ -63,11 +63,27 @@
   border: 1px solid #bbf7d0;
 }
 
+.chip-activo {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.chip-inactivo {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
 .chip-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background-color: #16a34a;
+}
+
+.chip-inactivo .chip-dot {
+  background-color: #dc2626;
 }
 
 .establishment-name {
@@ -322,6 +338,7 @@
   font-size: 0.95rem;
   color: #0f172a;
   font-weight: 500;
+  word-break: break-word;
 }
 
 .badge-cat {
@@ -361,14 +378,10 @@
   font-size: 0.82rem;
   font-weight: 700;
   text-decoration: none;
-  padding: 5px 12px;
-  border-radius: 4px;
-  background-color: rgba(143, 29, 44, 0.06);
-  transition: all 0.15s ease;
 }
 
 .map-link:hover {
-  background-color: rgba(143, 29, 44, 0.12);
+  text-decoration: underline;
 }
 
 .map-link svg {
@@ -376,26 +389,30 @@
   height: 14px;
 }
 
+/* Colores de Utilidad */
 .text-emerald {
-  color: #15803d;
-  font-weight: 700;
+  color: #059669;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }
 
 /* ==========================================================================
-   CAPACIDAD INSTALADA (SECCIÓN 2)
+   PESTAÑA 2: CAPACIDAD INSTALADA (MÉTRICAS + TABLA)
    ========================================================================== */
 .capacity-summary-bar {
-  display: flex;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
   margin-bottom: 24px;
 }
 
 .summary-metric {
-  flex: 1;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  background-color: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 16px 20px;
+  border-radius: 6px;
+  padding: 18px 24px;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -441,6 +458,7 @@
 /* Tabla de Capacidad */
 .table-container {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .data-table {
@@ -498,9 +516,9 @@
 }
 
 .edit-sub {
-  font-size: 0.82rem;
-  color: #64748b;
-  margin: 4px 0 0 0;
+  font-size: 0.78rem;
+  color: #78350f;
+  margin: 3px 0 0 0;
 }
 
 .badge-editing {
@@ -585,6 +603,7 @@
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
 }
 
 .form-input:focus {
@@ -729,7 +748,7 @@
   border-radius: 0.25rem;
   height: 40px;
   padding: 0 18px;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -740,49 +759,37 @@
   color: #0f172a;
 }
 
-.btn-save-primary {
+.btn-save-gold {
   background-color: #8f1d2c;
   background-image: linear-gradient(180deg, #8f1d2c 0%, #7a1521 100%);
   color: #ffffff;
   border: none;
   border-radius: 0.25rem;
   height: 40px;
-  padding: 0 20px;
-  font-size: 0.85rem;
+  padding: 0 24px;
+  font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.15s ease;
   box-shadow: 0 2px 4px rgba(143, 29, 44, 0.25);
+  transition: all 0.15s ease;
 }
 
-.btn-save-primary:hover:not(:disabled) {
+.btn-save-gold:hover:not(:disabled) {
   background-color: #7a1521;
   background-image: none;
   transform: translateY(-1px);
 }
 
-.btn-save-primary:disabled {
+.btn-save-gold:disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
 
-.btn-spinner {
-  width: 15px;
-  height: 15px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-
 /* ==========================================================================
-   ESTADO DE CARGA
+   ESTADOS DE CARGA
    ========================================================================== */
 .loading-state {
-  padding: 64px 20px;
+  padding: 60px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -808,28 +815,6 @@
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
-}
-
-/* Responsive */
-@media (max-width: 1100px) {
-  .establishment-hero-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .hero-tiles-grid {
-    width: 100%;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .sub-ribbon-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .form-row-2, .form-row-3 {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* ==========================================================================
@@ -931,6 +916,7 @@
 .dep-email {
   font-size: 0.8rem;
   color: #475569;
+  word-break: break-all;
 }
 
 .btn-toggle-status {
@@ -941,6 +927,7 @@
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .btn-toggle-deactivate {
@@ -1084,26 +1071,43 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-
-
 /* ==========================================================================
    ADAPTACIONES RESPONSIVAS Y PWA MÓVIL: MI INFORMACIÓN
    ========================================================================== */
 
+/* Breakpoint 1: Tablets y Pantallas Medianas (<= 1100px) */
+@media (max-width: 1100px) {
+  .establishment-hero-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-tiles-grid {
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-row-2, .form-row-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Breakpoint 2: Celulares y Dispositivos Móviles (<= 768px) */
 @media (max-width: 768px) {
   .mi-informacion-view {
     padding: 0 0 24px 0;
-    gap: 12px;
+    gap: 14px;
   }
 
+  /* 1. Hero Card Móvil */
   .establishment-hero-card {
     padding: 16px;
     gap: 14px;
-    border-radius: 8px;
+    border-radius: 10px;
   }
 
   .establishment-name {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
   }
 
   .establishment-address {
@@ -1113,10 +1117,12 @@
   .hero-tiles-grid {
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+    width: 100%;
   }
 
   .metric-tile {
-    padding: 8px 10px;
+    min-width: 0;
+    padding: 10px 12px;
   }
 
   .tile-label {
@@ -1124,13 +1130,18 @@
   }
 
   .tile-value {
-    font-size: 0.88rem;
+    font-size: 0.85rem;
+    white-space: normal;
+    word-break: break-word;
   }
 
+  /* 2. Sub-Ribbon Móvil (Pestañas horizontales scrolleables y Botón ancho) */
   .sub-ribbon-bar {
-    padding: 10px 12px;
+    padding: 8px 10px;
     gap: 10px;
     border-radius: 8px;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .sub-ribbon-tabs {
@@ -1140,6 +1151,11 @@
     width: 100%;
     padding-bottom: 4px;
     gap: 6px;
+    scrollbar-width: none;
+  }
+
+  .sub-ribbon-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .sub-tab-btn {
@@ -1150,8 +1166,8 @@
   }
 
   .sub-tab-btn svg {
-    width: 14px;
-    height: 14px;
+    width: 15px;
+    height: 15px;
   }
 
   .sub-ribbon-actions {
@@ -1161,6 +1177,11 @@
   .btn-primary-action {
     width: 100%;
     justify-content: center;
+    white-space: normal;
+    text-align: center;
+    padding: 10px 14px;
+    height: auto;
+    min-height: 40px;
   }
 
   .edit-btn-group {
@@ -1174,35 +1195,152 @@
     justify-content: center;
   }
 
-  .info-card {
-    padding: 16px 14px;
-    border-radius: 8px;
+  /* 3. Tarjetas y Secciones */
+  .card {
+    border-radius: 10px;
   }
 
-  .card-title {
-    font-size: 0.95rem;
+  .card-header {
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
   }
 
-  .info-field-group {
-    padding: 8px 0;
+  .card-body {
+    padding: 16px;
   }
 
-  .field-label {
+  /* 4. Grilla de Detalles (Ficha Técnica y Operador) */
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .detail-label {
+    font-size: 0.68rem;
+  }
+
+  .detail-value {
+    font-size: 0.88rem;
+  }
+
+  /* 5. Métricas de Capacidad en Móvil */
+  .capacity-summary-bar {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .summary-metric {
+    padding: 12px 14px;
+  }
+
+  .metric-num {
+    font-size: 1.5rem;
+  }
+
+  .metric-desc {
     font-size: 0.72rem;
   }
 
-  .field-value {
-    font-size: 0.85rem;
+  /* 6. Formulario de Edición en Móvil */
+  .edit-form-body {
+    padding: 16px;
+    gap: 20px;
   }
 
-  .table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  .form-section {
+    padding: 16px 14px;
+    gap: 14px;
   }
 
+  .section-legend {
+    font-size: 0.88rem;
+    padding: 0 4px;
+  }
+
+  .section-hint {
+    font-size: 0.75rem;
+  }
+
+  .form-row-2, .form-row-3 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .input-narrow {
+    max-width: 100%;
+  }
+
+  .total-plazas-group {
+    padding: 12px 14px;
+  }
+
+  /* 7. Tabla Desglose Capacidad en Edición y Tablas de Datos */
+  .table-container {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    width: 100%;
+  }
+
+  .edit-table th, .edit-table td {
+    padding: 8px 10px;
+  }
+
+  .edit-table .input-number {
+    min-width: 75px;
+    padding: 0 8px;
+  }
+
+  .live-calc-box {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 14px;
+  }
+
+  .calc-item {
+    justify-content: space-between;
+  }
+
+  .form-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .footer-notice {
+    max-width: 100%;
+    font-size: 0.76rem;
+  }
+
+  .footer-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .btn-cancel-flat, .btn-save-gold {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* 8. Dependientes Móvil */
+  .dependientes-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .dependientes-header .btn-primary-action {
+    width: 100%;
+  }
+
+  /* Modales en Móvil */
   .modal-dialog {
     max-width: 95vw;
-    margin: 10px;
+    margin: 8px;
   }
 
   .modal-body {

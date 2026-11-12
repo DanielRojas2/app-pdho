@@ -1,695 +1,615 @@
 <div class="mi-informacion-view">
   @if (cargando()) {
-    <div class="loading-state">
-      <div class="spinner-large" aria-hidden="true"></div>
-      <p class="loading-text">Consultando información oficial del establecimiento en la base de datos...</p>
-    </div>
+  <div class="loading-state">
+    <div class="spinner-large" aria-hidden="true"></div>
+    <p class="loading-text">Consultando información oficial del establecimiento en la base de datos...</p>
+  </div>
   } @else if (establecimiento(); as est) {
-    <!-- Banner de Identidad del Establecimiento (Inspirado en diseño institucional) -->
-    <header class="establishment-hero-card">
-      <div class="hero-main-info">
-        <div class="hero-status-row">
-          <span class="establishment-type-tag">ESTABLECIMIENTO EMISOR</span>
-          <span class="status-chip chip-conforme">
-            <span class="chip-dot"></span>
-            <span>{{ est.activo ? 'ACTIVO / CONFORME' : 'INACTIVO' }}</span>
-          </span>
-        </div>
-        <h1 class="establishment-name">{{ est.nombre_establecimiento }}</h1>
-        <p class="establishment-address">
-          <svg class="icon-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-            <circle cx="12" cy="10" r="3"></circle>
+  <!-- Banner de Identidad del Establecimiento (Inspirado en diseño institucional) -->
+  <header class="establishment-hero-card">
+    <div class="hero-main-info">
+      <div class="hero-status-row">
+        <span class="establishment-type-tag">ESTABLECIMIENTO EMISOR</span>
+        <span class="status-chip chip-conforme">
+          <span class="chip-dot"></span>
+          <span>{{ est.activo ? 'ACTIVO / CONFORME' : 'INACTIVO' }}</span>
+        </span>
+      </div>
+      <h1 class="establishment-name">{{ est.nombre_establecimiento }}</h1>
+      <p class="establishment-address">
+        <svg class="icon-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        <span>{{ est.direccion }}</span>
+      </p>
+    </div>
+
+    <!-- Métricas y Fichas Resumen a la derecha -->
+    <div class="hero-tiles-grid">
+      <div class="metric-tile">
+        <span class="tile-label">CATEGORÍA</span>
+        <strong class="tile-value">{{ formatCategoria(est.categoria) }}</strong>
+      </div>
+
+      <div class="metric-tile">
+        <span class="tile-label">ESTADO LEGAL</span>
+        <strong class="tile-value text-gold">Acreditado</strong>
+      </div>
+
+      <div class="metric-tile">
+        <span class="tile-label">CAPACIDAD TOTAL</span>
+        <strong class="tile-value tabular-nums">{{ est.total_habitaciones }} hab / {{ est.total_plazas }}
+          plazas</strong>
+      </div>
+
+      <div class="metric-tile">
+        <span class="tile-label">LOCALIDAD</span>
+        <strong class="tile-value">Oruro, Bolivia</strong>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sub-Cinta de Opciones (Sub-Ribbon) -->
+  <nav class="sub-ribbon-bar" aria-label="Subcinta de información del establecimiento">
+    <div class="sub-ribbon-tabs">
+      <button type="button" class="sub-tab-btn" [class.active]="subPestanaActiva() === 'ficha'"
+        (click)="seleccionarSubPestana('ficha')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span>Ficha Técnica y Datos Generales</span>
+      </button>
+
+      <button type="button" class="sub-tab-btn" [class.active]="subPestanaActiva() === 'capacidad'"
+        (click)="seleccionarSubPestana('capacidad')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M2 4v16"></path>
+          <path d="M2 8h18a2 2 0 0 1 2 2v10"></path>
+          <path d="M2 17h20"></path>
+          <path d="M6 8v9"></path>
+        </svg>
+        <span>Capacidad Instalada (Habitaciones y Plazas)</span>
+      </button>
+
+      <button type="button" class="sub-tab-btn" [class.active]="subPestanaActiva() === 'operador'"
+        (click)="seleccionarSubPestana('operador')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span>{{ authService.isOperador() ? 'Operador y Personal Acreditado' : 'Operador Titular Acreditado' }}</span>
+      </button>
+    </div>
+
+    <div class="sub-ribbon-actions">
+      @if (authService.isOperador()) {
+      @if (!modoEdicion()) {
+      <button type="button" class="btn-primary-action" (click)="activarEdicion()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+        </svg>
+        <span>Actualizar Información y Capacidad</span>
+      </button>
+      } @else {
+      <div class="edit-btn-group">
+        <button type="button" class="btn-secondary-action" (click)="cancelarEdicion()">
+          Cancelar
+        </button>
+        <button type="button" class="btn-primary-action" (click)="guardarCambios()" [disabled]="guardando()">
+          @if (guardando()) {
+          <span class="btn-spinner" aria-hidden="true"></span>
+          <span>Guardando Cambios...</span>
+          } @else {
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
           </svg>
-          <span>{{ est.direccion }}</span>
+          <span>Guardar Toda la Información</span>
+          }
+        </button>
+      </div>
+      }
+      }
+    </div>
+  </nav>
+
+  <!-- MODO VISTA: LECTURA DE DATOS -->
+  @if (!modoEdicion()) {
+  <div class="content-sections">
+    <!-- Pestaña 1: Ficha Técnica -->
+    @if (subPestanaActiva() === 'ficha') {
+    <section class="card section-card">
+      <div class="card-header">
+        <h2 class="card-title">FICHA TÉCNICA INSTITUCIONAL</h2>
+        <span class="card-tag">DATOS OFICIALES</span>
+      </div>
+
+      <div class="card-body">
+        <div class="details-grid">
+          <div class="detail-item">
+            <span class="detail-label">Nombre Comercial</span>
+            <strong class="detail-value">{{ est.nombre_establecimiento }}</strong>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Categoría Oficial</span>
+            <div class="detail-value">
+              <span class="badge-cat">{{ formatCategoria(est.categoria) }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item full-width">
+            <span class="detail-label">Dirección Completa</span>
+            <span class="detail-value">{{ est.direccion }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Teléfono Oficial</span>
+            <span class="detail-value">{{ est.telefono || 'Sin registrar' }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Fecha de Registro</span>
+            <span class="detail-value tabular-nums">{{ est.fecha_registro | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+
+          <div class="detail-item full-width">
+            <span class="detail-label">Georreferenciación (GPS)</span>
+            <div class="coords-box">
+              <span class="coord-tag tabular-nums">Lat: {{ est.latitud !== null ? est.latitud : 'No registrada'
+                }}</span>
+              <span class="coord-tag tabular-nums">Lng: {{ est.longitud !== null ? est.longitud : 'No registrada'
+                }}</span>
+              @if (est.latitud && est.longitud) {
+              <a [href]="getMapaUrl(est.latitud, est.longitud)" target="_blank" rel="noopener noreferrer"
+                class="map-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                  <line x1="8" y1="2" x2="8" y2="18"></line>
+                  <line x1="16" y1="6" x2="16" y2="22"></line>
+                </svg>
+                <span>Ver en Mapa</span>
+              </a>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    }
+
+    <!-- Pestaña 2: Capacidad Instalada -->
+    @if (subPestanaActiva() === 'capacidad') {
+    <section class="card section-card">
+      <div class="card-header">
+        <h2 class="card-title">CAPACIDAD INSTALADA Y DISTRIBUCIÓN DE HABITACIONES</h2>
+      </div>
+
+      <div class="card-body">
+        <!-- Resumen de Métricas -->
+        <div class="capacity-summary-bar">
+          <div class="summary-metric">
+            <span class="metric-num tabular-nums">{{ est.total_habitaciones }}</span>
+            <span class="metric-desc">Habitaciones Ofertadas</span>
+          </div>
+          <div class="summary-metric">
+            <span class="metric-num tabular-nums">{{ est.total_plazas }}</span>
+            <span class="metric-desc">Plazas / Camas Totales</span>
+          </div>
+        </div>
+
+        <!-- Tabla de Habitaciones -->
+        @if (est.habitaciones.length === 0) {
+        <div class="empty-rooms-state">
+          <p class="empty-title">Sin capacidad desglosada por tipo</p>
+          <p class="empty-desc">
+            El establecimiento aún no ha configurado el detalle de habitaciones y camas.
+            Haz clic en <strong>"Actualizar Información y Capacidad"</strong> para registrar la oferta.
+          </p>
+        </div>
+        } @else {
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col">TIPO DE HABITACIÓN</th>
+                <th scope="col" class="text-right">HABITACIONES</th>
+                <th scope="col" class="text-right">CAMAS POR TIPO</th>
+                <th scope="col" class="text-right">SUBTOTAL PLAZAS</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (h of est.habitaciones; track h.id_tipo_habitacion) {
+              <tr>
+                <td>
+                  <strong class="room-type-title">{{ formatCategoria(h.tipo_habitacion) }}</strong>
+                </td>
+                <td class="text-right tabular-nums">{{ h.cant_habitaciones }}</td>
+                <td class="text-right tabular-nums">{{ h.nro_camas }}</td>
+                <td class="text-right tabular-nums font-bold">
+                  {{ h.cant_habitaciones * h.nro_camas }} plazas
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        }
+      </div>
+    </section>
+    }
+
+    <!-- Pestaña 3: Operador y Personal -->
+    @if (subPestanaActiva() === 'operador') {
+    <section class="card section-card">
+      <div class="card-header">
+        <h2 class="card-title">OPERADOR TITULAR Y RESPONSABLES</h2>
+        <span class="card-tag">SEGURIDAD Y ACCESOS</span>
+      </div>
+
+      <div class="card-body">
+        <div class="details-grid">
+          <div class="detail-item">
+            <span class="detail-label">Nombre Completo del Operador</span>
+            <strong class="detail-value">{{ est.operador?.nombre_completo || 'Sin operador registrado' }}</strong>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Correo Electrónico Oficial</span>
+            <span class="detail-value">{{ est.operador?.email || '-' }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Rol Institucional</span>
+            <div class="detail-value">
+              <span class="badge-cat">{{ est.operador?.rol || 'OPERADOR_HOSPEDAJE' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">Estado de Credenciales</span>
+            <span class="detail-value text-emerald">
+              {{ est.operador?.credenciales_enviadas ? 'Credenciales despachadas por correo' : 'Pendiente' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN: PERSONAL DEPENDIENTE ACREDITADO (EQUIPO DE APOYO) (Solo Operador Titular) -->
+    @if (authService.isOperador()) {
+    <section class="card section-card dependientes-section">
+      <div class="card-header dependientes-header">
+        <div>
+          <h2 class="card-title">PERSONAL DEPENDIENTE ACREDITADO (EQUIPO DE APOYO)</h2>
+          <p class="section-sub-desc">
+            Personal habilitado para la digitalización y carga de boletas mensuales de ocupación y estadísticas
+            hoteleras.
+          </p>
+        </div>
+
+        <button type="button" class="btn-primary-action btn-sm" (click)="abrirModalDependiente()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Registrar Nuevo Dependiente</span>
+        </button>
+      </div>
+
+      <div class="card-body">
+        @if (cargandoDependientes()) {
+        <div class="loading-state-sm">
+          <div class="spinner-small" aria-hidden="true"></div>
+          <span>Cargando lista de dependientes...</span>
+        </div>
+        } @else if (dependientes().length === 0) {
+        <div class="empty-dependientes-state">
+          <div class="empty-icon-box" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <h3 class="empty-dep-title">No hay dependientes registrados en este establecimiento</h3>
+          <p class="empty-dep-desc">
+            Como operador titular, puedes habilitar a recepcionistas o personal administrativo de turno para apoyar en
+            la declaración mensual de huéspedes y ocupación.
+          </p>
+          <button type="button" class="btn-primary-action btn-sm mt-3" (click)="abrirModalDependiente()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Registrar Primer Dependiente</span>
+          </button>
+        </div>
+        } @else {
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col">NOMBRE COMPLETO</th>
+                <th scope="col">CORREO ELECTRÓNICO</th>
+                <th scope="col">ROL</th>
+                <th scope="col">ESTADO</th>
+                <th scope="col">CREDENCIALES</th>
+                <th scope="col">FECHA DE ALTA</th>
+                <th scope="col" class="text-right">ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (dep of dependientes(); track dep.id) {
+              <tr>
+                <td>
+                  <strong class="dep-name">{{ dep.nombre_completo }}</strong>
+                </td>
+                <td>
+                  <span class="dep-email">{{ dep.email }}</span>
+                </td>
+                <td>
+                  <span class="badge-cat">DEPENDIENTE</span>
+                </td>
+                <td>
+                  <span class="status-chip" [class.chip-activo]="dep.activo" [class.chip-inactivo]="!dep.activo">
+                    <span class="chip-dot"></span>
+                    <span>{{ dep.activo ? 'Activo' : 'Inactivo' }}</span>
+                  </span>
+                </td>
+                <td>
+                  <span class="text-emerald" style="font-size: 0.78rem;">
+                    {{ dep.credenciales_enviadas ? 'Enviadas por correo' : 'Pendiente' }}
+                  </span>
+                </td>
+                <td class="tabular-nums" style="font-size: 0.78rem; color: #64748b;">
+                  {{ dep.fecha_creacion | date:'dd/MM/yyyy' }}
+                </td>
+                <td class="text-right">
+                  <button type="button" class="btn-toggle-status" [class.btn-toggle-deactivate]="dep.activo"
+                    [class.btn-toggle-activate]="!dep.activo" (click)="toggleEstadoDependiente(dep)"
+                    [title]="dep.activo ? 'Desactivar acceso al dependiente' : 'Reactivar acceso al dependiente'">
+                    {{ dep.activo ? 'Desactivar' : 'Reactivar' }}
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        }
+      </div>
+    </section>
+    }
+    }
+  </div>
+  } @else {
+  <!-- MODO EDICIÓN UNIFICADA (PATCH Datos + PUT Capacidad en una sola vista) -->
+  <section class="card edit-card">
+    <div class="card-header edit-card-header">
+      <div>
+        <h2 class="card-title">ACTUALIZACIÓN UNIFICADA DE INFORMACIÓN Y CAPACIDAD</h2>
+        <p class="edit-sub">
+          Los cambios en la ficha técnica y la capacidad instalada se guardarán en una sola operación.
         </p>
       </div>
+      <span class="badge-editing">MODO EDICIÓN ACTIVO</span>
+    </div>
 
-      <!-- Métricas y Fichas Resumen a la derecha -->
-      <div class="hero-tiles-grid">
-        <div class="metric-tile">
-          <span class="tile-label">CATEGORÍA</span>
-          <strong class="tile-value">{{ formatCategoria(est.categoria) }}</strong>
+    <form [formGroup]="formEstablecimiento" (ngSubmit)="guardarCambios()" class="edit-form-body" novalidate>
+      <!-- BLOQUE 1: DATOS GENERALES -->
+      <fieldset class="form-section">
+        <legend class="section-legend">1. Datos Generales del Establecimiento (Ficha Técnica)</legend>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="nombre_establecimiento" class="form-label">
+              Nombre Comercial del Establecimiento <span class="required">*</span>
+            </label>
+            <input id="nombre_establecimiento" type="text" formControlName="nombre_establecimiento" class="form-input"
+              [class.input-error]="formEstablecimiento.get('nombre_establecimiento')?.invalid && formEstablecimiento.get('nombre_establecimiento')?.touched"
+              placeholder="Ej: Hotel Eden Bolivia" />
+          </div>
+
+          <div class="form-group">
+            <label for="categoria" class="form-label">
+              Categoría Oficial <span class="required">*</span>
+            </label>
+            <div class="select-wrapper">
+              <select id="categoria" formControlName="categoria" class="form-select">
+                @for (cat of categorias; track cat.valor) {
+                <option [value]="cat.valor">{{ cat.etiqueta }}</option>
+                }
+              </select>
+            </div>
+          </div>
         </div>
 
-        <div class="metric-tile">
-          <span class="tile-label">ESTADO LEGAL</span>
-          <strong class="tile-value text-gold">Acreditado</strong>
+        <div class="form-group">
+          <label for="direccion" class="form-label">
+            Dirección Oficial Completa <span class="required">*</span>
+          </label>
+          <input id="direccion" type="text" formControlName="direccion" class="form-input"
+            [class.input-error]="formEstablecimiento.get('direccion')?.invalid && formEstablecimiento.get('direccion')?.touched"
+            placeholder="Ej: Bolívar Nro. 777, Esq. Presidente Montes. Plaza Principal" />
         </div>
 
-        <div class="metric-tile">
-          <span class="tile-label">CAPACIDAD TOTAL</span>
-          <strong class="tile-value tabular-nums">{{ est.total_habitaciones }} hab / {{ est.total_plazas }} plazas</strong>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label for="telefono" class="form-label">Teléfono de Contacto</label>
+            <input id="telefono" type="text" formControlName="telefono" class="form-input"
+              placeholder="Ej: (591-2) 521-0671" />
+          </div>
+
+          <div class="form-group">
+            <label for="latitud" class="form-label">Latitud (GPS)</label>
+            <input id="latitud" type="number" step="any" formControlName="latitud" class="form-input"
+              placeholder="Ej: -17.970014" />
+          </div>
+
+          <div class="form-group">
+            <label for="longitud" class="form-label">Longitud (GPS)</label>
+            <input id="longitud" type="number" step="any" formControlName="longitud" class="form-input"
+              placeholder="Ej: -67.115220" />
+          </div>
         </div>
 
-        <div class="metric-tile">
-          <span class="tile-label">LOCALIDAD</span>
-          <strong class="tile-value">Oruro, Bolivia</strong>
+        <div class="form-group total-plazas-group">
+          <label for="total_plazas" class="form-label">
+            Total Plazas (Camas Totales Disponibles) <span class="required">*</span>
+          </label>
+          <input id="total_plazas" type="number" min="0" formControlName="total_plazas"
+            class="form-input input-narrow tabular-nums" placeholder="Ej: 45" />
         </div>
-      </div>
-    </header>
+      </fieldset>
 
-    <!-- Sub-Cinta de Opciones (Sub-Ribbon) -->
-    <nav class="sub-ribbon-bar" aria-label="Subcinta de información del establecimiento">
-      <div class="sub-ribbon-tabs">
-        <button
-          type="button"
-          class="sub-tab-btn"
-          [class.active]="subPestanaActiva() === 'ficha'"
-          (click)="seleccionarSubPestana('ficha')"
-        >
+      <!-- BLOQUE 2: CAPACIDAD INSTALADA POR TIPO DE HABITACIÓN -->
+      <fieldset class="form-section">
+        <legend class="section-legend">2. Desglose de Capacidad Instalada por Tipo de Habitación</legend>
+        <p class="section-hint">
+          Configure la cantidad de habitaciones existentes en cada categoría y las camas asociadas.
+        </p>
+
+        <div class="table-container">
+          <table class="data-table edit-table">
+            <thead>
+              <tr>
+                <th scope="col">TIPO DE HABITACIÓN</th>
+                <th scope="col" style="width: 180px;">CANTIDAD HABITACIONES</th>
+                <th scope="col" style="width: 180px;">NÚMERO DE CAMAS</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (ctrl of habitacionesFormArray.controls; track ctrl.get('id_tipo_habitacion')?.value; let i = $index)
+              {
+              <tr [formGroup]="ctrl">
+                <td>
+                  <div class="room-type-meta">
+                    <strong class="room-type-title">{{ formatCategoria(ctrl.get('tipo_nombre')?.value) }}</strong>
+                    <span class="room-type-desc">{{ ctrl.get('descripcion')?.value }}</span>
+                  </div>
+                </td>
+                <td>
+                  <input type="number" min="0" formControlName="cant_habitaciones"
+                    class="form-input input-number tabular-nums" placeholder="0" />
+                </td>
+                <td>
+                  <input type="number" min="0" formControlName="nro_camas" class="form-input input-number tabular-nums"
+                    placeholder="0" />
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Resumen en Vivo -->
+        <div class="live-calc-box">
+          <div class="calc-item">
+            <span class="calc-label">Total Habitaciones Sumadas:</span>
+            <strong class="calc-val tabular-nums">{{ totalHabitacionesCalculado() }} habs.</strong>
+          </div>
+          <div class="calc-item">
+            <span class="calc-label">Total Camas Configuradas:</span>
+            <strong class="calc-val tabular-nums">{{ totalCamasCalculado() }} camas</strong>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Barra de Acciones Final -->
+      <footer class="form-footer">
+        <p class="footer-notice">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="16" x2="12" y2="12"></line>
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
           </svg>
-          <span>Ficha Técnica y Datos Generales</span>
-        </button>
+          <span>
+            Al guardar, se enviará la ficha técnica y la capacidad instalada en el servidor.
+          </span>
+        </p>
 
-        <button
-          type="button"
-          class="sub-tab-btn"
-          [class.active]="subPestanaActiva() === 'capacidad'"
-          (click)="seleccionarSubPestana('capacidad')"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M2 4v16"></path>
-            <path d="M2 8h18a2 2 0 0 1 2 2v10"></path>
-            <path d="M2 17h20"></path>
-            <path d="M6 8v9"></path>
-          </svg>
-          <span>Capacidad Instalada (Habitaciones y Plazas)</span>
-        </button>
-
-        <button
-          type="button"
-          class="sub-tab-btn"
-          [class.active]="subPestanaActiva() === 'operador'"
-          (click)="seleccionarSubPestana('operador')"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-          <span>{{ authService.isOperador() ? 'Operador y Personal Acreditado' : 'Operador Titular Acreditado' }}</span>
-        </button>
-      </div>
-
-      <div class="sub-ribbon-actions">
-        @if (authService.isOperador()) {
-          @if (!modoEdicion()) {
-            <button type="button" class="btn-primary-action" (click)="activarEdicion()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-              </svg>
-              <span>Actualizar Información y Capacidad</span>
-            </button>
-          } @else {
-            <div class="edit-btn-group">
-              <button type="button" class="btn-secondary-action" (click)="cancelarEdicion()">
-                Cancelar
-              </button>
-              <button
-                type="button"
-                class="btn-primary-action"
-                (click)="guardarCambios()"
-                [disabled]="guardando()"
-              >
-                @if (guardando()) {
-                  <span class="btn-spinner" aria-hidden="true"></span>
-                  <span>Guardando Cambios...</span>
-                } @else {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                    <polyline points="7 3 7 8 15 8"></polyline>
-                  </svg>
-                  <span>Guardar Toda la Información</span>
-                }
-              </button>
-            </div>
-          }
-        }
-      </div>
-    </nav>
-
-    <!-- MODO VISTA: LECTURA DE DATOS -->
-    @if (!modoEdicion()) {
-      <div class="content-sections">
-        <!-- Pestaña 1: Ficha Técnica -->
-        @if (subPestanaActiva() === 'ficha') {
-          <section class="card section-card">
-            <div class="card-header">
-              <h2 class="card-title">FICHA TÉCNICA INSTITUCIONAL</h2>
-              <span class="card-tag">DATOS OFICIALES</span>
-            </div>
-
-            <div class="card-body">
-              <div class="details-grid">
-                <div class="detail-item">
-                  <span class="detail-label">Nombre Comercial</span>
-                  <strong class="detail-value">{{ est.nombre_establecimiento }}</strong>
-                </div>
-
-                <div class="detail-item">
-                  <span class="detail-label">Categoría Oficial</span>
-                  <div class="detail-value">
-                    <span class="badge-cat">{{ formatCategoria(est.categoria) }}</span>
-                  </div>
-                </div>
-
-                <div class="detail-item full-width">
-                  <span class="detail-label">Dirección Completa</span>
-                  <span class="detail-value">{{ est.direccion }}</span>
-                </div>
-
-                <div class="detail-item">
-                  <span class="detail-label">Teléfono Oficial</span>
-                  <span class="detail-value">{{ est.telefono || 'Sin registrar' }}</span>
-                </div>
-
-                <div class="detail-item">
-                  <span class="detail-label">Fecha de Registro</span>
-                  <span class="detail-value tabular-nums">{{ est.fecha_registro | date:'dd/MM/yyyy HH:mm' }}</span>
-                </div>
-
-                <div class="detail-item full-width">
-                  <span class="detail-label">Georreferenciación (GPS)</span>
-                  <div class="coords-box">
-                    <span class="coord-tag tabular-nums">Lat: {{ est.latitud !== null ? est.latitud : 'No registrada' }}</span>
-                    <span class="coord-tag tabular-nums">Lng: {{ est.longitud !== null ? est.longitud : 'No registrada' }}</span>
-                    @if (est.latitud && est.longitud) {
-                      <a [href]="getMapaUrl(est.latitud, est.longitud)" target="_blank" rel="noopener noreferrer" class="map-link">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-                          <line x1="8" y1="2" x2="8" y2="18"></line>
-                          <line x1="16" y1="6" x2="16" y2="22"></line>
-                        </svg>
-                        <span>Ver en Mapa</span>
-                      </a>
-                    }
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        }
-
-        <!-- Pestaña 2: Capacidad Instalada -->
-        @if (subPestanaActiva() === 'capacidad') {
-          <section class="card section-card">
-            <div class="card-header">
-              <h2 class="card-title">CAPACIDAD INSTALADA Y DISTRIBUCIÓN DE HABITACIONES</h2>
-              <span class="card-tag">REGLA RN-2</span>
-            </div>
-
-            <div class="card-body">
-              <!-- Resumen de Métricas -->
-              <div class="capacity-summary-bar">
-                <div class="summary-metric">
-                  <span class="metric-num tabular-nums">{{ est.total_habitaciones }}</span>
-                  <span class="metric-desc">Habitaciones Ofertadas</span>
-                </div>
-                <div class="summary-metric">
-                  <span class="metric-num tabular-nums">{{ est.total_plazas }}</span>
-                  <span class="metric-desc">Plazas / Camas Totales</span>
-                </div>
-              </div>
-
-              <!-- Tabla de Habitaciones -->
-              @if (est.habitaciones.length === 0) {
-                <div class="empty-rooms-state">
-                  <p class="empty-title">Sin capacidad desglosada por tipo</p>
-                  <p class="empty-desc">
-                    El establecimiento aún no ha configurado el detalle de habitaciones y camas.
-                    Haz clic en <strong>"Actualizar Información y Capacidad"</strong> para registrar la oferta.
-                  </p>
-                </div>
-              } @else {
-                <div class="table-container">
-                  <table class="data-table">
-                    <thead>
-                      <tr>
-                        <th scope="col">TIPO DE HABITACIÓN</th>
-                        <th scope="col" class="text-right">HABITACIONES</th>
-                        <th scope="col" class="text-right">CAMAS POR TIPO</th>
-                        <th scope="col" class="text-right">SUBTOTAL PLAZAS</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @for (h of est.habitaciones; track h.id_tipo_habitacion) {
-                        <tr>
-                          <td>
-                            <strong class="room-type-title">{{ formatCategoria(h.tipo_habitacion) }}</strong>
-                          </td>
-                          <td class="text-right tabular-nums">{{ h.cant_habitaciones }}</td>
-                          <td class="text-right tabular-nums">{{ h.nro_camas }}</td>
-                          <td class="text-right tabular-nums font-bold">
-                            {{ h.cant_habitaciones * h.nro_camas }} plazas
-                          </td>
-                        </tr>
-                      }
-                    </tbody>
-                  </table>
-                </div>
-              }
-            </div>
-          </section>
-        }
-
-        <!-- Pestaña 3: Operador y Personal -->
-        @if (subPestanaActiva() === 'operador') {
-          <section class="card section-card">
-            <div class="card-header">
-              <h2 class="card-title">OPERADOR TITULAR Y RESPONSABLES</h2>
-              <span class="card-tag">SEGURIDAD Y ACCESOS</span>
-            </div>
-
-            <div class="card-body">
-              <div class="details-grid">
-                <div class="detail-item">
-                  <span class="detail-label">Nombre Completo del Operador</span>
-                  <strong class="detail-value">{{ est.operador?.nombre_completo || 'Sin operador registrado' }}</strong>
-                </div>
-
-                <div class="detail-item">
-                  <span class="detail-label">Correo Electrónico Oficial</span>
-                  <span class="detail-value">{{ est.operador?.email || '-' }}</span>
-                </div>
-
-                <div class="detail-item">
-                  <span class="detail-label">Rol Institucional</span>
-                  <div class="detail-value">
-                    <span class="badge-cat">{{ est.operador?.rol || 'OPERADOR_HOSPEDAJE' }}</span>
-                  </div>
-                </div>
-
-                <div class="detail-item">
-                  <span class="detail-label">Estado de Credenciales</span>
-                  <span class="detail-value text-emerald">
-                    {{ est.operador?.credenciales_enviadas ? 'Credenciales despachadas por correo' : 'Pendiente' }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- SECCIÓN: PERSONAL DEPENDIENTE ACREDITADO (EQUIPO DE APOYO) (Solo Operador Titular) -->
-          @if (authService.isOperador()) {
-            <section class="card section-card dependientes-section">
-              <div class="card-header dependientes-header">
-                <div>
-                  <h2 class="card-title">PERSONAL DEPENDIENTE ACREDITADO (EQUIPO DE APOYO)</h2>
-                  <p class="section-sub-desc">
-                    Personal habilitado para la digitalización y carga de boletas mensuales de ocupación y estadísticas hoteleras.
-                  </p>
-                </div>
-
-                <button type="button" class="btn-primary-action btn-sm" (click)="abrirModalDependiente()">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                  </svg>
-                  <span>Registrar Nuevo Dependiente</span>
-                </button>
-              </div>
-
-              <div class="card-body">
-                @if (cargandoDependientes()) {
-                  <div class="loading-state-sm">
-                    <div class="spinner-small" aria-hidden="true"></div>
-                    <span>Cargando lista de dependientes...</span>
-                  </div>
-                } @else if (dependientes().length === 0) {
-                  <div class="empty-dependientes-state">
-                    <div class="empty-icon-box" aria-hidden="true">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                      </svg>
-                    </div>
-                    <h3 class="empty-dep-title">No hay dependientes registrados en este establecimiento</h3>
-                    <p class="empty-dep-desc">
-                      Como operador titular, puedes habilitar a recepcionistas o personal administrativo de turno para apoyar en la declaración mensual de huéspedes y ocupación.
-                    </p>
-                    <button type="button" class="btn-primary-action btn-sm mt-3" (click)="abrirModalDependiente()">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                      </svg>
-                      <span>Registrar Primer Dependiente</span>
-                    </button>
-                  </div>
-                } @else {
-                  <div class="table-container">
-                    <table class="data-table">
-                      <thead>
-                        <tr>
-                          <th scope="col">NOMBRE COMPLETO</th>
-                          <th scope="col">CORREO ELECTRÓNICO</th>
-                          <th scope="col">ROL</th>
-                          <th scope="col">ESTADO</th>
-                          <th scope="col">CREDENCIALES</th>
-                          <th scope="col">FECHA DE ALTA</th>
-                          <th scope="col" class="text-right">ACCIONES</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @for (dep of dependientes(); track dep.id) {
-                          <tr>
-                            <td>
-                              <strong class="dep-name">{{ dep.nombre_completo }}</strong>
-                            </td>
-                            <td>
-                              <span class="dep-email">{{ dep.email }}</span>
-                            </td>
-                            <td>
-                              <span class="badge-cat">DEPENDIENTE</span>
-                            </td>
-                            <td>
-                              <span class="status-chip" [class.chip-activo]="dep.activo" [class.chip-inactivo]="!dep.activo">
-                                <span class="chip-dot"></span>
-                                <span>{{ dep.activo ? 'Activo' : 'Inactivo' }}</span>
-                              </span>
-                            </td>
-                            <td>
-                              <span class="text-emerald" style="font-size: 0.78rem;">
-                                {{ dep.credenciales_enviadas ? 'Enviadas por correo' : 'Pendiente' }}
-                              </span>
-                            </td>
-                            <td class="tabular-nums" style="font-size: 0.78rem; color: #64748b;">
-                              {{ dep.fecha_creacion | date:'dd/MM/yyyy' }}
-                            </td>
-                            <td class="text-right">
-                              <button
-                                type="button"
-                                class="btn-toggle-status"
-                                [class.btn-toggle-deactivate]="dep.activo"
-                                [class.btn-toggle-activate]="!dep.activo"
-                                (click)="toggleEstadoDependiente(dep)"
-                                [title]="dep.activo ? 'Desactivar acceso al dependiente' : 'Reactivar acceso al dependiente'"
-                              >
-                                {{ dep.activo ? 'Desactivar' : 'Reactivar' }}
-                              </button>
-                            </td>
-                          </tr>
-                        }
-                      </tbody>
-                    </table>
-                  </div>
-                }
-              </div>
-            </section>
-          }
-        }
-      </div>
-    } @else {
-      <!-- MODO EDICIÓN UNIFICADA (PATCH Datos + PUT Capacidad en una sola vista) -->
-      <section class="card edit-card">
-        <div class="card-header edit-card-header">
-          <div>
-            <h2 class="card-title">ACTUALIZACIÓN UNIFICADA DE INFORMACIÓN Y CAPACIDAD</h2>
-            <p class="edit-sub">
-              Los cambios en la ficha técnica y la capacidad instalada se guardarán de manera consolidada en una sola operación.
-            </p>
-          </div>
-          <span class="badge-editing">MODO EDICIÓN ACTIVO</span>
+        <div class="footer-actions">
+          <button type="button" class="btn-cancel-flat" (click)="cancelarEdicion()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-save-primary" [disabled]="guardando()">
+            @if (guardando()) {
+            <span class="btn-spinner" aria-hidden="true"></span>
+            <span>Guardando en el Sistema...</span>
+            } @else {
+            <span>Guardar Toda la Información</span>
+            }
+          </button>
         </div>
-
-        <form [formGroup]="formEstablecimiento" (ngSubmit)="guardarCambios()" class="edit-form-body" novalidate>
-          <!-- BLOQUE 1: DATOS GENERALES -->
-          <fieldset class="form-section">
-            <legend class="section-legend">1. Datos Generales del Establecimiento (Ficha Técnica)</legend>
-
-            <div class="form-row-2">
-              <div class="form-group">
-                <label for="nombre_establecimiento" class="form-label">
-                  Nombre Comercial del Establecimiento <span class="required">*</span>
-                </label>
-                <input
-                  id="nombre_establecimiento"
-                  type="text"
-                  formControlName="nombre_establecimiento"
-                  class="form-input"
-                  [class.input-error]="formEstablecimiento.get('nombre_establecimiento')?.invalid && formEstablecimiento.get('nombre_establecimiento')?.touched"
-                  placeholder="Ej: Hotel Eden Bolivia"
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="categoria" class="form-label">
-                  Categoría Oficial <span class="required">*</span>
-                </label>
-                <div class="select-wrapper">
-                  <select id="categoria" formControlName="categoria" class="form-select">
-                    @for (cat of categorias; track cat.valor) {
-                      <option [value]="cat.valor">{{ cat.etiqueta }}</option>
-                    }
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="direccion" class="form-label">
-                Dirección Oficial Completa <span class="required">*</span>
-              </label>
-              <input
-                id="direccion"
-                type="text"
-                formControlName="direccion"
-                class="form-input"
-                [class.input-error]="formEstablecimiento.get('direccion')?.invalid && formEstablecimiento.get('direccion')?.touched"
-                placeholder="Ej: Bolívar Nro. 777, Esq. Presidente Montes. Plaza Principal"
-              />
-            </div>
-
-            <div class="form-row-3">
-              <div class="form-group">
-                <label for="telefono" class="form-label">Teléfono de Contacto</label>
-                <input
-                  id="telefono"
-                  type="text"
-                  formControlName="telefono"
-                  class="form-input"
-                  placeholder="Ej: (591-2) 521-0671"
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="latitud" class="form-label">Latitud (GPS)</label>
-                <input
-                  id="latitud"
-                  type="number"
-                  step="any"
-                  formControlName="latitud"
-                  class="form-input"
-                  placeholder="Ej: -17.970014"
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="longitud" class="form-label">Longitud (GPS)</label>
-                <input
-                  id="longitud"
-                  type="number"
-                  step="any"
-                  formControlName="longitud"
-                  class="form-input"
-                  placeholder="Ej: -67.115220"
-                />
-              </div>
-            </div>
-
-            <div class="form-group total-plazas-group">
-              <label for="total_plazas" class="form-label">
-                Total Plazas (Camas Totales Disponibles) <span class="required">*</span>
-              </label>
-              <input
-                id="total_plazas"
-                type="number"
-                min="0"
-                formControlName="total_plazas"
-                class="form-input input-narrow tabular-nums"
-                placeholder="Ej: 45"
-              />
-              <span class="field-hint">
-                Capacidad total de huéspedes que el establecimiento puede alojar simultáneamente.
-              </span>
-            </div>
-          </fieldset>
-
-          <!-- BLOQUE 2: CAPACIDAD INSTALADA POR TIPO DE HABITACIÓN -->
-          <fieldset class="form-section">
-            <legend class="section-legend">2. Desglose de Capacidad Instalada por Tipo de Habitación</legend>
-            <p class="section-hint">
-              Configure la cantidad de habitaciones existentes en cada categoría y las camas asociadas.
-              La suma total de habitaciones se recalculará automáticamente según la regla legal RN-2.
-            </p>
-
-            <div class="table-container">
-              <table class="data-table edit-table">
-                <thead>
-                  <tr>
-                    <th scope="col">TIPO DE HABITACIÓN</th>
-                    <th scope="col" style="width: 180px;">CANTIDAD HABITACIONES</th>
-                    <th scope="col" style="width: 180px;">NÚMERO DE CAMAS</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (ctrl of habitacionesFormArray.controls; track ctrl.get('id_tipo_habitacion')?.value; let i = $index) {
-                    <tr [formGroup]="ctrl">
-                      <td>
-                        <div class="room-type-meta">
-                          <strong class="room-type-title">{{ formatCategoria(ctrl.get('tipo_nombre')?.value) }}</strong>
-                          <span class="room-type-desc">{{ ctrl.get('descripcion')?.value }}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          min="0"
-                          formControlName="cant_habitaciones"
-                          class="form-input input-number tabular-nums"
-                          placeholder="0"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          min="0"
-                          formControlName="nro_camas"
-                          class="form-input input-number tabular-nums"
-                          placeholder="0"
-                        />
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Resumen en Vivo -->
-            <div class="live-calc-box">
-              <div class="calc-item">
-                <span class="calc-label">Total Habitaciones Sumadas:</span>
-                <strong class="calc-val tabular-nums">{{ totalHabitacionesCalculado() }} habs.</strong>
-              </div>
-              <div class="calc-item">
-                <span class="calc-label">Total Camas Configuradas:</span>
-                <strong class="calc-val tabular-nums">{{ totalCamasCalculado() }} camas</strong>
-              </div>
-            </div>
-          </fieldset>
-
-          <!-- Barra de Acciones Final -->
-          <footer class="form-footer">
-            <p class="footer-notice">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="16" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-              </svg>
-              <span>
-                Al guardar, se enviará la ficha técnica (PATCH) y la capacidad instalada (PUT) de forma sincronizada al servidor.
-              </span>
-            </p>
-
-            <div class="footer-actions">
-              <button type="button" class="btn-cancel-flat" (click)="cancelarEdicion()">
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                class="btn-save-primary"
-                [disabled]="guardando()"
-              >
-                @if (guardando()) {
-                  <span class="btn-spinner" aria-hidden="true"></span>
-                  <span>Guardando en el Sistema...</span>
-                } @else {
-                  <span>Guardar Toda la Información</span>
-                }
-              </button>
-            </div>
-          </footer>
-        </form>
-      </section>
-    }
+      </footer>
+    </form>
+  </section>
+  }
   }
 
   <!-- MODAL: REGISTRAR NUEVO DEPENDIENTE -->
   @if (authService.isOperador() && mostrarModalDependiente()) {
-    <div class="modal-backdrop" (click)="cerrarModalDependiente()" role="dialog" aria-modal="true" aria-labelledby="modal-dep-title">
-      <div class="modal-dialog" (click)="$event.stopPropagation()">
-        <header class="modal-header">
-          <div class="modal-header-titles">
-            <h3 id="modal-dep-title" class="modal-title">Registrar Nuevo Dependiente</h3>
-            <p class="modal-subtitle">Asignación de personal de apoyo para el establecimiento</p>
-          </div>
-          <button type="button" class="modal-close" (click)="cerrarModalDependiente()" aria-label="Cerrar ventana modal">✕</button>
-        </header>
+  <div class="modal-backdrop" (click)="cerrarModalDependiente()" role="dialog" aria-modal="true"
+    aria-labelledby="modal-dep-title">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <header class="modal-header">
+        <div class="modal-header-titles">
+          <h3 id="modal-dep-title" class="modal-title">Registrar Nuevo Dependiente</h3>
+          <p class="modal-subtitle">Asignación de personal de apoyo para el establecimiento</p>
+        </div>
+        <button type="button" class="modal-close" (click)="cerrarModalDependiente()"
+          aria-label="Cerrar ventana modal">✕</button>
+      </header>
 
-        <form [formGroup]="formDependiente" (ngSubmit)="guardarDependiente()" class="modal-body" novalidate>
-          <div class="form-group">
-            <label for="dep_nombre" class="form-label">
-              Nombre Completo del Dependiente <span class="required">*</span>
-            </label>
-            <input
-              id="dep_nombre"
-              type="text"
-              formControlName="nombre_completo"
-              class="form-input"
-              [class.input-error]="formDependiente.get('nombre_completo')?.invalid && formDependiente.get('nombre_completo')?.touched"
-              placeholder="Ej: Lic. Juan Carlos Mamani Quispe"
-            />
-            @if (formDependiente.get('nombre_completo')?.invalid && formDependiente.get('nombre_completo')?.touched) {
-              <span class="field-error">El nombre completo es requerido (mínimo 3 caracteres).</span>
+      <form [formGroup]="formDependiente" (ngSubmit)="guardarDependiente()" class="modal-body" novalidate>
+        <div class="form-group">
+          <label for="dep_nombre" class="form-label">
+            Nombre Completo del Dependiente <span class="required">*</span>
+          </label>
+          <input id="dep_nombre" type="text" formControlName="nombre_completo" class="form-input"
+            [class.input-error]="formDependiente.get('nombre_completo')?.invalid && formDependiente.get('nombre_completo')?.touched"
+            placeholder="Ej: Lic. Juan Carlos Mamani Quispe" />
+          @if (formDependiente.get('nombre_completo')?.invalid && formDependiente.get('nombre_completo')?.touched) {
+          <span class="field-error">El nombre completo es requerido (mínimo 3 caracteres).</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="dep_email" class="form-label">
+            Correo Electrónico Oficial del Dependiente <span class="required">*</span>
+          </label>
+          <input id="dep_email" type="email" formControlName="email" class="form-input"
+            [class.input-error]="formDependiente.get('email')?.invalid && formDependiente.get('email')?.touched"
+            placeholder="recepcion@hotel.com" />
+          @if (formDependiente.get('email')?.invalid && formDependiente.get('email')?.touched) {
+          <span class="field-error">Ingrese un correo electrónico válido para enviar las credenciales.</span>
+          }
+        </div>
+
+        <footer class="modal-footer">
+          <button type="button" class="btn-cancel-flat" (click)="cerrarModalDependiente()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-save-primary" [disabled]="guardandoDependiente()">
+            @if (guardandoDependiente()) {
+            <span class="btn-spinner" aria-hidden="true"></span>
+            <span>Registrando y Enviando...</span>
+            } @else {
+            <span>Registrar Dependiente y Despachar Credenciales</span>
             }
-          </div>
-
-          <div class="form-group">
-            <label for="dep_email" class="form-label">
-              Correo Electrónico Oficial del Dependiente <span class="required">*</span>
-            </label>
-            <input
-              id="dep_email"
-              type="email"
-              formControlName="email"
-              class="form-input"
-              [class.input-error]="formDependiente.get('email')?.invalid && formDependiente.get('email')?.touched"
-              placeholder="recepcion@hotel.com"
-            />
-            @if (formDependiente.get('email')?.invalid && formDependiente.get('email')?.touched) {
-              <span class="field-error">Ingrese un correo electrónico válido para enviar las credenciales.</span>
-            }
-          </div>
-
-          <footer class="modal-footer">
-            <button type="button" class="btn-cancel-flat" (click)="cerrarModalDependiente()">
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              class="btn-save-primary"
-              [disabled]="guardandoDependiente()"
-            >
-              @if (guardandoDependiente()) {
-                <span class="btn-spinner" aria-hidden="true"></span>
-                <span>Registrando y Enviando...</span>
-              } @else {
-                <span>Registrar Dependiente y Despachar Credenciales</span>
-              }
-            </button>
-          </footer>
-        </form>
-      </div>
+          </button>
+        </footer>
+      </form>
     </div>
+  </div>
   }
 </div>
-

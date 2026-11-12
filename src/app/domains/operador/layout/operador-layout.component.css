@@ -56,50 +56,50 @@
 }
 
 .platform-title {
-  margin: 0;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.22rem;
   font-weight: 800;
+  letter-spacing: 0.05em;
   color: #ffffff;
-  letter-spacing: -0.01em;
+  margin: 0;
   line-height: 1.2;
 }
 
 .platform-subtitle {
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.82);
   margin: 2px 0 0 0;
-  font-size: 0.8rem;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.2;
+  letter-spacing: 0.02em;
 }
 
+/* Acciones de usuario en cabecera */
 .header-user-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
-/* Botón Discreto Instalar App en Header */
 .btn-install-header {
-  background-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.15);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.35);
-  padding: 6px 14px;
-  border-radius: 7px;
-  font-size: 0.84rem;
+  border-radius: 6px;
+  padding: 7px 13px;
+  font-size: 0.78rem;
   font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 7px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
 }
 
 .btn-install-header:hover {
-  background-color: #ffffff;
+  background: #ffffff;
   color: #840d23;
   border-color: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 .btn-install-header .install-icon {
@@ -108,20 +108,19 @@
 }
 
 .user-pill {
-  background-color: #ffffff;
-  padding: 6px 14px;
-  border-radius: 7px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.85rem;
+  gap: 8px;
+  background-color: #ffffff;
   color: #0f172a;
+  padding: 7px 14px;
+  border-radius: 4px;
+  font-size: 0.82rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  font-weight: 500;
 }
 
 .user-email {
-  font-family: inherit;
+  font-weight: 600;
 }
 
 .user-role-badge {
@@ -130,25 +129,23 @@
 }
 
 .logout-btn {
-  background-color: rgba(255, 255, 255, 0.14);
+  background: transparent;
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 6px 14px;
-  border-radius: 7px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
+  border-radius: 4px;
+  padding: 7px 12px;
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .logout-btn:hover {
-  background-color: #ffffff;
-  color: #840d23;
-  border-color: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 .logout-icon {
@@ -157,71 +154,74 @@
 }
 
 /* ==========================================================================
-   CINTA DE OPCIONES (Menú de Navegación)
+   CINTA DE OPCIONES (RIBBON) - Menú Superior Desktop
    ========================================================================== */
 .options-ribbon {
+  height: 52px;
   background-color: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 2px solid #840d23;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   padding: 0 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04);
   position: relative;
   z-index: 90;
-  overflow-x: auto;
 }
 
 .ribbon-links {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
+  height: 100%;
 }
 
 .ribbon-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 14px 18px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #64748b;
+  padding: 0 16px;
+  height: 100%;
+  color: #475569;
   text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 600;
   border-bottom: 3px solid transparent;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .ribbon-item:hover {
   color: #840d23;
-  background-color: rgba(132, 13, 35, 0.03);
+  background-color: #fdf2f2;
 }
 
 .ribbon-item.active {
   color: #840d23;
-  border-bottom-color: #840d23;
   font-weight: 700;
-  background-color: rgba(132, 13, 35, 0.04);
+  border-bottom-color: #840d23;
+  background-color: #faf5f5;
 }
 
 .ribbon-icon {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   flex-shrink: 0;
-  transition: color 0.2s ease;
 }
 
 .period-indicator {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.85rem;
-  color: #64748b;
-  white-space: nowrap;
-  padding-left: 20px;
+  gap: 8px;
+  font-size: 0.82rem;
+  background-color: #f8fafc;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
 }
 
 .period-label {
+  color: #64748b;
   font-weight: 500;
 }
 
@@ -231,26 +231,332 @@
 }
 
 /* ==========================================================================
-   ÁREA DE CONTENIDO
+   ÁREA DE CONTENIDO PRINCIPAL
    ========================================================================== */
 .operador-content-viewport {
   flex: 1;
-  padding: 32px;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 24px 32px;
+  max-width: 1600px;
   width: 100%;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
 /* ==========================================================================
-   MODAL DE INSTALACIÓN PWA
+   BOTÓN HAMBURGUESA & MENÚ DRAWER MÓVIL (PWA)
+   ========================================================================== */
+.mobile-only {
+  display: none !important;
+}
+
+.desktop-only {
+  display: flex;
+}
+
+.mobile-nav-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-install-mobile-header {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.btn-install-mobile-header svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-hamburger {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-hamburger:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-hamburger svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Drawer lateral deslizable */
+.mobile-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 998;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.mobile-drawer-pane {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 310px;
+  max-width: 85vw;
+  background: #ffffff;
+  box-shadow: -4px 0 25px rgba(0, 0, 0, 0.25);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  animation: drawerSlideIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes drawerSlideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.drawer-header {
+  background: linear-gradient(135deg, #840d23 0%, #6d0a1c 100%);
+  color: #ffffff;
+  padding: 20px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drawer-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.drawer-user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.drawer-user-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.drawer-email {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawer-badge {
+  font-size: 0.72rem;
+  color: #fde68a;
+  font-weight: 600;
+}
+
+.btn-drawer-close {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.drawer-period-box {
+  background: #f8fafc;
+  padding: 12px 18px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.drawer-period-tag {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #64748b;
+}
+
+.drawer-period-name {
+  font-size: 0.92rem;
+  color: #840d23;
+  font-weight: 800;
+}
+
+.drawer-nav-list {
+  flex: 1;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.drawer-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: #334155;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border-left: 3px solid transparent;
+}
+
+.drawer-nav-link:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.drawer-nav-link.active {
+  background: #fdf2f2;
+  color: #840d23;
+  border-left-color: #840d23;
+}
+
+.drawer-nav-link .link-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.drawer-nav-link.active .link-icon-box {
+  background: #840d23;
+  color: #ffffff;
+}
+
+.drawer-nav-link .link-icon-box svg {
+  width: 18px;
+  height: 18px;
+}
+
+.drawer-nav-link .link-label-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.drawer-nav-link .link-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.drawer-nav-link .link-desc {
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.drawer-nav-link.link-highlight {
+  border: 1px dashed rgba(132, 13, 35, 0.3);
+}
+
+.drawer-footer {
+  padding: 14px 16px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #f8fafc;
+}
+
+.btn-drawer-install {
+  width: 100%;
+  background: #840d23;
+  color: #ffffff;
+  border: none;
+  padding: 11px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-drawer-install svg {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-drawer-logout {
+  width: 100%;
+  background: #ffffff;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-drawer-logout svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ==========================================================================
+   MODAL PWA GUIADO (Instalación)
    ========================================================================== */
 .pwa-modal-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(15, 23, 42, 0.75);
+  background: rgba(15, 23, 42, 0.65);
   backdrop-filter: blur(4px);
-  z-index: 2000;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -258,20 +564,25 @@
   animation: fadeIn 0.2s ease-out;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
 .pwa-modal-card {
   background: #ffffff;
   border-radius: 14px;
-  max-width: 480px;
+  max-width: 460px;
   width: 100%;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleUp {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .pwa-modal-header {
@@ -292,46 +603,37 @@
 .modal-app-logo {
   width: 44px;
   height: 44px;
-  border-radius: 9px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .pwa-modal-title {
-  margin: 0;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 800;
-  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
 }
 
 .pwa-modal-sub {
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   color: rgba(255, 255, 255, 0.85);
 }
 
 .btn-close-modal {
   background: rgba(255, 255, 255, 0.15);
-  border: none;
   color: #ffffff;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-.btn-close-modal:hover {
-  background: rgba(255, 255, 255, 0.3);
 }
 
 .pwa-modal-body {
   padding: 20px;
-  max-height: 75vh;
-  overflow-y: auto;
 }
 
 .pwa-features-list {
@@ -463,32 +765,39 @@
 }
 
 /* ==========================================================================
-   RESPONSIVE
+   RESPONSIVE OPERADOR LAYOUT
    ========================================================================== */
 @media (max-width: 900px) {
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: flex !important;
+  }
+
   .operador-header {
-    height: auto;
-    padding: 14px 20px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .header-user-actions {
-    width: 100%;
-    justify-content: space-between;
-    flex-wrap: wrap;
-  }
-
-  .options-ribbon {
+    height: 60px;
     padding: 0 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 
-  .period-indicator {
-    display: none;
+  .brand-icon-badge {
+    width: 36px;
+    height: 36px;
+  }
+
+  .platform-title {
+    font-size: 1.05rem;
+  }
+
+  .platform-subtitle {
+    font-size: 0.68rem;
   }
 
   .operador-content-viewport {
-    padding: 20px 16px;
+    padding: 14px 12px 32px 12px;
   }
 }

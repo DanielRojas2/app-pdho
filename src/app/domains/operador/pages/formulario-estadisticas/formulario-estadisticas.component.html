@@ -78,14 +78,17 @@
         <div class="calendario-body">
           <!-- Selector Rápido de Día para Móviles / Celulares -->
           <div class="mobile-day-stepper">
-            <button type="button" class="btn-step-day" (click)="diaAnterior()" [disabled]="diaSeleccionado() <= 1" title="Día anterior">
+            <button type="button" class="btn-step-day" (click)="diaAnterior()" [disabled]="diaSeleccionado() <= 1"
+              title="Día anterior">
               ◀ Anterior
             </button>
             <div class="day-step-info">
               <span class="day-step-main">Día {{ diaSeleccionado() }}</span>
-              <span class="day-step-sub">{{ getNombreDiaAbreviado(diaSeleccionado()) }} &bull; {{ mesSeleccionado() }}</span>
+              <span class="day-step-sub">{{ getNombreDiaAbreviado(diaSeleccionado()) }} &bull; {{ mesSeleccionado()
+                }}</span>
             </div>
-            <button type="button" class="btn-step-day" (click)="diaSiguiente()" [disabled]="diaSeleccionado() >= diasEnMes()" title="Día siguiente">
+            <button type="button" class="btn-step-day" (click)="diaSiguiente()"
+              [disabled]="diaSeleccionado() >= diasEnMes()" title="Día siguiente">
               Siguiente ▶
             </button>
           </div>
@@ -235,8 +238,8 @@
                 <button type="button" class="btn-step-val" (click)="cambiarPermanencias(-1)" title="Restar 1">−</button>
                 <input id="input_permanencias" type="text" inputmode="numeric" maxlength="2"
                   class="form-input text-center tabular-nums font-bold" [value]="inputPermanencias()"
-                  (keypress)="validarSoloDigitos($event)" (input)="onInputCargaRapidaPermanencias($event)" placeholder="0"
-                  title="Permanencias del huésped (0 a 50)" />
+                  (keypress)="validarSoloDigitos($event)" (input)="onInputCargaRapidaPermanencias($event)"
+                  placeholder="0" title="Permanencias del huésped (0 a 50)" />
                 <button type="button" class="btn-step-val" (click)="cambiarPermanencias(1)" title="Sumar 1">+</button>
               </div>
             </div>
@@ -272,7 +275,8 @@
                   <span class="drc-pill-i">{{ reg.cant_ingresos }} Ing</span>
                   <span class="drc-pill-p">{{ reg.cant_permanencias }} Pern</span>
                 </div>
-                <button type="button" class="btn-del-reg" (click)="limpiarCelda(diaSeleccionado(), reg.idNac)" title="Eliminar registro">
+                <button type="button" class="btn-del-reg" (click)="limpiarCelda(diaSeleccionado(), reg.idNac)"
+                  title="Eliminar registro">
                   ✕
                 </button>
               </div>
@@ -612,12 +616,13 @@
                 (change)="onArchivoSeleccionado($event)" />
 
               <div class="attachment-btn-group">
-                <button type="button" class="btn-adjuntar-camara" (click)="cameraInput.click()" title="Tomar foto con la cámara del celular">
+                <button type="button" class="btn-adjuntar-camara" (click)="cameraInput.click()"
+                  title="Tomar foto con la cámara del celular">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                     <circle cx="12" cy="13" r="4"></circle>
                   </svg>
-                  <span>📷 Cámara Móvil</span>
+                  <span>Cámara Móvil</span>
                 </button>
 
                 <button type="button" class="btn-adjuntar-formulario" (click)="fileInput.click()">

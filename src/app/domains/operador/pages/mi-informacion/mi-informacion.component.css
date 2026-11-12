@@ -1084,3 +1084,128 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+
+
+/* ==========================================================================
+   ADAPTACIONES RESPONSIVAS Y PWA MÓVIL: MI INFORMACIÓN
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .mi-informacion-view {
+    padding: 0 0 24px 0;
+    gap: 12px;
+  }
+
+  .establishment-hero-card {
+    padding: 16px;
+    gap: 14px;
+    border-radius: 8px;
+  }
+
+  .establishment-name {
+    font-size: 1.25rem;
+  }
+
+  .establishment-address {
+    font-size: 0.8rem;
+  }
+
+  .hero-tiles-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .metric-tile {
+    padding: 8px 10px;
+  }
+
+  .tile-label {
+    font-size: 0.65rem;
+  }
+
+  .tile-value {
+    font-size: 0.88rem;
+  }
+
+  .sub-ribbon-bar {
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: 8px;
+  }
+
+  .sub-ribbon-tabs {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    padding-bottom: 4px;
+    gap: 6px;
+  }
+
+  .sub-tab-btn {
+    padding: 8px 12px;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .sub-tab-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .sub-ribbon-actions {
+    width: 100%;
+  }
+
+  .btn-primary-action {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .edit-btn-group {
+    width: 100%;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-secondary-action {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .info-card {
+    padding: 16px 14px;
+    border-radius: 8px;
+  }
+
+  .card-title {
+    font-size: 0.95rem;
+  }
+
+  .info-field-group {
+    padding: 8px 0;
+  }
+
+  .field-label {
+    font-size: 0.72rem;
+  }
+
+  .field-value {
+    font-size: 0.85rem;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-dialog {
+    max-width: 95vw;
+    margin: 10px;
+  }
+
+  .modal-body {
+    padding: 14px;
+  }
+}

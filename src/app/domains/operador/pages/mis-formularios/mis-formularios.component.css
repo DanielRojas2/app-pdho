@@ -1167,3 +1167,219 @@
 .mt-1 { margin-top: 4px; }
 .mt-3 { margin-top: 12px; }
 .font-bold { font-weight: 700; }
+
+
+/* ==========================================================================
+   RESPONSIVE DESIGN & PWA MOBILE: MIS FORMULARIOS
+   ========================================================================== */
+
+.mobile-declaraciones-cards {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .est-summary-card {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .est-metrics-col {
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  }
+
+  .toolbar-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .filters-container {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .filter-select-wrapper,
+  .search-input-wrapper {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .mis-formularios-container {
+    gap: 14px;
+    padding: 0 0 24px 0;
+  }
+
+  .page-top-header {
+    padding: 14px 16px;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .header-action-buttons {
+    width: 100%;
+  }
+
+  .btn-create-f1 {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .page-main-title {
+    font-size: 1.25rem;
+  }
+
+  /* Ocultar tabla pesada en móviles y mostrar tarjetas nativas */
+  .desktop-table-only {
+    display: none !important;
+  }
+
+  .mobile-declaraciones-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  /* Tarjeta Móvil de Declaración */
+  .decl-mobile-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-left: 4px solid #840d23;
+  }
+
+  .dmc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 8px;
+  }
+
+  .dmc-period {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dmc-hash {
+    background: #f1f5f9;
+    color: #840d23;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .dmc-month {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .dmc-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .dmc-metric {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .dmc-lbl {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+  }
+
+  .dmc-val {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 2px 0;
+  }
+
+  .dmc-sub {
+    font-size: 0.65rem;
+    color: #64748b;
+  }
+
+  .dmc-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-top: 4px;
+  }
+
+  .dmc-date {
+    font-size: 0.72rem;
+    color: #64748b;
+  }
+
+  .dmc-btns {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-dmc-respaldo {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .btn-dmc-detail {
+    background: #840d23;
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(132, 13, 35, 0.2);
+  }
+
+  /* Modales en Móviles */
+  .modal-dialog {
+    max-width: 95vw;
+    margin: 12px;
+    max-height: 90vh;
+  }
+
+  .modal-kpi-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .kpi-card {
+    padding: 8px;
+  }
+
+  .kpi-val {
+    font-size: 1rem;
+  }
+}

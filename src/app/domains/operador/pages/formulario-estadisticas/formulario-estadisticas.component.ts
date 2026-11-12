@@ -97,6 +97,105 @@ export class FormularioEstadisticasComponent implements OnInit {
   readonly inputIngresos = signal<number>(2);
   readonly inputPermanencias = signal<number>(0);
 
+  // Navegación por pestañas inteligentes en vista móvil / PWA
+  readonly vistaMovilActiva = signal<'carga' | 'planilla' | 'personal' | 'resumen'>('carga');
+
+  setVistaMovil(vista: 'carga' | 'planilla' | 'personal' | 'resumen'): void {
+    this.vistaMovilActiva.set(vista);
+  }
+
+  // Países frecuentes para selección en 1 toque en celulares
+  readonly paisesFrecuentes = computed<Nacionalidad[]>(() => {
+    const catalogo = this.catalogoNacionalidades();
+    const codigos = ['BO', 'PE', 'AR', 'CL', 'BR', 'US'];
+    const list: Nacionalidad[] = [];
+    for (const cod of codigos) {
+      const nac = catalogo.find((c) => c.cod_pais.toUpperCase() === cod);
+      if (nac) list.push(nac);
+    }
+    return list;
+  });
+
+  seleccionarPaisDirecto(nac: Nacionalidad): void {
+    this.nacionalidadSeleccionadaId.set(nac.id);
+    this.busquedaCargaRapida.set('');
+    this.busquedaCargaRapidaActiva.set(false);
+    this.dropdownCargaRapidaAbierto.set(false);
+  }
+
+  // Movimientos registrados específicamente para el día seleccionado
+  readonly movimientosDiaSeleccionado = computed(() => {
+    const dia = this.diaSeleccionado();
+    const catalogo = this.catalogoNacionalidades();
+    const list: Array<{
+      idNac: number;
+      pais: string;
+      cod_pais: string;
+      cant_ingresos: number;
+      cant_permanencias: number;
+      total: number;
+    }> = [];
+
+    this.movimientosMap().forEach((celda, key) => {
+      const parts = key.split('_');
+      const d = Number(parts[0]);
+      const idNac = Number(parts[1]);
+      if (d === dia && (celda.cant_ingresos > 0 || celda.cant_permanencias > 0)) {
+        const nac = catalogo.find((c) => c.id === idNac);
+        if (nac) {
+          list.push({
+            idNac,
+            pais: nac.pais,
+            cod_pais: nac.cod_pais,
+            cant_ingresos: celda.cant_ingresos,
+            cant_permanencias: celda.cant_permanencias,
+            total: celda.cant_ingresos + celda.cant_permanencias
+          });
+        }
+      }
+    });
+
+    return list;
+  });
+
+  readonly totalHuespedesDiaSeleccionado = computed(() => {
+    return this.movimientosDiaSeleccionado().reduce((sum, item) => sum + item.total, 0);
+  });
+
+  cambiarIngresos(delta: number): void {
+    const actual = Number(this.inputIngresos()) || 0;
+    const nuevo = Math.max(0, Math.min(50, actual + delta));
+    this.inputIngresos.set(nuevo);
+  }
+
+  cambiarPermanencias(delta: number): void {
+    const actual = Number(this.inputPermanencias()) || 0;
+    const nuevo = Math.max(0, Math.min(50, actual + delta));
+    this.inputPermanencias.set(nuevo);
+  }
+
+  cambiarCantEmpPerma(delta: number): void {
+    const val = Math.max(0, this.cantEmpPerma() + delta);
+    this.cantEmpPerma.set(val);
+  }
+
+  cambiarCantEmpEvent(delta: number): void {
+    const val = Math.max(0, this.cantEmpEvent() + delta);
+    this.cantEmpEvent.set(val);
+  }
+
+  diaAnterior(): void {
+    if (this.diaSeleccionado() > 1) {
+      this.diaSeleccionado.update((d) => d - 1);
+    }
+  }
+
+  diaSiguiente(): void {
+    if (this.diaSeleccionado() < this.diasEnMes()) {
+      this.diaSeleccionado.update((d) => d + 1);
+    }
+  }
+
   @ViewChild('inputCargaRapida') inputCargaRapidaRef?: ElementRef<HTMLInputElement>;
   @ViewChild('inputToolbar') inputToolbarRef?: ElementRef<HTMLInputElement>;
 

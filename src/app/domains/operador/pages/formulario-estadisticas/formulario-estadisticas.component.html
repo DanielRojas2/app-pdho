@@ -76,6 +76,20 @@
         </div>
 
         <div class="calendario-body">
+          <!-- Selector Rápido de Día para Móviles / Celulares -->
+          <div class="mobile-day-stepper">
+            <button type="button" class="btn-step-day" (click)="diaAnterior()" [disabled]="diaSeleccionado() <= 1" title="Día anterior">
+              ◀ Anterior
+            </button>
+            <div class="day-step-info">
+              <span class="day-step-main">Día {{ diaSeleccionado() }}</span>
+              <span class="day-step-sub">{{ getNombreDiaAbreviado(diaSeleccionado()) }} &bull; {{ mesSeleccionado() }}</span>
+            </div>
+            <button type="button" class="btn-step-day" (click)="diaSiguiente()" [disabled]="diaSeleccionado() >= diasEnMes()" title="Día siguiente">
+              Siguiente ▶
+            </button>
+          </div>
+
           <!-- Días de la semana -->
           <div class="cal-weekdays">
             <span>Lun</span>
@@ -145,6 +159,19 @@
         </div>
 
         <div class="carga-body">
+          <!-- ACCESO RÁPIDO: PAÍSES FRECUENTES (En 1 toque para recepción en celulares) -->
+          <div class="frequent-countries-box">
+            <span class="fc-label">Países frecuentes:</span>
+            <div class="fc-pills-row">
+              @for (nac of paisesFrecuentes(); track nac.id) {
+              <button type="button" class="chip-country-fast" [class.selected]="nac.id === nacionalidadSeleccionadaId()"
+                (click)="seleccionarPaisDirecto(nac)">
+                {{ nac.pais }}
+              </button>
+              }
+            </div>
+          </div>
+
           <!-- PAÍS / NACIONALIDAD (COMBOBOX TODO EN UNO) -->
           <div class="form-group combobox-container-rapida">
             <label for="input_combobox_rapida" class="control-label">PAÍS / NACIONALIDAD DEL TURISTA *</label>
@@ -188,22 +215,30 @@
             </div>
           </div>
 
-          <!-- INGRESOS Y PERMANENCIAS -->
+          <!-- INGRESOS Y PERMANENCIAS CON CONTROLES TÁCTILES +/- -->
           <div class="inputs-row-2">
             <div class="form-group">
               <label for="input_ingresos" class="control-label">INGRESOS (I) *</label>
-              <input id="input_ingresos" type="text" inputmode="numeric" maxlength="2"
-                class="form-input text-center tabular-nums font-bold" [value]="inputIngresos()"
-                (keypress)="validarSoloDigitos($event)" (input)="onInputCargaRapidaIngresos($event)" placeholder="0"
-                title="Ingresos del huésped (0 a 50)" />
+              <div class="stepper-input-container">
+                <button type="button" class="btn-step-val" (click)="cambiarIngresos(-1)" title="Restar 1">−</button>
+                <input id="input_ingresos" type="text" inputmode="numeric" maxlength="2"
+                  class="form-input text-center tabular-nums font-bold" [value]="inputIngresos()"
+                  (keypress)="validarSoloDigitos($event)" (input)="onInputCargaRapidaIngresos($event)" placeholder="0"
+                  title="Ingresos del huésped (0 a 50)" />
+                <button type="button" class="btn-step-val" (click)="cambiarIngresos(1)" title="Sumar 1">+</button>
+              </div>
             </div>
 
             <div class="form-group">
               <label for="input_permanencias" class="control-label">PERMANENTES (P)</label>
-              <input id="input_permanencias" type="text" inputmode="numeric" maxlength="2"
-                class="form-input text-center tabular-nums font-bold" [value]="inputPermanencias()"
-                (keypress)="validarSoloDigitos($event)" (input)="onInputCargaRapidaPermanencias($event)" placeholder="0"
-                title="Permanencias del huésped (0 a 50)" />
+              <div class="stepper-input-container">
+                <button type="button" class="btn-step-val" (click)="cambiarPermanencias(-1)" title="Restar 1">−</button>
+                <input id="input_permanencias" type="text" inputmode="numeric" maxlength="2"
+                  class="form-input text-center tabular-nums font-bold" [value]="inputPermanencias()"
+                  (keypress)="validarSoloDigitos($event)" (input)="onInputCargaRapidaPermanencias($event)" placeholder="0"
+                  title="Permanencias del huésped (0 a 50)" />
+                <button type="button" class="btn-step-val" (click)="cambiarPermanencias(1)" title="Sumar 1">+</button>
+              </div>
             </div>
           </div>
 
@@ -212,8 +247,43 @@
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
-            <span>Agregar Registro a Planilla Oficial</span>
+            <span>Agregar Registro al Día {{ diaSeleccionado() }}</span>
           </button>
+
+          <!-- LISTA EN TIEMPO REAL DE REGISTROS DEL DÍA SELECCIONADO (Ideal para celular) -->
+          <div class="dia-registros-card">
+            <div class="drc-header">
+              <div class="drc-title-wrap">
+                <span class="drc-dot"></span>
+                <strong class="drc-title">Registros del Día {{ diaSeleccionado() }}</strong>
+              </div>
+              <span class="drc-count tabular-nums">{{ totalHuespedesDiaSeleccionado() }} pax</span>
+            </div>
+
+            @if (movimientosDiaSeleccionado().length > 0) {
+            <div class="drc-list">
+              @for (reg of movimientosDiaSeleccionado(); track reg.idNac) {
+              <div class="drc-item">
+                <div class="drc-country-info">
+                  <span class="drc-country-name">{{ reg.pais }}</span>
+                  <span class="drc-code-badge">{{ reg.cod_pais }}</span>
+                </div>
+                <div class="drc-breakdown">
+                  <span class="drc-pill-i">{{ reg.cant_ingresos }} Ing</span>
+                  <span class="drc-pill-p">{{ reg.cant_permanencias }} Pern</span>
+                </div>
+                <button type="button" class="btn-del-reg" (click)="limpiarCelda(diaSeleccionado(), reg.idNac)" title="Eliminar registro">
+                  ✕
+                </button>
+              </div>
+              }
+            </div>
+            } @else {
+            <div class="drc-empty-hint">
+              <span>Sin registros para el Día {{ diaSeleccionado() }}. Seleccione país y agregue ingresos.</span>
+            </div>
+            }
+          </div>
 
           <!-- Resumen Rápido Acumulado -->
           <div class="resumen-rapido-grid">
@@ -298,13 +368,21 @@
             <div class="meta-block-content">
               <div class="meta-row-input">
                 <label for="emp_perma" class="meta-lbl">Empleados Permanentes:</label>
-                <input id="emp_perma" type="number" min="0" class="meta-input-num tabular-nums"
-                  [ngModel]="cantEmpPerma()" (ngModelChange)="cantEmpPerma.set($event)" />
+                <div class="stepper-input-container stepper-sm">
+                  <button type="button" class="btn-step-val-sm" (click)="cambiarCantEmpPerma(-1)">−</button>
+                  <input id="emp_perma" type="number" min="0" class="meta-input-num tabular-nums text-center"
+                    [ngModel]="cantEmpPerma()" (ngModelChange)="cantEmpPerma.set($event)" />
+                  <button type="button" class="btn-step-val-sm" (click)="cambiarCantEmpPerma(1)">+</button>
+                </div>
               </div>
               <div class="meta-row-input">
                 <label for="emp_event" class="meta-lbl">Empleados Eventuales:</label>
-                <input id="emp_event" type="number" min="0" class="meta-input-num tabular-nums"
-                  [ngModel]="cantEmpEvent()" (ngModelChange)="cantEmpEvent.set($event)" />
+                <div class="stepper-input-container stepper-sm">
+                  <button type="button" class="btn-step-val-sm" (click)="cambiarCantEmpEvent(-1)">−</button>
+                  <input id="emp_event" type="number" min="0" class="meta-input-num tabular-nums text-center"
+                    [ngModel]="cantEmpEvent()" (ngModelChange)="cantEmpEvent.set($event)" />
+                  <button type="button" class="btn-step-val-sm" (click)="cambiarCantEmpEvent(1)">+</button>
+                </div>
               </div>
               <div class="meta-row-total">
                 <span class="meta-total-lbl">TOTAL N° EMPLEADOS:</span>
@@ -529,14 +607,28 @@
               <input #fileInput type="file" accept="image/jpeg,image/png,image/webp,application/pdf" class="sr-only"
                 (change)="onArchivoSeleccionado($event)" />
 
-              <button type="button" class="btn-adjuntar-formulario" (click)="fileInput.click()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="17 8 12 3 7 8"></polyline>
-                  <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
-                <span>{{ archivoRespaldo() ? 'Cambiar Imagen' : 'Adjuntar Formulario' }}</span>
-              </button>
+              <!-- Input de cámara directo para móviles -->
+              <input #cameraInput type="file" accept="image/*" capture="environment" class="sr-only"
+                (change)="onArchivoSeleccionado($event)" />
+
+              <div class="attachment-btn-group">
+                <button type="button" class="btn-adjuntar-camara" (click)="cameraInput.click()" title="Tomar foto con la cámara del celular">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                  <span>📷 Cámara Móvil</span>
+                </button>
+
+                <button type="button" class="btn-adjuntar-formulario" (click)="fileInput.click()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  <span>{{ archivoRespaldo() ? 'Cambiar Archivo' : 'Subir Archivo/PDF' }}</span>
+                </button>
+              </div>
             </div>
 
             <!-- Previsualización del archivo adjunto -->

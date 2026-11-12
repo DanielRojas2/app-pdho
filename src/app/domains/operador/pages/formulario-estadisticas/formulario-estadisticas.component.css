@@ -1853,3 +1853,389 @@
   background-color: #f1f5f9;
   border-color: #94a3b8;
 }
+
+
+/* ==========================================================================
+   MEJORAS PWA Y UX: FORMULARIO 1 (NO INVASIVAS / RESPONSIVAS)
+   ========================================================================== */
+
+/* Selector de Días Rápido en Calendario */
+.mobile-day-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-bottom: 12px;
+}
+
+.btn-step-day {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-step-day:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-step-day:not(:disabled):hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.day-step-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.day-step-main {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #840d23;
+}
+
+.day-step-sub {
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+/* Países Frecuentes (Pills de 1 toque) */
+.frequent-countries-box {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fc-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.fc-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip-country-fast {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip-country-fast:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+}
+
+.chip-country-fast.selected {
+  background: #840d23;
+  color: #ffffff;
+  border-color: #840d23;
+  box-shadow: 0 1px 4px rgba(132, 13, 35, 0.2);
+}
+
+/* Controles Numéricos Stepper (+ / -) */
+.stepper-input-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.btn-step-val {
+  width: 44px;
+  height: 42px;
+  background: #f8fafc;
+  border: none;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+.btn-step-val:hover {
+  background: #e2e8f0;
+  color: #840d23;
+}
+
+.btn-step-val:active {
+  background: #cbd5e1;
+}
+
+.stepper-input-container .form-input {
+  flex: 1;
+  border: none;
+  border-left: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  border-radius: 0;
+  height: 42px;
+  font-size: 1.15rem;
+}
+
+/* Stepper para Bloque B (Personal) */
+.stepper-sm {
+  width: 140px;
+}
+
+.btn-step-val-sm {
+  width: 32px;
+  height: 32px;
+  background: #f8fafc;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #334155;
+  cursor: pointer;
+}
+
+.btn-step-val-sm:hover {
+  background: #e2e8f0;
+  color: #840d23;
+}
+
+/* Tarjeta de Registros de Hoy (En Carga Rápida) */
+.dia-registros-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.drc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 6px;
+}
+
+.drc-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.drc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #840d23;
+}
+
+.drc-title {
+  font-size: 0.82rem;
+  color: #0f172a;
+}
+
+.drc-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.drc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.drc-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 6px 10px;
+  gap: 8px;
+}
+
+.drc-country-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.drc-country-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drc-code-badge {
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.drc-breakdown {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.drc-pill-i {
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.drc-pill-p {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.btn-del-reg {
+  background: transparent;
+  color: #94a3b8;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.btn-del-reg:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.drc-empty-hint {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-style: italic;
+  padding: 4px 0;
+}
+
+/* Botones de Respaldo Físico / Cámara */
+.attachment-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-adjuntar-camara {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0284c7;
+  color: #ffffff;
+  border: 1px solid #0369a1;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.25);
+}
+
+.btn-adjuntar-camara:hover {
+  background: #0369a1;
+}
+
+.btn-adjuntar-camara svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Responsive natural en pantallas estrechas */
+@media (max-width: 640px) {
+  .periodo-selectors-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cal-days-grid {
+    gap: 2px;
+  }
+
+  .cal-day-btn {
+    min-height: 38px;
+    padding: 4px;
+  }
+
+  .inputs-row-2 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .btn-agregar-registro {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+
+  .resumen-rapido-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sheet-main-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .sheet-correlativo-box {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .submit-action-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-borrador-flat, .btn-enviar-oficial {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -12,10 +12,23 @@
     </div>
 
     <div class="header-user-actions">
+      <!-- Botón Discreto de Instalación PWA -->
+      @if (!pwa.isInstalled()) {
+      <button type="button" class="btn-install-header" (click)="instalarApp()" title="Instalar aplicación en tu dispositivo">
+        <svg class="install-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Instalar App</span>
+      </button>
+      }
+
       <div class="user-pill" title="Usuario autenticado">
         <span class="user-email">{{ userEmail() }}</span>
         <span class="user-role-badge">({{ userRoleLabel() }})</span>
       </div>
+
       <button type="button" class="logout-btn" (click)="onLogout()" title="Cerrar Sesión">
         <svg class="logout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
@@ -72,7 +85,7 @@
       </a>
     </div>
 
-    <!-- Indicador de Período Activo (Dinámico según calendario del sistema) -->
+    <!-- Indicador de Período Activo -->
     <div class="period-indicator">
       <span class="period-label">Período Activo:</span>
       <strong class="period-value">{{ activePeriod() }}</strong>
@@ -83,4 +96,79 @@
   <main class="operador-content-viewport">
     <router-outlet />
   </main>
+
+  <!-- Modal Guiado de Instalación PWA (Android / iOS / PC) -->
+  @if (pwa.showInstallModal()) {
+  <div class="pwa-modal-backdrop" (click)="pwa.closeInstallModal()">
+    <div class="pwa-modal-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true"
+      aria-labelledby="modal-pwa-title">
+      <header class="pwa-modal-header">
+        <div class="modal-brand">
+          <img src="/icons/icon-96x96.png" alt="PDH Oruro" class="modal-app-logo" />
+          <div>
+            <h3 id="modal-pwa-title" class="pwa-modal-title">Instalar PDH Oruro</h3>
+            <span class="pwa-modal-sub">Plataforma Departamental Hotelera</span>
+          </div>
+        </div>
+        <button type="button" class="btn-close-modal" (click)="pwa.closeInstallModal()"
+          aria-label="Cerrar modal">✕</button>
+      </header>
+
+      <div class="pwa-modal-body">
+        <div class="pwa-features-list">
+          <div class="pwa-feat-item">
+            <span class="pwa-feat-icon">⚡</span>
+            <div>
+              <strong>Acceso ultrarrápido</strong>
+              <p>Ábrela directamente desde la pantalla de inicio de tu celular sin abrir navegadores.</p>
+            </div>
+          </div>
+          <div class="pwa-feat-item">
+            <span class="pwa-feat-icon">📋</span>
+            <div>
+              <strong>Carga ágil del Formulario 1</strong>
+              <p>Diseñada especialmente para recepción: registra huéspedes rápidamente día por día.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Instrucciones según SO -->
+        @if (pwa.isIos()) {
+        <div class="install-steps-box ios-steps">
+          <h4 class="steps-title">Pasos para iPhone / iPad (Safari):</h4>
+          <ol class="steps-ordered">
+            <li>Toca el botón <strong>Compartir</strong> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" class="icon-share">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+              </svg> en la barra inferior de Safari.</li>
+            <li>Desliza hacia abajo y presiona <strong>"Agregar al inicio"</strong>.</li>
+            <li>Toca <strong>"Agregar"</strong> en la esquina superior derecha.</li>
+          </ol>
+        </div>
+        } @else {
+        <div class="install-steps-box android-steps">
+          <h4 class="steps-title">Pasos para Android / Google Chrome:</h4>
+          <p class="steps-hint">Haz clic en el botón de abajo para instalarla automáticamente:</p>
+          <button type="button" class="btn-direct-install" (click)="instalarApp()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Instalar Aplicación en este Dispositivo</span>
+          </button>
+          <p class="sub-hint">Si no aparece la ventana, toca el menú de Chrome <strong>(⋮)</strong> y selecciona
+            <strong>"Instalar aplicación"</strong> o <strong>"Agregar a pantalla principal"</strong>.</p>
+        </div>
+        }
+      </div>
+
+      <footer class="pwa-modal-footer">
+        <button type="button" class="btn-modal-dismiss" (click)="pwa.closeInstallModal()">Entendido</button>
+      </footer>
+    </div>
+  </div>
+  }
 </div>

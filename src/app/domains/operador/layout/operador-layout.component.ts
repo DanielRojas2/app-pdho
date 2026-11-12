@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../auth/services/auth.service';
+import { PwaService } from '../../../core/services/pwa.service';
 
 @Component({
   selector: 'app-operador-layout',
@@ -14,8 +15,10 @@ import { AuthService } from '../../auth/services/auth.service';
 export class OperadorLayoutComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  readonly pwa = inject(PwaService);
 
   readonly currentUser = this.authService.currentUser;
+  readonly bannerInstalarCerrado = signal<boolean>(false);
 
   readonly userEmail = computed(() => {
     return this.currentUser()?.email ?? 'usuario@hotel.bo';
@@ -36,6 +39,14 @@ export class OperadorLayoutComponent {
     const gestion = now.getFullYear();
     return `${mesCapitalizado} / ${gestion}`;
   });
+
+  instalarApp(): void {
+    this.pwa.promptInstall();
+  }
+
+  cerrarBannerInstalar(): void {
+    this.bannerInstalarCerrado.set(true);
+  }
 
   onLogout(): void {
     this.authService.logout();

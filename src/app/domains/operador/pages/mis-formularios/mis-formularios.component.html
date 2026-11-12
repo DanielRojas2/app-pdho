@@ -136,7 +136,8 @@
     <!-- ======================================================== -->
     @if (tipoFormularioActivo() === 'f1') {
     @if (itemsPaginadosF1().length > 0) {
-    <div class="table-scroll-container">
+    <!-- VISTA TABULAR PARA DESKTOP -->
+    <div class="table-scroll-container desktop-table-only">
       <table class="history-table">
         <thead>
           <tr>
@@ -254,6 +255,56 @@
           }
         </tbody>
       </table>
+    </div>
+
+    <!-- VISTA EN TARJETAS PARA CELULARES Y TABLETS (PWA MOBILE) -->
+    <div class="mobile-declaraciones-cards">
+      @for (item of itemsPaginadosF1(); track item.id) {
+      <article class="decl-mobile-card">
+        <header class="dmc-header">
+          <div class="dmc-period">
+            <span class="dmc-hash">#{{ item.numero_formulario || ('000' + item.id) }}</span>
+            <strong class="dmc-month">{{ item.mes }} {{ item.gestion }}</strong>
+          </div>
+          <span class="status-chip" [ngClass]="getClaseEstado(item.estado)">
+            <span class="dot-status"></span>
+            <span>{{ item.estado }}</span>
+          </span>
+        </header>
+
+        <div class="dmc-metrics">
+          <div class="dmc-metric">
+            <span class="dmc-lbl">Huéspedes</span>
+            <strong class="dmc-val tabular-nums">{{ item.total_ing ?? item.resumen?.total_ing ?? 0 }} pax</strong>
+            <span class="dmc-sub tabular-nums">N:{{ item.r_ingreso_nals ?? 0 }} | E:{{ item.r_ingreso_extr ?? 0 }}</span>
+          </div>
+          <div class="dmc-metric">
+            <span class="dmc-lbl">Pernoctaciones</span>
+            <strong class="dmc-val tabular-nums">{{ item.total_perm ?? item.resumen?.total_perm ?? 0 }}</strong>
+            <span class="dmc-sub tabular-nums">N:{{ item.r_permanencia_nals ?? 0 }} | E:{{ item.r_permanencia_extr ?? 0 }}</span>
+          </div>
+          <div class="dmc-metric">
+            <span class="dmc-lbl">Personal</span>
+            <strong class="dmc-val tabular-nums">{{ (item.cant_emp_perma + item.cant_emp_event) }} emp</strong>
+            <span class="dmc-sub">Ocupado</span>
+          </div>
+        </div>
+
+        <footer class="dmc-footer">
+          <span class="dmc-date">{{ formatearFecha(item.fecha_presentacion || item.fecha_creacion) }}</span>
+          <div class="dmc-btns">
+            @if (item.archivo_foto || item.archivo_pdf) {
+            <button type="button" class="btn-dmc-respaldo" (click)="abrirModalRespaldo(item.archivo_foto, item.archivo_pdf, 'Formulario 1 - ' + item.mes + ' ' + item.gestion)">
+              📎 Respaldo
+            </button>
+            }
+            <button type="button" class="btn-dmc-detail" (click)="abrirModalDetalleF1(item)">
+              Ver Detalle ➔
+            </button>
+          </div>
+        </footer>
+      </article>
+      }
     </div>
     } @else {
     <!-- Empty State Formulario 1 -->

@@ -662,6 +662,17 @@
   box-shadow: 0 0 0 1px #8f1d2c;
 }
 
+/* ==========================================================================
+   DESGLOSE DE CAPACIDAD: TABLA DESKTOP VS TARJETAS MÓVILES
+   ========================================================================== */
+.capacity-desktop-table {
+  display: block;
+}
+
+.capacity-mobile-cards {
+  display: none;
+}
+
 /* Tabla en modo edición */
 .edit-table td {
   padding: 10px 14px;
@@ -676,6 +687,64 @@
 .room-type-desc {
   font-size: 0.75rem;
   color: #64748b;
+}
+
+/* Tarjetas Móviles de Capacidad */
+.capacity-card-item {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid #8f1d2c;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-room-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-room-header .room-type-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.card-room-header .room-type-desc {
+  font-size: 0.76rem;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.card-room-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.room-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.room-field-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.input-number-card {
+  height: 38px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  width: 100%;
 }
 
 /* Resumen en Vivo */
@@ -742,16 +811,19 @@
 }
 
 .btn-cancel-flat {
-  background: none;
+  background: #ffffff;
   border: 1px solid #cbd5e1;
   color: #475569;
-  border-radius: 0.25rem;
-  height: 40px;
+  border-radius: 6px;
+  height: 42px;
   padding: 0 18px;
-  font-size: 0.84rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-cancel-flat:hover {
@@ -759,30 +831,51 @@
   color: #0f172a;
 }
 
-.btn-save-gold {
+/* Botón Guardar Principal */
+.btn-save-primary, .btn-save-gold {
   background-color: #8f1d2c;
   background-image: linear-gradient(180deg, #8f1d2c 0%, #7a1521 100%);
   color: #ffffff;
   border: none;
-  border-radius: 0.25rem;
-  height: 40px;
+  border-radius: 6px;
+  height: 42px;
   padding: 0 24px;
-  font-size: 0.84rem;
+  font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(143, 29, 44, 0.25);
+  box-shadow: 0 2px 6px rgba(143, 29, 44, 0.3);
   transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.btn-save-gold:hover:not(:disabled) {
+.btn-save-primary:hover:not(:disabled), .btn-save-gold:hover:not(:disabled) {
   background-color: #7a1521;
   background-image: none;
   transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(143, 29, 44, 0.4);
 }
 
-.btn-save-gold:disabled {
+.btn-save-primary:disabled, .btn-save-gold:disabled {
   opacity: 0.65;
   cursor: not-allowed;
+  transform: none;
+}
+
+.btn-save-icon {
+  width: 17px;
+  height: 17px;
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
 /* ==========================================================================
@@ -1277,27 +1370,24 @@
     padding: 12px 14px;
   }
 
-  /* 7. Tabla Desglose Capacidad en Edición y Tablas de Datos */
-  .table-container {
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
+  /* 7. Desglose de Capacidad en Edición Móvil (Ocultar tabla rígida y activar tarjetas nativas) */
+  .capacity-desktop-table {
+    display: none !important;
+  }
+
+  .capacity-mobile-cards {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
     width: 100%;
-  }
-
-  .edit-table th, .edit-table td {
-    padding: 8px 10px;
-  }
-
-  .edit-table .input-number {
-    min-width: 75px;
-    padding: 0 8px;
   }
 
   .live-calc-box {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
-    padding: 10px 14px;
+    padding: 12px 14px;
+    background-color: #f1f5f9;
   }
 
   .calc-item {
@@ -1317,13 +1407,15 @@
 
   .footer-actions {
     flex-direction: column-reverse;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
   }
 
-  .btn-cancel-flat, .btn-save-gold {
-    width: 100%;
-    justify-content: center;
+  .btn-cancel-flat, .btn-save-primary, .btn-save-gold {
+    width: 100% !important;
+    justify-content: center !important;
+    height: 44px !important;
+    font-size: 0.9rem !important;
   }
 
   /* 8. Dependientes Móvil */

@@ -478,13 +478,14 @@
           Configure la cantidad de habitaciones existentes en cada categoría y las camas asociadas.
         </p>
 
-        <div class="table-container">
+        <!-- Vista Desktop: Tabla Tradicional -->
+        <div class="table-container capacity-desktop-table">
           <table class="data-table edit-table">
             <thead>
               <tr>
                 <th scope="col">TIPO DE HABITACIÓN</th>
-                <th scope="col" style="width: 180px;">CANTIDAD HABITACIONES</th>
-                <th scope="col" style="width: 180px;">NÚMERO DE CAMAS</th>
+                <th scope="col" style="width: 170px;">CANTIDAD HABITACIONES</th>
+                <th scope="col" style="width: 170px;">NÚMERO DE CAMAS</th>
               </tr>
             </thead>
             <tbody>
@@ -509,6 +510,31 @@
               }
             </tbody>
           </table>
+        </div>
+
+        <!-- Vista Móvil: Tarjetas Táctiles Nativas (No desborda pantalla) -->
+        <div class="capacity-mobile-cards">
+          @for (ctrl of habitacionesFormArray.controls; track ctrl.get('id_tipo_habitacion')?.value; let i = $index)
+          {
+          <div class="capacity-card-item" [formGroup]="ctrl">
+            <div class="card-room-header">
+              <strong class="room-type-title">{{ formatCategoria(ctrl.get('tipo_nombre')?.value) }}</strong>
+              <span class="room-type-desc">{{ ctrl.get('descripcion')?.value }}</span>
+            </div>
+            <div class="card-room-inputs">
+              <div class="room-field">
+                <label [for]="'hab_' + i" class="room-field-label">Habitaciones:</label>
+                <input [id]="'hab_' + i" type="number" min="0" formControlName="cant_habitaciones"
+                  class="form-input input-number-card tabular-nums" placeholder="0" />
+              </div>
+              <div class="room-field">
+                <label [for]="'cama_' + i" class="room-field-label">Camas por hab:</label>
+                <input [id]="'cama_' + i" type="number" min="0" formControlName="nro_camas"
+                  class="form-input input-number-card tabular-nums" placeholder="0" />
+              </div>
+            </div>
+          </div>
+          }
         </div>
 
         <!-- Resumen en Vivo -->
@@ -546,6 +572,11 @@
             <span class="btn-spinner" aria-hidden="true"></span>
             <span>Guardando en el Sistema...</span>
             } @else {
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-save-icon">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
             <span>Guardar Toda la Información</span>
             }
           </button>

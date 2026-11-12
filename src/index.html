@@ -10,6 +10,7 @@
 
   <!-- PWA Manifest & App Tags -->
   <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#840d23">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,6 +18,16 @@
   <meta name="apple-mobile-web-app-title" content="PDH Oruro">
   <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
   <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+
+  <!-- PWA Early Prompt Capture (Crucial for reliable install prompt triggering) -->
+  <script>
+    window.__pwaInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      window.__pwaInstallPrompt = e;
+      window.dispatchEvent(new CustomEvent('pwa-prompt-available', { detail: e }));
+    });
+  </script>
 
   <!-- Tipografía Oficial Google Fonts Inter & Plus Jakarta Sans (DESIGN.md) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -1,14 +1,21 @@
 // Service Worker for PDH Oruro PWA
-const CACHE_NAME = 'pdho-pwa-v1';
+const CACHE_NAME = 'pdho-pwa-v2';
 
 const STATIC_ASSETS = [
   '/',
   '/manifest.webmanifest',
+  '/manifest.json',
   '/logo_culturas.ico',
   '/images/logo_culturas.jpg',
   '/images/logo_gador.png',
   '/images/logo_gador_cropped.png',
+  '/icons/icon-72x72.png',
+  '/icons/icon-96x96.png',
+  '/icons/icon-128x128.png',
+  '/icons/icon-144x144.png',
+  '/icons/icon-152x152.png',
   '/icons/icon-192x192.png',
+  '/icons/icon-384x384.png',
   '/icons/icon-512x512.png',
   '/icons/apple-touch-icon.png',
   '/icons/maskable-icon-512x512.png'
@@ -43,12 +50,13 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Never cache API requests or non-GET requests
+  // Never intercept API requests, non-GET requests or browser extension requests
   if (req.method !== 'GET' || url.pathname.startsWith('/api') || url.protocol.startsWith('chrome-extension')) {
     return;
   }
 
-  // HTML Navigation requests: Network-first, fallback to cache
+  // HTML Navigation requests (opening the app from shortcut or clicking links):
+  // Network-first; if offline or fails, fallback to cached root '/' so Angular SPA can bootstrap
   if (req.mode === 'navigate') {
     event.respondWith(
       fetch(req)
@@ -59,9 +67,15 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => {
-          return caches.match(req).then((cached) => {
-            return cached || caches.match('/');
+        .catch(async () => {
+          const cached = await caches.match(req);
+          if (cached) return cached;
+          const rootCached = await caches.match('/');
+          if (rootCached) return rootCached;
+          return new Response('Sin conexión a Internet', {
+            status: 503,
+            statusText: 'Service Unavailable',
+            headers: new Headers({ 'Content-Type': 'text/plain; charset=utf-8' })
           });
         })
     );
@@ -72,23 +86,27 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(req).then((cachedResponse) => {
       if (cachedResponse) {
-        // Fetch in background to update cache (stale-while-revalidate)
+        // Revalidate in background to keep cache fresh
         fetch(req).then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
             caches.open(CACHE_NAME).then((cache) => cache.put(req, networkResponse));
           }
-        }).catch(() => {/* Ignore network errors on background update */});
+        }).catch(() => {/* Offline, ignore */});
         return cachedResponse;
       }
 
-      return fetch(req).then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200) {
-          const clone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
-        }
-        return networkResponse;
-      });
+      return fetch(req)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+            const clone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          // If asset fetch fails and not cached, return empty response instead of uncaught exception
+          return new Response('', { status: 408, statusText: 'Request timed out' });
+        });
     })
   );
 });
-

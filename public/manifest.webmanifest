@@ -1,9 +1,10 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "id": "/",
   "name": "PDH Oruro - Plataforma Departamental Hotelera",
   "short_name": "PDH Oruro",
   "description": "Sistema Oficial de Estadísticas y Declaraciones Juradas Hoteleras de Oruro",
-  "start_url": "/operador/formulario-1",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
@@ -92,4 +93,3 @@
     }
   ]
 }
-

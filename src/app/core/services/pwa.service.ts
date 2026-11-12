@@ -33,7 +33,7 @@ export class PwaService {
   }
 
   private initPwa(): void {
-    // Detect mobile device
+    // 1. Detect mobile device
     const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera || '';
     const isIos = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
     const isAndroid = /android/i.test(userAgent);
@@ -43,7 +43,7 @@ export class PwaService {
     this.isAndroid.set(isAndroid);
     this.isMobile.set(isMobile);
 
-    // Detect if already installed (standalone mode)
+    // 2. Detect if already installed (standalone mode)
     const isStandalone =
       window.matchMedia('(display-mode: standalone)').matches ||
       (navigator as any).standalone === true ||
@@ -51,10 +51,29 @@ export class PwaService {
 
     this.isInstalled.set(isStandalone);
 
-    // Listen for install prompt (Chrome, Edge, Samsung Internet, etc.)
+    // 3. Check if window.__pwaInstallPrompt was already captured before Angular bootstrapped
+    const prePrompt = (window as any).__pwaInstallPrompt as BeforeInstallPromptEvent | undefined;
+    if (prePrompt) {
+      this.deferredPrompt = prePrompt;
+      this.canInstall.set(true);
+    }
+
+    // 4. Listen for early event dispatch
+    window.addEventListener('pwa-prompt-available', (e: Event) => {
+      const customEvent = e as CustomEvent<BeforeInstallPromptEvent>;
+      if (customEvent.detail) {
+        this.deferredPrompt = customEvent.detail;
+      } else if ((window as any).__pwaInstallPrompt) {
+        this.deferredPrompt = (window as any).__pwaInstallPrompt;
+      }
+      this.canInstall.set(true);
+    });
+
+    // 5. Normal beforeinstallprompt listener (in case it fires later)
     window.addEventListener('beforeinstallprompt', (e: Event) => {
       e.preventDefault();
       this.deferredPrompt = e as BeforeInstallPromptEvent;
+      (window as any).__pwaInstallPrompt = e;
       this.canInstall.set(true);
     });
 
@@ -62,21 +81,29 @@ export class PwaService {
       this.canInstall.set(false);
       this.isInstalled.set(true);
       this.deferredPrompt = null;
+      (window as any).__pwaInstallPrompt = null;
     });
 
-    // Register Service Worker
+    // 6. Register Service Worker
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker
-          .register('/sw.js')
-          .then((reg) => {
-            console.log('[PWA] Service Worker registrado exitosamente:', reg.scope);
-          })
-          .catch((err) => {
-            console.warn('[PWA] Error al registrar Service Worker:', err);
-          });
-      });
+      // Register after page is loaded to not delay TTI
+      if (document.readyState === 'complete') {
+        this.registerSw();
+      } else {
+        window.addEventListener('load', () => this.registerSw());
+      }
     }
+  }
+
+  private registerSw(): void {
+    navigator.serviceWorker
+      .register('/sw.js', { scope: '/' })
+      .then((reg) => {
+        console.log('[PWA] Service Worker registrado exitosamente con scope:', reg.scope);
+      })
+      .catch((err) => {
+        console.warn('[PWA] Error al registrar Service Worker:', err);
+      });
   }
 
   openInstallModal(): void {
@@ -88,25 +115,28 @@ export class PwaService {
   }
 
   async promptInstall(): Promise<'accepted' | 'dismissed' | 'manual'> {
-    if (this.deferredPrompt) {
+    // Check if prompt is in this.deferredPrompt or on window
+    const promptEvent = this.deferredPrompt || (window as any).__pwaInstallPrompt;
+
+    if (promptEvent && typeof promptEvent.prompt === 'function') {
       try {
-        await this.deferredPrompt.prompt();
-        const choice = await this.deferredPrompt.userChoice;
+        await promptEvent.prompt();
+        const choice = await promptEvent.userChoice;
         if (choice.outcome === 'accepted') {
           this.canInstall.set(false);
           this.isInstalled.set(true);
           this.closeInstallModal();
         }
         this.deferredPrompt = null;
+        (window as any).__pwaInstallPrompt = null;
         return choice.outcome;
       } catch (e) {
-        console.error('[PWA] Error triggering install prompt:', e);
+        console.error('[PWA] Error al disparar el diálogo nativo de instalación:', e);
       }
     }
 
-    // If deferredPrompt is not available (e.g., iOS Safari or already dismissed), open guided modal
+    // Si no está disponible el evento nativo (ej. iOS Safari o navegador ya bloqueó el prompt), abrir modal guiado paso a paso
     this.openInstallModal();
     return 'manual';
   }
 }
-

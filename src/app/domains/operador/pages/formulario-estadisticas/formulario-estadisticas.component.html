@@ -5,13 +5,43 @@
     <p>Cargando información del establecimiento y catálogo oficial...</p>
   </div>
   } @else {
-  <div class="two-column-workspace">
+
+  <!-- TIMELINE DE 3 PASOS (Exclusivo Vista Móvil / PWA) -->
+  <div class="mobile-timeline-stepper">
+    <div class="timeline-bar">
+      <!-- Paso 1 -->
+      <button type="button" class="timeline-node" [class.active]="pasoMovilActivo() === 1"
+        [class.completed]="pasoMovilActivo() > 1" (click)="setPasoMovil(1)">
+        <span class="node-circle">1</span>
+        <span class="node-label">Datos & Habitaciones</span>
+      </button>
+
+      <div class="timeline-line" [class.filled]="pasoMovilActivo() > 1"></div>
+
+      <!-- Paso 2 -->
+      <button type="button" class="timeline-node" [class.active]="pasoMovilActivo() === 2"
+        [class.completed]="pasoMovilActivo() > 2" (click)="setPasoMovil(2)">
+        <span class="node-circle">2</span>
+        <span class="node-label">Carga Estadia</span>
+      </button>
+
+      <div class="timeline-line" [class.filled]="pasoMovilActivo() > 2"></div>
+
+      <!-- Paso 3 -->
+      <button type="button" class="timeline-node" [class.active]="pasoMovilActivo() === 3" (click)="setPasoMovil(3)">
+        <span class="node-circle">3</span>
+        <span class="node-label">Planilla & Envío</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="two-column-workspace" [attr.data-paso-movil]="pasoMovilActivo()">
     <!-- ============================================== -->
     <!-- COLUMNA IZQUIERDA: CONTROLES Y CARGA RÁPIDA -->
     <!-- ============================================== -->
     <aside class="controls-column">
-      <!-- CARD 1: ESTABLECIMIENTO EMISOR -->
-      <section class="card emisor-card">
+      <!-- GRUPO 1 MÓVIL: CARD 1 ESTABLECIMIENTO EMISOR (Período) -->
+      <section class="card emisor-card mobile-step-1">
         <div class="card-header-simple">
           <span class="card-tag-label">ESTABLECIMIENTO EMISOR</span>
           @if (establecimiento(); as est) {
@@ -63,8 +93,8 @@
         </div>
       </section>
 
-      <!-- CARD 2: CALENDARIO MENSUAL DINÁMICO -->
-      <section class="card calendario-card">
+      <!-- GRUPO 2 MÓVIL: CARD 2 CALENDARIO MENSUAL DINÁMICO -->
+      <section class="card calendario-card mobile-step-2">
         <div class="calendario-header">
           <div>
             <h3 class="calendario-title">
@@ -76,23 +106,6 @@
         </div>
 
         <div class="calendario-body">
-          <!-- Selector Rápido de Día para Móviles / Celulares -->
-          <div class="mobile-day-stepper">
-            <button type="button" class="btn-step-day" (click)="diaAnterior()" [disabled]="diaSeleccionado() <= 1"
-              title="Día anterior">
-              ◀ Anterior
-            </button>
-            <div class="day-step-info">
-              <span class="day-step-main">Día {{ diaSeleccionado() }}</span>
-              <span class="day-step-sub">{{ getNombreDiaAbreviado(diaSeleccionado()) }} &bull; {{ mesSeleccionado()
-                }}</span>
-            </div>
-            <button type="button" class="btn-step-day" (click)="diaSiguiente()"
-              [disabled]="diaSeleccionado() >= diasEnMes()" title="Día siguiente">
-              Siguiente ▶
-            </button>
-          </div>
-
           <!-- Días de la semana -->
           <div class="cal-weekdays">
             <span>Lun</span>
@@ -131,6 +144,23 @@
             }
           </div>
 
+          <!-- Selector Rápido de Día para Móviles / Celulares -->
+          <div class="mobile-day-stepper">
+            <button type="button" class="btn-step-day" (click)="diaAnterior()" [disabled]="diaSeleccionado() <= 1"
+              title="Día anterior">
+              ◀ Anterior
+            </button>
+            <div class="day-step-info">
+              <span class="day-step-main">Día {{ diaSeleccionado() }}</span>
+              <span class="day-step-sub">{{ getNombreDiaAbreviado(diaSeleccionado()) }} &bull; {{ mesSeleccionado()
+                }}</span>
+            </div>
+            <button type="button" class="btn-step-day" (click)="diaSiguiente()"
+              [disabled]="diaSeleccionado() >= diasEnMes()" title="Día siguiente">
+              Siguiente ▶
+            </button>
+          </div>
+
           <!-- Leyenda de colores -->
           <div class="cal-legend">
             <span class="legend-item">
@@ -149,8 +179,8 @@
         </div>
       </section>
 
-      <!-- CARD 3: CARGA RÁPIDA DIARIA (Sin tipo habitación ni plazas/camas) -->
-      <section class="card carga-rapida-card">
+      <!-- GRUPO 2 MÓVIL: CARD 3 CARGA RÁPIDA DIARIA -->
+      <section class="card carga-rapida-card mobile-step-2">
         <div class="card-header-split">
           <h3 class="carga-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-inline">
@@ -314,8 +344,8 @@
     <!-- ============================================== -->
     <main class="sheet-column">
       <div class="planilla-sheet-container">
-        <!-- CABECERA OFICIAL: Correlativo editable -->
-        <div class="sheet-main-header">
+        <!-- CABECERA OFICIAL: Correlativo editable (GRUPO 1 MÓVIL) -->
+        <div class="sheet-main-header mobile-step-1">
           <div class="sheet-title-wrapper">
             <h1 class="sheet-main-title">ESTADÍSTICAS HOTELERAS</h1>
           </div>
@@ -323,13 +353,12 @@
           <div class="sheet-correlativo-box" title="Haga clic para editar el número correlativo oficial">
             <label for="numero_formulario_input" class="corr-label">N°</label>
             <input id="numero_formulario_input" type="text" class="corr-input" [ngModel]="numeroFormulario()"
-              (ngModelChange)="numeroFormulario.set($event)" placeholder="000360" maxlength="15" />
-            <span class="corr-badge-edit">✎ EDITABLE</span>
+              (ngModelChange)="numeroFormulario.set($event)" placeholder="000000" maxlength="15" />
           </div>
         </div>
 
-        <!-- BLOQUES DE METADATOS (A, B, C) -->
-        <div class="sheet-meta-grid">
+        <!-- BLOQUES DE METADATOS (A, B, C) (GRUPO 1 MÓVIL) -->
+        <div class="sheet-meta-grid mobile-step-1">
           <!-- BLOQUE A: DATOS DEL ESTABLECIMIENTO -->
           <section class="meta-card-block">
             <header class="meta-block-header">
@@ -420,8 +449,8 @@
           </section>
         </div>
 
-        <!-- MATRIZ DE PLANILLA DINÁMICA (PRE-RENDER PROGRESIVO Y EDITABLE) -->
-        <div class="sheet-table-outer">
+        <!-- MATRIZ DE PLANILLA DINÁMICA (GRUPO 3 MÓVIL: FORMULARIO RECREADO) -->
+        <div class="sheet-table-outer mobile-step-3">
           <!-- Barra de control del pre-render -->
           <div class="sheet-table-toolbar">
             <div class="toolbar-left">
@@ -554,8 +583,8 @@
           </div>
         </div>
 
-        <!-- PARTE INFERIOR: RESUMEN COMPACTO Y ADJUNCIÓN DE RESPALDO -->
-        <div class="sheet-bottom-section">
+        <!-- PARTE INFERIOR: RESUMEN COMPACTO Y ADJUNCIÓN DE RESPALDO (GRUPO 3 MÓVIL) -->
+        <div class="sheet-bottom-section mobile-step-3">
           <!-- TABLA DE RESUMEN COMPACTA (Idéntica a la boleta física) -->
           <div class="resumen-table-compact">
             <table class="resumen-table">
@@ -733,6 +762,31 @@
         </div>
       </div>
     </main>
+  </div>
+
+  <!-- Barra de Navegación Inferior Flotante Móvil (Botones Siguiente / Anterior de Paso) -->
+  <div class="mobile-step-nav-bar">
+    @if (pasoMovilActivo() > 1) {
+    <button type="button" class="btn-nav-step btn-nav-prev" (click)="retrocederPasoMovil()">
+      ◀ Anterior
+    </button>
+    } @else {
+    <div></div>
+    }
+
+    <div class="step-counter-pill">
+      <span>Paso {{ pasoMovilActivo() }} de 3</span>
+    </div>
+
+    @if (pasoMovilActivo() < 3) { <button type="button" class="btn-nav-step btn-nav-next" (click)="avanzarPasoMovil()">
+      Siguiente ▶
+      </button>
+      } @else {
+      <button type="button" class="btn-nav-step btn-nav-finish" (click)="enviarFormulario()"
+        [disabled]="!archivoRespaldo() || !matrizTieneDatos() || enviando()">
+        Enviar Formulario
+      </button>
+      }
   </div>
   }
 

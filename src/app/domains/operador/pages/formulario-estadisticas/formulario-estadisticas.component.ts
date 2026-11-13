@@ -76,7 +76,7 @@ export class FormularioEstadisticasComponent implements OnInit {
   // Período y cabecera
   readonly gestionSeleccionada = signal<number>(new Date().getFullYear());
   readonly mesSeleccionado = signal<string>(this.obtenerMesInicial());
-  readonly numeroFormulario = signal<string>('000360');
+  readonly numeroFormulario = signal<string>('');
 
   // Períodos consultados desde el backend (estado de declaración por mes)
   readonly periodosBackend = signal<MesDisponible[]>([]);
@@ -97,11 +97,29 @@ export class FormularioEstadisticasComponent implements OnInit {
   readonly inputIngresos = signal<number>(2);
   readonly inputPermanencias = signal<number>(0);
 
-  // Navegación por pestañas inteligentes en vista móvil / PWA
-  readonly vistaMovilActiva = signal<'carga' | 'planilla' | 'personal' | 'resumen'>('carga');
+  // Navegación por Timeline de 3 pasos en vista móvil / PWA
+  readonly pasoMovilActivo = signal<1 | 2 | 3>(1);
 
-  setVistaMovil(vista: 'carga' | 'planilla' | 'personal' | 'resumen'): void {
-    this.vistaMovilActiva.set(vista);
+  setPasoMovil(paso: 1 | 2 | 3): void {
+    this.pasoMovilActivo.set(paso);
+    // Scroll suave hacia la parte superior al cambiar de paso en móvil
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  avanzarPasoMovil(): void {
+    const actual = this.pasoMovilActivo();
+    if (actual < 3) {
+      this.setPasoMovil((actual + 1) as 1 | 2 | 3);
+    }
+  }
+
+  retrocederPasoMovil(): void {
+    const actual = this.pasoMovilActivo();
+    if (actual > 1) {
+      this.setPasoMovil((actual - 1) as 1 | 2 | 3);
+    }
   }
 
   // Países frecuentes para selección en 1 toque en celulares
@@ -1086,7 +1104,7 @@ export class FormularioEstadisticasComponent implements OnInit {
     const fechaHoy = new Date().toISOString().split('T')[0];
 
     const payload: EstadisticaHoteleraCreate = {
-      numero_formulario: this.numeroFormulario().trim() || '000360',
+      numero_formulario: this.numeroFormulario().trim() || '000000',
       mes: this.mesSeleccionado(),
       gestion: this.gestionSeleccionada(),
       fecha_presentacion: fechaHoy,
@@ -1165,7 +1183,7 @@ export class FormularioEstadisticasComponent implements OnInit {
     const fechaHoy = new Date().toISOString().split('T')[0];
 
     const payload: EstadisticaHoteleraCreate = {
-      numero_formulario: this.numeroFormulario().trim() || '000360',
+      numero_formulario: this.numeroFormulario().trim() || '000000',
       mes: this.mesSeleccionado(),
       gestion: this.gestionSeleccionada(),
       fecha_presentacion: fechaHoy,
